@@ -1,0 +1,31 @@
+.btn1 {
+    font-family: "Zen Maru Gothic", serif;
+    background-color: #ffcb60;
+    color: white;
+    border: none;
+    padding: 20px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+    box-shadow: 5px 5px 0 #ff8c00;
+}
+  
+.btn1::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    display: block;
+    background: #ff8c00;
+    transition: 0.3s;
+    left: 0;
+}
+
+.btn1:hover {
+    color: #333;
+    background-color: #ff8c00;
+    box-shadow: 0 0 0;
+    transform: translate(5px, 5px);
+}

@@ -1,0 +1,18 @@
+統一通常カラー
+#f7a400
+
+ホバー時カラー
+#ff8c00
+
+うすぴたオレンジ背景カラー
+#ffca5f
+
+フォントカラー及び白抜き文字バックグラウンドカラー
+#333
+
+背景ちょいグレー
+background-color: #f4f4f4;
+
+
+フォント文字
+font-family: "Zen Maru Gothic", serif;
