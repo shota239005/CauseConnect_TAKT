@@ -1,214 +1,194 @@
 <script>
-import image1 from '@/assets/img/Juggler/1.png';
-import image2 from '@/assets/img/Juggler/2.png';
-import image3 from '@/assets/img/Juggler/3.png';
-import image4 from '@/assets/img/Juggler/4.png';
-import image5 from '@/assets/img/Juggler/5.png';
-import image6 from '@/assets/img/Juggler/6.png';
-import image7 from '@/assets/img/Juggler/7.png';
-
 export default {
   data() {
     return {
-      images: [image1, image2, image3, image4, image5, image6, image7],
-      leftImage: '',
-      centerImage: '',
-      rightImage: '',
-      totalCount: 150, // 保有枚数の初期設定
-      spinning: false, // スロットが回転中かどうか
-      payout: 0, // 配当金
-      message: '', // 結果メッセージ
+      symbols: ['🍒', '🍋', '🍉', '🍇', '🔔', '7️⃣'], // シンボル一覧
+      reels: ['🍒', '🍋', '7️⃣'], // 初期シンボル
+      resultMessage: '揃えてハッピー！レッツチャレンジ！！', // 初期メッセージ（スピン前）
+      isSpinning: false, // スピン状態
+      payouts: {
+        '🍒': 10, // 🍒の配当
+        '🍋': 20, // 🍋の配当
+        '🍉': 30, // 🍉の配当
+        '🍇': 40, // 🍇の配当
+        '🔔': 50, // 🔔の配当
+        '7️⃣': 100, // 7️⃣の配当
+      },
     };
   },
-  created() {
-    // 初期設定の確率で画像を決める
-    this.setRandomImages();
-  },
   methods: {
-    setRandomImages() {
-      // 確率設定（合計で100になるように設定）
-      const randomChance = Math.random(); // 0～1の間でランダムに生成
+    async spin() {
+      this.resultMessage = 'グッドラック！'; // ボタン押したらグッドラック
+      this.isSpinning = true; // スピン開始
 
-      if (randomChance < 0.30) {
-        // 30% の確率で "image6, image6, image6" を設定
-        this.leftImage = image1;
-        this.centerImage = image1;
-        this.rightImage = image1;
-      } else if (randomChance < 0.50) {
-        // 20% の確率で "image7, image7, image7" を設定
-        this.leftImage = image7;
-        this.centerImage = image7;
-        this.rightImage = image7;
-      } else {
-        // 残りの50% でランダムな組み合わせを設定
-        this.leftImage = this.images[Math.floor(Math.random() * this.images.length)];
-        this.centerImage = this.images[Math.floor(Math.random() * this.images.length)];
-        this.rightImage = this.images[Math.floor(Math.random() * this.images.length)];
-      }
+      const spinDuration = 1; // スピンの時間（秒）
+      const spinCount = 10; // スピン回数
+
+      // リールをアニメーション
+      await this.animateReels(spinCount, spinDuration);
+
+      // スピン後にランダムにシンボルを決定
+      this.reels = this.reels.map(() => this.getRandomSymbol());
+      this.checkWin();
+      this.isSpinning = false; // スピン終了
     },
 
-    handleClick() {
-      if (this.totalCount >= 3) {
-        this.totalCount -= 3; // 保有枚数を-3する
-        this.startSlotMachine(); // スロットを開始する
-      } else {
-        alert('保有枚数が足りません！');
-      }
+    // リールのアニメーション処理（加速と減速）
+    animateReels(spinCount, spinDuration) {
+      return new Promise(resolve => {
+        let counter = 0;
+        let intervalSpeed = (spinDuration * 1000) / spinCount; // スピン時間に基づいてインターバルの速度を設定
+
+        const minInterval = 50; // 最小インターバル（最大スピード）
+        const maxInterval = 300; // 最大インターバル（最小スピード）
+
+        // 最初は加速、後に減速
+        const interval = setInterval(() => {
+          // リールをランダムなシンボルで更新
+          this.reels = this.reels.map(() => this.getRandomSymbol());
+          counter++;
+
+          // 加速時は急速に速く、減速時は緩やかに遅くなるように制御
+          if (counter < spinCount / 2) {
+            // 加速：指数的に増加
+            intervalSpeed = Math.max(
+              minInterval,
+              maxInterval * Math.pow(0.8, counter) // counterが増えるごとにスピードを上げる
+            );
+          } else {
+            // 減速：指数的に減少
+            intervalSpeed = Math.min(
+              maxInterval,
+              maxInterval - Math.pow(0.8, spinCount - counter) * (maxInterval - minInterval) // 減速部分
+            );
+          }
+
+          // 指定回数のスピンが終わったらアニメーションを停止
+          if (counter >= spinCount) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, intervalSpeed); // 変動するインターバルを使ってリールを更新
+      });
     },
-    startSlotMachine() {
-      this.spinning = true; // スロット回転開始
 
-      const spinTime = 1500; // スロットの回転時間（全体での時間）
+    // ランダムにシンボルを選ぶ（重み付け）
+    getRandomSymbol() {
+      const probabilities = {
+        '🍒': 0.5, // 🍒が出る確率 50%
+        '🍋': 0.1, // 🍋が出る確率 10%
+        '🍉': 0.1, // 🍉が出る確率 10%
+        '🍇': 0.1, // 🍇が出る確率 10%
+        '🔔': 0.1, // 🔔が出る確率 10%
+        '7️⃣': 0.1,  // 7️⃣が出る確率 10%
+      };
 
-      // 各スロットを順番に回転させる
-      let spinCount = 0;
-      const spinInterval = setInterval(() => {
-        this.leftImage = this.images[Math.floor(Math.random() * this.images.length)];
-        this.centerImage = this.images[Math.floor(Math.random() * this.images.length)];
-        this.rightImage = this.images[Math.floor(Math.random() * this.images.length)];
+      const random = Math.random(); // ランダムな値 (0 - 1)
+      let cumulativeProbability = 0;
 
-        spinCount++;
-
-        if (spinCount >= 10) { // 10回スピンしたら停止
-          clearInterval(spinInterval);
-          this.stopSlotMachine(); // スロット停止
-          this.checkPayout(); // 配当チェック
+      // 確率に基づいてシンボルを選ぶ
+      for (const [symbol, probability] of Object.entries(probabilities)) {
+        cumulativeProbability += probability;
+        if (random <= cumulativeProbability) {
+          return symbol;
         }
-      }, 100); // 100msごとに画像を更新
+      }
+    },
 
-      // 各スロットが順番に止まるように遅延を追加
-      setTimeout(() => {
-        this.stopLeft(); // 左が確定
-      }, 400); // 0.4秒後にleftを確定
+    // 勝敗の判定と配当の計算
+    checkWin() {
+      // 全てのリールが同じシンボルで揃った場合
+      const symbol = this.reels[0];
+      const allSame = this.reels.every(s => s === symbol);
 
-      setTimeout(() => {
-        this.stopCenter(); // 中央が確定
-      }, 800); // 0.8秒後にcenterを確定
-
-      setTimeout(() => {
-        this.stopRight(); // 右が確定
-      }, 900); // 0.9秒後にrightを確定
-    },
-    stopSlotMachine() {
-      this.spinning = false; // スロット回転停止
-    },
-    stopLeft() {
-      // スロット停止時、最初に決めた画像に戻す
-      this.leftImage = this.leftImage;
-    },
-    stopCenter() {
-      this.centerImage = this.centerImage;
-    },
-    stopRight() {
-      this.rightImage = this.rightImage;
-    },
-    checkPayout() {
-      // 配当チェック（3つのスロットが揃った場合）
-      if (this.leftImage === this.centerImage && this.centerImage === this.rightImage) {
-        // 揃った場合の配当
-        this.calculatePayout();
+      if (allSame) {
+        const payout = this.payouts[symbol];
+        this.resultMessage = `おめでとう！ポイント配当は ${payout} 枚です。`;
       } else {
-        this.payout = 0;
-        this.message = '残念！外れです。';
+        this.resultMessage = '残念！もう一度試してね！';
       }
-    },
-    calculatePayout() {
-      // 画像に応じた配当金額を設定
-      if (this.leftImage === image1) {
-        this.payout = 3;
-        this.message = 'もう一回！配当金: 3枚';
-      } else if (this.leftImage === image2) {
-        this.payout = 8;
-        this.message = 'ぶどう！配当金: 8枚';
-      } else if (this.leftImage === image3) {
-        this.payout = 4;
-        this.message = 'チェリー！配当金: 4枚';
-      } else if (this.leftImage === image4) {
-        this.payout = 14;
-        this.message = 'ベル！配当金: 14枚';
-      } else if (this.leftImage === image5) {
-        this.payout = 96;
-        this.message = '当たり！5の画像が揃いました！配当金: 100';
-      } else if (this.leftImage === image6) {
-        this.payout = 2400;
-        this.message = '革命！！配当金: 2400枚！！！';
-      } else if (this.leftImage === image7) {
-        this.payout = 240;
-        this.message = 'BIG BOUNUS！配当金: 240';
-      }
-      this.totalCount += this.payout; // 配当を追加
-    },
-  },
+    }
+  }
 };
 </script>
 
 <template>
-  <div class="gamen">
-    <button class="btn1" @click="handleClick" :disabled="totalCount < 3">●</button>
-    <div class="left">
-      <img ref="leftImg" :src="leftImage" alt="Left Image" :class="{'spinning': spinning}" />
+  <div class="slot-machine">
+    <div v-if="resultMessage" class="result-message">
+      {{ resultMessage }}
     </div>
-    <div class="center">
-      <img ref="centerImg" :src="centerImage" alt="Center Image" :class="{'spinning': spinning}" />
+    <div class="reels">
+      <div class="reel" v-for="(reel, index) in reels" :key="index" :class="{'spinning': isSpinning}">
+        <div class="symbol">{{ reel }}</div>
+      </div>
     </div>
-    <div class="right">
-      <img ref="rightImg" :src="rightImage" alt="Right Image" :class="{'spinning': spinning}" />
-    </div>
+    <button class="btn1" @click="spin" :disabled="isSpinning">スピン</button>
   </div>
-  <p>保有枚数: {{ totalCount }}</p> <!-- 保有枚数を表示 -->
-  <p>結果: {{ message }}</p> <!-- 配当結果を表示 -->
-  <p>配当金: {{ payout }}</p> <!-- 配当金額を表示 -->
 </template>
 
 <style scoped>
-.gamen {
-  display: flex;
-  align-items: center;
-  margin: 20px;
-}
-.btn1 {
-  margin-right: 20px;
-  width: 50px; /* ボタンの横幅 */
-  height: 50px; /* ボタンの高さ（幅と同じにすることで円形に） */
-  border-radius: 50%; /* 円形にする */
-  border: 2px solid #000; /* ボタンの枠線 */
-  display: flex; /* 中央揃えに必要 */
-  justify-content: center; /* 水平中央揃え */
-  align-items: center; /* 垂直中央揃え */
-  background-color: #000000; /* 背景色 */
-  cursor: pointer; /* ポインタカーソルを表示 */
-  font-size: 16px; /* ボタン内テキストのサイズ */
+.slot-machine {
+  text-align: center;
+  font-family: Arial, sans-serif;
 }
 
-.btn1:hover {
-  background-color: #000000; /* ホバー時の背景色 */
-}
-
-.left, .center, .right {
-  width: 100px; /* 画像サイズに応じて調整 */
-  height: 100px;
+.reels {
   display: flex;
   justify-content: center;
+  margin-bottom: 20px;
+}
+
+.reel {
+  width: 80px;
+  height: 80px;
+  margin: 0 10px;
+  background-color: #f4f4f4;
+  display: flex;
   align-items: center;
-  transition: all 0.3s ease;
+  justify-content: center;
+  font-size: 2rem;
+  border-radius: 8px;
+  position: relative;
 }
 
-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+.symbol {
+  transition: transform 0.3s ease-in-out;
 }
 
-.spinning {
-  animation: spin 0.1s infinite; /* 画像をスピンさせるアニメーション */
+/* スピンアニメーション */
+.reel.spinning {
+  animation: spin 1s cubic-bezier(0.6, 0.2, 0.2, 1) infinite; /* リールの回転を無限に繰り返す */
 }
 
+/* リールを回転させるアニメーション */
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(1080deg); }
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #8fe96b;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff8c00;
+}
+
+button:disabled {
+  background-color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+.result-message {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ff5722;
 }
 </style>
