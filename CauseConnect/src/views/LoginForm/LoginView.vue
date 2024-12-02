@@ -32,36 +32,35 @@
       <button type="submit" class="login-button">ログイン</button>
     </form>
 
-    <!-- エラーメッセージ（任意） -->
+    <!-- エラーメッセージ -->
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script>
+import axios from "@/axios"; // Axiosのインスタンス
+
 export default {
   data() {
     return {
       form: {
-        email: "", // メールアドレス
-        password: "", // パスワード
+        email: "",
+        password: "",
       },
-      errorMessage: "", // エラーメッセージ
+      errorMessage: "",
     };
   },
   methods: {
-    handleLogin() {
-      // フォームの入力内容をコンソールに表示（実際のログイン処理を行う）
-      console.log("ログイン情報:", this.form);
+    async handleLogin() {
+      try {
+        // LaravelのAPIにログインリクエストを送信
+        const response = await axios.post("/api/login", this.form);
+        alert("ログイン成功");
 
-      // 仮のバリデーション
-      if (this.form.email === "test@example.com" && this.form.password === "password123") {
-        // 正常なログインの場合
-        this.errorMessage = "";
-        alert("ログイン成功！");
-        // ここでログイン後の処理を行います（例えば、リダイレクトなど）
-      } else {
-        // エラーメッセージの表示
-        this.errorMessage = "メールアドレスまたはパスワードが間違っています";
+        // 成功時にクッキーにメールアドレスが保存されます
+        // フロントエンドで使用する場合、axios.defaults.headersを設定することも可能
+      } catch (error) {
+        this.errorMessage = error.response.data.message || "ログインに失敗しました";
       }
     },
   },
@@ -75,6 +74,12 @@ export default {
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  background-color: #fff;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .form-group {
@@ -111,5 +116,7 @@ button.login-button:hover {
 .error-message {
   color: red;
   font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
 }
 </style>
