@@ -66,7 +66,7 @@ const togglePopup = () => {
         <ul>
           <li v-for="transaction in transactionHistory" :key="transaction.id" class="transaction-item">
             <div>
-              <strong>{{ transaction.type }}</strong> | 
+              <strong>{{ transaction.type }}</strong> |
               <span>{{ transaction.date }}</span>
             </div>
             <div>
