@@ -11,6 +11,7 @@ import Detail from '@/views/Detail/Detail.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Home }, // '/' で Home.vue を表示
+  { path: '/home', name: 'Home', component: Home }, // /home パスを追加
   { path: '/FAQ', name: 'FAQ', component: FAQ },
   { path: '/login', name: 'Login', component: Login },
   { path: '/info', name: 'Info', component: Info },

@@ -1,6 +1,7 @@
 <script>
 import apiClient from '@/axios'; // axiosインスタンスのインポート
 import UserProfile from './components/UserProfile.vue';
+
 export default {
   data() {
     return {
@@ -22,9 +23,19 @@ export default {
         localStorage.setItem('token', response.data.token);
 
         // ログイン成功後、ダッシュボードへリダイレクト
-        this.$router.push('/dashboard');
+        this.$router.push('/home');
       } catch (err) {
-        this.error = err.response?.data?.message || 'ログインに失敗しました';
+        // エラーハンドリング強化：レスポンスがない場合やリクエストが失敗した場合の対処
+        if (err.response) {
+          // サーバーがエラーレスポンスを返した場合
+          this.error = err.response?.data?.message || 'ログインに失敗しました';
+        } else if (err.request) {
+          // リクエストは送信されたがサーバーから応答がなかった場合
+          this.error = 'サーバーからの応答がありません。ネットワークを確認してください';
+        } else {
+          // その他のエラー
+          this.error = `エラーが発生しました: ${err.message}`;
+        }
       }
     },
   },
@@ -48,7 +59,6 @@ export default {
     <p v-if="error">{{ error }}</p>
   </div>
 </template>
-
 
 <style scoped>
 .login-container {

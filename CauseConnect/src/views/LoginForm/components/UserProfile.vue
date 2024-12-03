@@ -28,7 +28,8 @@ export default {
         this.user = response.data.user; // ユーザー情報を設定
       } catch (error) {
         this.user = null;
-        console.error('ユーザー情報の取得に失敗しました');
+        console.error('ユーザー情報の取得に失敗しました', error);
+        alert('ユーザー情報の取得に失敗しました');
       }
     },
     // ログアウト処理
@@ -39,8 +40,10 @@ export default {
         this.user = null; // ユーザー情報をリセット
         this.isLoggedIn = false; // ログイン状態を更新
         alert('ログアウトしました');
+        this.$router.push('/login'); // ログアウト後にログインページにリダイレクト
       } catch (error) {
-        console.error('ログアウトに失敗しました');
+        console.error('ログアウトに失敗しました', error);
+        alert('ログアウトに失敗しました');
       }
     },
   },
