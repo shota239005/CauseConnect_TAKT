@@ -31,6 +31,6 @@ export default {
 <style scoped>
 .youtube-player iframe {
   width: 100px;
-  height: 50px;
+  height: 56px;
 }
 </style>

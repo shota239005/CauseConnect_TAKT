@@ -21,7 +21,7 @@ export default {
     <div class="map-url-form">
       <!--<button @click="showMap">地図を表示</button>-->
       <div v-if="mapUrl" class="map-preview">
-        <iframe :src="mapUrl" width="300px" height="200px" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <iframe :src="mapUrl" width="700px" height="400px" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </div>
     </div>
   </template>

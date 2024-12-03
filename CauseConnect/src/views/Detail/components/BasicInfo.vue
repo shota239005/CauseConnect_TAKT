@@ -51,13 +51,12 @@ const request = {
 
 <style scoped>
 .basic-info {
+  margin-left: -25px;/*左寄せを強制的にしてます */
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 8px;
   background-color: #fff;
-  width: 100%;
   max-width: 800px; /* 最大幅を設定 */
-  margin: 20px auto; /* 中央寄せ */
 }
 
 h2 {
@@ -82,11 +81,11 @@ h2 {
   border-radius: 8px;
   color: #666;
   font-size: 24px;
-  margin-right: 40px;
+  margin-bottom: 20px;
+
 }
 
 .imageMap{
-  display: flex;
   align-items: center; /* コンテンツを上下中央に揃える */
 
 }

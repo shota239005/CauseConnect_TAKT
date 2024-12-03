@@ -1,6 +1,6 @@
 <script setup>
 import Navi from './components/Nav.vue'; // ナビゲーションバーコンポーネントをインポート
-
+import YouTube from './components/YouTube.vue';
 </script>
 
 <template>
@@ -8,8 +8,10 @@ import Navi from './components/Nav.vue'; // ナビゲーションバーコンポ
     <div id="app">
       <!-- ナビゲーションバー（常に表示） -->
       <Navi />
+      <YouTube videoId="1GFb-6UHFuE" />
       <!-- ここにページ遷移によって切り替わるコンテンツを表示 -->
       <router-view/> <!-- 遷移先のコンテンツが表示されます -->
+
     </div>
 
   </template>
