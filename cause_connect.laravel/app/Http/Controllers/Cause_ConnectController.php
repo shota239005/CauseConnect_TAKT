@@ -7,6 +7,8 @@ use App\Models\Address;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;  // DBクラスをインポート
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class Cause_ConnectController extends Controller
 {
@@ -100,5 +102,80 @@ class Cause_ConnectController extends Controller
 
         // 処理が成功した場合のレスポンス
         return response()->json(['message' => 'ユーザー登録が完了しました！'], 201);
+    }
+
+    // ログイン処理
+    public function login(Request $request)
+    {
+        try{
+            // バリデーション：メールアドレスとパスワードが必須
+            // $request->validate([
+            //     'email' => 'required|email', // メールアドレスが必須かつ有効な形式
+            //     'password' => 'required',    // パスワードが必須
+            // ]);
+
+            // ユーザーをメールアドレスで検索
+            $user = User::where('email', $request->email)->first();
+
+            Log::info('Login failed', [
+                'user_email' => $user->email,
+                'user_password' => $user->password,
+                '$request_email' => $request->email,
+                '$request_password' => $request ->password,
+            ]);
+
+            // メールアドレスとパスワードが一致する場合
+            if ($request->email == $user->email && $request->password  == $user->password)
+            {
+
+                // トークンの生成(Sanctum を使用)
+                $token = $user->createToken('Personal Access Token')->plainTextToken;
+
+                // ログイン成功のレスポンス
+                return response()->json([
+                    'message' => 'Login successful', // 成功メッセージ
+                    'token' => $token,               // トークンを返す
+                    ]);
+            }
+
+            // ログイン失敗の場合 (認証エラー)
+            Log::warning('Login failed', [
+                'email' => $request->email,
+                'time' => now(),
+            ]);
+
+            // ログイン失敗の場合 (認証エラー)
+            return response()->json(['message' => 'Invalid credentials'], 401);
+
+        }
+        catch (\Exception $e)
+        {
+            // エラーをログに記録
+            Log::error('Login error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json(['message' => 'An error occurred'], 500);
+        }
+    }
+
+    // ユーザー情報取得
+    public function getUser(Request $request)
+    {
+        // 現在認証されているユーザーの情報を取得し、JSONで返す
+        return response()->json(['user' => Auth::user()]);
+    }
+
+    // ログアウト処理
+    public function logout(Request $request)
+    {
+        // 現在認証中のユーザーが持つすべてのトークンを削除
+        $request->user()->tokens->each(function ($token) {
+            $token->delete(); // トークンを削除
+        });
+
+        // ログアウト成功のレスポンス
+        return response()->json(['message' => 'Logged out']);
     }
 }

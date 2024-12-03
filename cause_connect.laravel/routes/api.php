@@ -23,4 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/prefectures', [PrefectureController::class, 'index']);
 Route::post('/users', [Cause_ConnectController::class, 'store']);
-
+Route::post('/login', [Cause_ConnectController::class, 'login']);
+Route::get('/user', [Cause_ConnectController::class, 'getUser'])->middleware('auth:sanctum');
+Route::post('/logout', [Cause_ConnectController::class, 'logout'])->middleware('auth:sanctum');
