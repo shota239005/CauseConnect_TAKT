@@ -9,7 +9,6 @@ const participants = {
 
 <template>
   <div class="participants-info">
-    <h2>参加者情報</h2>
 
     <!-- 依頼者 -->
     <p class="requester"><strong>依頼者：</strong>{{ participants.requester }}</p>

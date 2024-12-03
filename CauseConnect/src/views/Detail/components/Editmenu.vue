@@ -12,6 +12,19 @@ export default {
     ContributorMenu,
     ExecutorMenu,
   },
+  data() {
+    return {
+      isParticipantsInfoVisible: true,
+      isRequesterMenuVisible: true,
+      isContributorMenuVisible: true,
+      isExecutorMenuVisible: true,
+    };
+  },
+  methods: {
+    toggleSection(section) {
+      this[section] = !this[section];
+    },
+  },
 };
 </script>
 
@@ -33,13 +46,35 @@ export default {
     </div>
 
     <!-- 参加者一覧 -->
-    <ParticipantsInfo />
+    <div class="section">
+      <button class="toggle-button" @click="toggleSection('isParticipantsInfoVisible')">
+        参加者一覧 {{ isParticipantsInfoVisible ? '▲' : '▼' }}
+      </button>
+      <ParticipantsInfo v-if="isParticipantsInfoVisible" />
+    </div>
 
     <!-- メニュー -->
     <div class="menu-section">
-      <RequesterMenu />
-      <ContributorMenu />
-      <ExecutorMenu />
+      <div class="section">
+        <button class="toggle-button" @click="toggleSection('isRequesterMenuVisible')">
+          依頼者メニュー {{ isRequesterMenuVisible ? '▲' : '▼' }}
+        </button>
+        <RequesterMenu v-if="isRequesterMenuVisible" />
+      </div>
+
+      <div class="section">
+        <button class="toggle-button" @click="toggleSection('isContributorMenuVisible')">
+          出資者メニュー {{ isContributorMenuVisible ? '▲' : '▼' }}
+        </button>
+        <ContributorMenu v-if="isContributorMenuVisible" />
+      </div>
+
+      <div class="section">
+        <button class="toggle-button" @click="toggleSection('isExecutorMenuVisible')">
+          実行者メニュー {{ isExecutorMenuVisible ? '▲' : '▼' }}
+        </button>
+        <ExecutorMenu v-if="isExecutorMenuVisible" />
+      </div>
     </div>
   </div>
 </template>
@@ -87,5 +122,25 @@ export default {
 
 .menu-section {
   margin-top: 20px;
+}
+
+.toggle-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 10px;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: #333;
+}
+
+.toggle-button:hover {
+  background-color: #f0f0f0;
+}
+
+.section {
+  margin-bottom: 20px;
 }
 </style>
