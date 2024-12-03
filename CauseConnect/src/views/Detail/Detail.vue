@@ -1,6 +1,6 @@
 <script setup>
 import BasicInfo from './components/BasicInfo.vue';
-import ParticipantsInfo from './components/ParticipantsInfo.vue';
+import Editmenu from './components/Editmenu.vue';
 import ProgressStep from './components/ProgressStep/ProgressStep.vue';
 
 
@@ -16,7 +16,7 @@ const currentProgress = 2; // 仮の進行度データ（0:未着手、4:完了�
                 <BasicInfo />
             </div>
             <div class="right-section">
-                <ParticipantsInfo />
+                <Editmenu />
             </div>
         </div>
 
