@@ -1,13 +1,3 @@
-<template>
-  <div class="youtube-player">
-    <iframe
-      :src="videoUrl"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen
-    ></iframe>
-  </div>
-</template>
 
 <script>
 export default {
@@ -19,15 +9,28 @@ export default {
   },
   computed: {
     videoUrl() {
-      return `https://www.youtube.com/embed/${this.videoId}?autoplay=1&mute=1`; // mute=1で音声なし
+      // 自動再生のクエリパラメータを追加
+      return `https://www.youtube.com/embed/${this.videoId}?autoplay=1&mute=1&enablejsapi=1`;
     }
   }
 };
 </script>
+<template>
+  <div class="youtube-player">
+    <iframe
+      :src="videoUrl"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+  </div>
+</template>
 
 <style scoped>
 .youtube-player iframe {
-  width: 20%;
-  height: 20%;
+  width: 100px;
+  height: 50px;
 }
 </style>

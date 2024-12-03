@@ -1,6 +1,7 @@
 <script>
 import RealTimeClock from './RealTimeClock.vue';
 import PointHistory from '@/views/Mypage/Component/PointHistory.vue';
+import YouTube from '@/components/YouTube.vue';
 
 export default {
   name: "Navi",
@@ -45,7 +46,6 @@ export default {
     <div class="logo" @click="goToHome">
       <img src="../assets/CC_logo.png" />
     </div>
-
     <!-- ナビゲーションメニュー -->
     <nav class="nav-links">
       <router-link to="/">

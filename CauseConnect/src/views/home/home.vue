@@ -34,7 +34,7 @@ const searchRequests = () => {
       <p>ここにはマル秘コンテンツが表示されています。</p>
     </div>
     <Juggler/>
-    <YouTube/>
+    <YouTube videoId="1GFb-6UHFuE" />
     <AiForm/>
   </div>
 </template>
