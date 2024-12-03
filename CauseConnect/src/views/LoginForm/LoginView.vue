@@ -1,71 +1,54 @@
-<template>
-  <div class="login-container">
-    <h1>ログイン</h1>
-
-    <!-- ログインフォーム -->
-    <form @submit.prevent="handleLogin">
-      <!-- メールアドレス -->
-      <div class="form-group">
-        <label for="email">メールアドレス</label>
-        <input
-          type="email"
-          id="email"
-          v-model="form.email"
-          placeholder="メールアドレスを入力"
-          required
-        />
-      </div>
-
-      <!-- パスワード -->
-      <div class="form-group">
-        <label for="password">パスワード</label>
-        <input
-          type="password"
-          id="password"
-          v-model="form.password"
-          placeholder="パスワードを入力"
-          required
-        />
-      </div>
-
-      <!-- ログインボタン -->
-      <button type="submit" class="login-button">ログイン</button>
-    </form>
-
-    <!-- エラーメッセージ -->
-    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-  </div>
-</template>
-
 <script>
-import axios from "@/axios"; // Axiosのインスタンス
-
+import apiClient from '@/axios'; // axiosインスタンスのインポート
+import UserProfile from './components/UserProfile.vue';
 export default {
   data() {
     return {
-      form: {
-        email: "",
-        password: "",
-      },
-      errorMessage: "",
+      email: '',
+      password: '',
+      error: null,
     };
   },
   methods: {
-    async handleLogin() {
+    async login() {
       try {
-        // LaravelのAPIにログインリクエストを送信
-        const response = await axios.post("/api/login", this.form);
-        alert("ログイン成功");
+        // サーバーにログインリクエストを送信
+        const response = await apiClient.post('/login', {
+          email: this.email,
+          password: this.password,
+        });
 
-        // 成功時にクッキーにメールアドレスが保存されます
-        // フロントエンドで使用する場合、axios.defaults.headersを設定することも可能
-      } catch (error) {
-        this.errorMessage = error.response.data.message || "ログインに失敗しました";
+        // トークンをローカルストレージに保存
+        localStorage.setItem('token', response.data.token);
+
+        // ログイン成功後、ダッシュボードへリダイレクト
+        this.$router.push('/dashboard');
+      } catch (err) {
+        this.error = err.response?.data?.message || 'ログインに失敗しました';
       }
     },
   },
 };
 </script>
+
+<template>
+  <div>
+    <h1>ログインフォーム</h1>
+    <form @submit.prevent="login">
+      <div>
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" v-model="email" required />
+      </div>
+      <div>
+        <label for="password">パスワード</label>
+        <input type="password" id="password" v-model="password" required />
+      </div>
+      <button type="submit">ログイン</button>
+    </form>
+    <p v-if="error">{{ error }}</p>
+  </div>
+</template>
+
 
 <style scoped>
 .login-container {
