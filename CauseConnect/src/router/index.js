@@ -4,14 +4,13 @@ import Login from '@/views/LoginForm/LoginView.vue'
 import Info from '@/views/Info/Info.vue'
 import Toko from '@/views/Toko/Toko.vue'
 import Register from '@/views/Register/Register.vue'
-import Home from '@/views/Home/Home.vue'
+import Home from '@/views/home/home.vue'
 import List from '@/views/List/List.vue'
 import Mypage from '@/views/Mypage/Mypage.vue' // Mypage.vue をインポート
 import Detail from '@/views/Detail/Detail.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Home }, // '/' で Home.vue を表示
-  { path: '/home', name: 'Home', component: Home }, // /home パスを追加
   { path: '/FAQ', name: 'FAQ', component: FAQ },
   { path: '/login', name: 'Login', component: Login },
   { path: '/info', name: 'Info', component: Info },

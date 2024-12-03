@@ -23,7 +23,7 @@ export default {
         localStorage.setItem('token', response.data.token);
 
         // ログイン成功後、ダッシュボードへリダイレクト
-        this.$router.push('/home');
+        this.$router.push('/');
       } catch (err) {
         // エラーハンドリング強化：レスポンスがない場合やリクエストが失敗した場合の対処
         if (err.response) {
