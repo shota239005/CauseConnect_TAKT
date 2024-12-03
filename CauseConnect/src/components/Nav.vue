@@ -1,7 +1,6 @@
 <script>
 import RealTimeClock from './RealTimeClock.vue';
 import PointHistory from '@/views/Mypage/Component/PointHistory.vue';
-import YouTube from '@/components/YouTube.vue';
 
 export default {
   name: "Navi",
