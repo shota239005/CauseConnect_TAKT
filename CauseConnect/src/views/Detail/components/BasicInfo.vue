@@ -1,4 +1,5 @@
 <script setup>
+import Map from '@/components/Map.vue';
 // 仮のモックデータ
 const request = {
   requestName: '地域美化活動',
@@ -39,6 +40,12 @@ const request = {
       <p><strong>活動目的：</strong>{{ request.basicInfo }}</p>
       <p><strong>依頼詳細：</strong>{{ request.requestDetails }}</p>
     </div>
+        <!-- 仮の画像枠 -->
+        <div class="image-container">
+      <div class="image-placeholder">画像をここに表示</div>
+    </div>
+    <Map/>
+
   </div>
 </template>
 
