@@ -1,5 +1,4 @@
 <script setup>
-import Map from '@/components/Map.vue';
 // 仮のモックデータ
 const request = {
   requestName: '地域美化活動',
@@ -17,7 +16,7 @@ const request = {
 
 <template>
   <div class="basic-info">
-    <h1>基本情報</h1>
+    <h2>基本情報</h2>
 
     <!-- 仮の画像枠 -->
     <div class="image-container">
@@ -39,12 +38,6 @@ const request = {
       <p><strong>必要備品：</strong>{{ request.equipmentNeeded }}</p>
       <p><strong>活動目的：</strong>{{ request.basicInfo }}</p>
       <p><strong>依頼詳細：</strong>{{ request.requestDetails }}</p>
-    </div>
-    <div class="imageMap">
-      <div class="image-container">
-        <div class="image-placeholder">画像をここに表示</div>
-      </div>
-      <Map/>
     </div>
   </div>
 </template>
@@ -68,11 +61,12 @@ h2 {
 /* 仮の画像枠のスタイル */
 .image-container {
   text-align: center;
-
+  margin-bottom: 20px;
 }
 
 .image-placeholder {
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
   height: 200px;
   background-color: #e0e0e0;
   border: 1px dashed #999;
@@ -81,17 +75,7 @@ h2 {
   justify-content: center;
   border-radius: 8px;
   color: #666;
-  font-size: 24px;
-  margin-right: 40px;
-}
-
-.imageMap{
-  display: flex;
-  align-items: center; /* コンテンツを上下中央に揃える */
-
-}
-.map-url-form{
-  margin-top: 0px;
+  font-size: 14px;
 }
 
 /* 依頼情報のスタイル */
