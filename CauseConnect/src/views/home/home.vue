@@ -5,6 +5,7 @@ import Search from '@/components/search.vue';
 import Japan from '@/components/japan.vue';
 import ImageSlide from '@/views/Home/Component/ImageSlide.vue';
 import Juggler from '@/components/Juggler.vue';
+import BowlingGame from '@/components/BowlingGame.vue';
 // 検索クエリを保持するためのref
 const searchQuery = ref('');
 const router = useRouter();
@@ -33,6 +34,7 @@ const searchRequests = () => {
       <p>ここにはマル秘コンテンツが表示されています。</p>
     </div>
     <Juggler/>
+    <BowlingGame/>
   </div>
 </template>
 
