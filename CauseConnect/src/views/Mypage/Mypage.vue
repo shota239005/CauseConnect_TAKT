@@ -11,10 +11,12 @@ const user = reactive({
   sex: '',
   tel: '',
   email: '',
-  address1: '',
-  address2: '',
-  post_code: '',
-  prefecture: '',
+  address: {  // addressをオブジェクトとして保持
+    prefectures: '',
+    address1: '',
+    address2: '',
+    post_code: '',
+  },
   intro: '',
 });
 
@@ -33,12 +35,23 @@ const fetchUserData = async () => {
   try {
     const response = await apiClient.get('/user/me', {
       headers: {
-        'Authorization': `Bearer ${token}`,  // トークンをヘッダーに追加
+        Authorization: `Bearer ${token}`, // トークンをヘッダーに追加
       },
     });
 
-    // サーバーからのユーザーデータを`user`に設定
-    Object.assign(user, response.data); 
+    // レスポンスデータを `user` に設定
+    const { data } = response;
+    Object.assign(user, data);
+
+    // addressが存在しない場合のデフォルト処理
+    if (!user.address) {
+      user.address = {
+        prefecture: '',
+        address1: '',
+        address2: '',
+        post_code: '',
+      };
+    }
   } catch (error) {
     console.error('ユーザーデータの取得に失敗しました:', error);
     message.value = 'ユーザーデータの取得に失敗しました。再度ログインしてください。';
@@ -47,15 +60,14 @@ const fetchUserData = async () => {
 
 // 初期化処理
 onMounted(() => {
-  fetchUserData(); // コンポーネントがマウントされたときにユーザーデータを取得
+  fetchUserData(); // ユーザーデータを取得
 });
 </script>
-
 
 <template>
   <div class="mypage-container">
     <h1>マイページ</h1>
-    
+
     <!-- エラーメッセージが存在する場合に表示 -->
     <p v-if="message" class="message">{{ message }}</p>
 
@@ -68,8 +80,12 @@ onMounted(() => {
       <p><strong>性別:</strong> {{ user.sex }}</p>
       <p><strong>電話番号:</strong> {{ user.tel }}</p>
       <p><strong>メールアドレス:</strong> {{ user.email }}</p>
-      <p><strong>住所:</strong> {{ user.prefecture }} {{ user.address1 }} {{ user.address2 }}</p>
-      <p><strong>郵便番号:</strong> {{ user.post_code }}</p>
+      <p><strong>郵便番号:</strong> {{ user.address.post_code || '' }}</p>
+      <p><strong>都道府県:</strong> 
+        {{ user.address.prefectures.pref || '' }}</p>
+      <p><strong>住所:</strong>
+        {{ user.address.address1 || '' }} 
+        {{ user.address.address2 || '' }}</p> 
       <p><strong>自己紹介:</strong> {{ user.intro }}</p>
     </div>
   </div>
