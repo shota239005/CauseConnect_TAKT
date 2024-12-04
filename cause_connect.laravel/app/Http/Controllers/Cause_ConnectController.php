@@ -160,7 +160,7 @@ class Cause_ConnectController extends Controller
         }
     }
 
-    // ユーザー情報取得
+    //ユーザー情報取得
     public function getUser(Request $request)
     {
         // 現在認証されているユーザーの情報を取得し、JSONで返す
