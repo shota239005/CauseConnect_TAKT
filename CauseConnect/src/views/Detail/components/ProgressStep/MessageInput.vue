@@ -1,13 +1,15 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineEmits } from 'vue';
 
 // メッセージ入力
 const message = ref("");
 
+// イベントを定義
+const emit = defineEmits();
+
 // メッセージ送信処理
 const sendMessage = () => {
   if (message.value.trim() !== "") {
-    // 親コンポーネントにメッセージを送信
     emit("sendMessage", { user: "You", text: message.value });
     message.value = ""; // メッセージ入力欄をクリア
   }

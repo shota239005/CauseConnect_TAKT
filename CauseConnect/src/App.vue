@@ -8,7 +8,10 @@ import YouTube from './components/YouTube.vue';
     <div id="app">
       <!-- ナビゲーションバー（常に表示） -->
       <Navi />
-      <YouTube videoId="tRwHpyOq4P4" />
+      <div class="yt">
+        <YouTube videoId="tRwHpyOq4P4" />
+        <YouTube videoId="mLW35YMzELE" />
+      </div>
       <!-- ここにページ遷移によって切り替わるコンテンツを表示 -->
       <router-view/> <!-- 遷移先のコンテンツが表示されます -->
 
@@ -16,14 +19,18 @@ import YouTube from './components/YouTube.vue';
 
   </template>
 
-  <style scoped>
-  @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Zen+Maru+Gothic&display=swap');
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Zen+Maru+Gothic&display=swap');
 
-  html, body {
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
+}
+
+.yt{
+  display: flex;
 }
 
   /* 必要に応じてスタイルを追加 */

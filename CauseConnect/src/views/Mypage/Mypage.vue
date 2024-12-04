@@ -34,8 +34,8 @@ const fetchUserData = async () => {
     const response = await axios.get('/user/me'); // APIエンドポイントを変更してください
     Object.assign(user, response.data); // サーバーからのデータを`user`に設定
   } catch (error) {
-    console.error('ユーザーデータの取得に失敗しました:', error);
-    message.value = 'ユーザーデータの取得に失敗しました。';
+    console.error('ユーザーデータの取得に失敗しました！:', error);
+    message.value = 'ユーザーデータの取得に失敗しましたよん。';
   }
 };
 
@@ -61,6 +61,26 @@ const updateUserData = async () => {
     message.value = '更新に失敗しました。';
   }
 };
+
+// アカウント削除機能
+const deleteAccount = async () => {
+  if (confirm('本当に削除しますか？')) {
+    try {
+      await axios.delete('/user/delete'); // APIエンドポイントを適宜変更
+      message.value = 'アカウントが削除されました。';
+      setTimeout(() => {
+        window.location.href = '/logout'; // 必要に応じてリダイレクト
+      }, 2000);
+    } catch (error) {
+      console.error('アカウント削除に失敗しました！チックショー！:', error);
+      message.value = 'アカウント削除に失敗しましたよん。';
+    }
+  }
+};
+
+
+
+
 
 // 初期化処理
 onMounted(() => {
@@ -89,6 +109,7 @@ onMounted(() => {
         <p><strong>自己紹介:</strong> {{ user.intro }}</p>
       </div>
       <button @click="isEditing = true">編集する</button>
+      <a @click.prevent="deleteAccount" style="cursor: pointer; color: red;">アカウント削除</a>
     </div>
 
     <!-- 編集モード -->

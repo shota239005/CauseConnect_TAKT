@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 // 仮の参加者データ
 const participants = ref([
-  { id: 1, name: '参加者1', review: null }, 
+  { id: 1, name: '参加者1', review: null },
   { id: 2, name: '参加者2', review: null },
   { id: 3, name: '参加者3', review: null }
 ]);
@@ -41,22 +41,22 @@ const confirmReviews = () => {
       <h4>{{ participant.name }}</h4>
 
       <div class="review-buttons">
-        <button 
-          @click="updateReview(participant.id, 'good')" 
+        <button class="btn1"
+          @click="updateReview(participant.id, 'good')"
           :class="{ selected: participant.review === 'good' }">
           よかった！
         </button>
-        <button 
-          @click="updateReview(participant.id, 'bad')" 
+        <button class="btnNo"
+          @click="updateReview(participant.id, 'bad')"
           :class="{ selected: participant.review === 'bad' }">
           う～ん
         </button>
       </div>
     </div>
 
-    <button 
-      @click="confirmReviews" 
-      :disabled="isConfirmed" 
+    <button
+      @click="confirmReviews"
+      :disabled="isConfirmed"
       class="confirm-button">
       確定
     </button>
@@ -76,27 +76,25 @@ const confirmReviews = () => {
   margin-bottom: 20px;
 }
 
+.btn1{
+  color: #333;
+  margin-right: 30px;
+}
 .review-buttons {
   display: flex;
   gap: 10px;
 }
 
-.review-buttons button {
-  padding: 10px 20px;
-  background-color: #f7a400;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.btn1.selected {
+  background-color: #73380e;
+  color: #fff;
 }
 
-.review-buttons button.selected {
-  background-color: #4caf50;
+.btnNo.selected {
+  background-color: #2f199d;
+  color: #ccc;
 }
 
-.review-buttons button:hover {
-  background-color: #feb626;
-}
 
 .confirm-button {
   margin-top: 20px;
