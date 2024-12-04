@@ -103,7 +103,7 @@ export default {
 
       if (allSame) {
         const payout = this.payouts[symbol];
-        this.resultMessage = `おめでとう！ポイント配当は ${payout} 枚です。`;
+        this.resultMessage = `おめでとう！ポイント配当は ${payout} Ｐです。`;
       } else {
         this.resultMessage = '残念！もう一度試してね！';
       }

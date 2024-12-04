@@ -9,8 +9,6 @@ import YouTube from './components/YouTube.vue';
       <!-- ナビゲーションバー（常に表示） -->
       <Navi />
       <div class="yt">
-        <YouTube videoId="tRwHpyOq4P4" />
-        <YouTube videoId="mLW35YMzELE" />
       </div>
       <!-- ここにページ遷移によって切り替わるコンテンツを表示 -->
       <router-view/> <!-- 遷移先のコンテンツが表示されます -->
