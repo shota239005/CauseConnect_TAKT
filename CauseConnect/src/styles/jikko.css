@@ -1,0 +1,31 @@
+.jikko {
+    font-family: "Zen Maru Gothic", serif;
+    background-color: #57eb5c;
+    color: #333;
+    border: none;
+    padding: 20px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+    box-shadow: 5px 5px 0 #42b045;
+}
+  
+.jikko::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    display: block;
+    background: #ff8c00;
+    transition: 0.3s;
+    left: 0;
+}
+
+.jikko:hover {
+    color: #fff;
+    background-color: #42b045;
+    box-shadow: 0 0 0;
+    transform: translate(5px, 5px);
+}

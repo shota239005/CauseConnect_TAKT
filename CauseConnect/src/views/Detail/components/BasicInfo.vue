@@ -1,5 +1,6 @@
 <script setup>
 import Map from '@/components/Map.vue';
+import Home from '@/views/home/home.vue';
 // 仮のモックデータ
 const request = {
   requestName: '地域美化活動',
@@ -45,6 +46,11 @@ const request = {
       <div class="image-placeholder">画像をここに表示</div>
     </div>
     <Map/>
+    <div class="button-container">
+      <button class="syusshi" @click="Home">出資者で参加</button>
+      <p>どちらで参加しますか？</p>
+      <button class="jikko" id="jiko" @click="Home">実行者で参加</button>
+    </div>
 
   </div>
 </template>
@@ -102,5 +108,30 @@ h2 {
 
 strong {
   font-weight: bold;
+}
+
+.button-container{
+  display: flex;
+  align-items: center; /* 縦方向で中央揃え */
+  justify-content: space-between; /* 子要素の間にスペースを挿入 */
+  margin-top: 20px;
+  padding: 10px; /* 余白を追加 */
+  background-color: #ffca5f;
+
+}
+.button-container p {
+  color: #333;
+  margin-left: 20px; /* 余白をリセット */
+  white-space: nowrap; /* 自動改行を防ぐ */
+  font-size: 30px; /* フォントサイズを調整 */
+}
+
+.syusshi,
+.jikko {
+  flex-shrink: 0; /* ボタンの縮小を防ぐ */
+}
+
+#jiko{
+  margin-left: 0px;
 }
 </style>
