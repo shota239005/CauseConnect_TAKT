@@ -1,40 +1,58 @@
 <script>
 import RealTimeClock from './RealTimeClock.vue';
 import PointHistory from '@/views/Mypage/Component/PointHistory.vue';
+import apiClient from '@/axios'; // Axiosインスタンスをインポート
 
 export default {
   name: "Navi",
   data() {
     return {
-      isLoggedIn: false, // 仮のログイン状態。テスト用に切り替え可能
+      isLoggedIn: false, // ログイン状態
+      user: null, // ユーザー情報
     };
   },
+  created() {
+    this.checkLoginStatus();
+  },
   methods: {
+    // トークンを確認してログイン状態を初期化
+    async checkLoginStatus() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        this.isLoggedIn = true;
+        try {
+          const response = await apiClient.get('/user', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          this.user = response.data.user; // ユーザー情報をセット
+        } catch (error) {
+          console.error('ユーザー情報の取得に失敗しました', error);
+          this.logout(); // エラー時にはログアウト処理
+        }
+      }
+    },
+    // ログアウト処理
+    logout() {
+      localStorage.removeItem('token'); // トークンを削除
+      this.isLoggedIn = false;
+      this.user = null;
+      alert('ログアウトしました');
+      this.$router.push('/login'); // ログインページへリダイレクト
+    },
     // ロゴをクリックした時にトップページに遷移
     goToHome() {
       this.$router.push("/");
     },
-
     // 依頼するボタンをクリックした時にTokoページに遷移
     goToToko() {
       this.$router.push("/Toko");
     },
-
-    // ログイン状態を切り替える
-    toggleLogin() {
-      this.isLoggedIn = !this.isLoggedIn;
-    },
-
-    // ログアウト処理（仮の処理）
-    logout() {
-      this.isLoggedIn = false;
-      alert("ログアウトしました");
-      this.$router.push("/");
-    },
   },
   components: {
     RealTimeClock,
-    PointHistory, // PointHistory コンポーネントをインポート
+    PointHistory,
   },
 };
 </script>
@@ -88,20 +106,13 @@ export default {
     </div>
   </header>
 
-  <!-- ポイント履歴（直接表示） -->
-  <div v-if="isLoggedIn" class="point-history">
+  <!-- ポイント履歴（ログイン済みの場合のみ表示） -->
+  <div v-if="isLoggedIn && user" class="point-history">
     <h3>現在の保有ポイント</h3>
-    <p>1000ポイント</p> <!-- 仮のポイント値 -->
+    <p>{{ user.points }}ポイント</p> <!-- 仮のポイント値 -->
 
     <h3>ポイント履歴</h3>
     <PointHistory /> <!-- ここでポイント履歴を直接表示 -->
-  </div>
-
-  <!-- テスト用のログイン切り替えボタン -->
-  <div>
-    <button class="btn2" @click="toggleLogin">
-      {{ isLoggedIn ? "ログイン状態をオフにする" : "ログイン状態をオンにする" }}
-    </button>
   </div>
 </template>
 
@@ -164,22 +175,6 @@ div button:hover {
   background-color: #ff8c00;
 }
 
-/* テスト用ボタンのスタイル */
-.btn2 {
-  font-family: "Zen Maru Gothic", serif;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.btn2:hover {
-  background-color: #0056b3;
-}
-
 /* ポイント履歴のスタイル */
 .point-history {
   margin-top: 20px;
@@ -197,22 +192,5 @@ div button:hover {
 .point-history p {
   font-size: 1.2rem;
   margin: 5px 0;
-}
-
-/* レスポンシブデザイン */
-@media (max-width: 768px) {
-  .nav {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  div {
-    flex-direction: column;
-  }
 }
 </style>
