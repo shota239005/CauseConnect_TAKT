@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\Prefectures;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;  // DBクラスをインポート
 use Illuminate\Support\Facades\Auth;
@@ -56,22 +57,7 @@ class Cause_ConnectController extends Controller
                 Log::error('Address ID is null.');
             }
 
-            // // 画像ファイルがアップロードされた場合
             $filePath = null;
-            // if ($request->hasFile('image'))
-            // {
-            //     $file = $request->file('image');                                    // アップロードされたファイルを取得
-
-            //     // ファイル名を生成する前に、アップロードされたファイルの情報をログに記録
-            //     Log::info('Uploading file: ' . $file->getClientOriginalName());
-            //     Log::info('File MIME type: ' . $file->getMimeType());
-            //     Log::info('File size: ' . $file->getSize() . ' bytes');
-
-            //     $fileName = uniqid() . '.' . $file->getClientOriginalExtension();   // 一意のファイル名を生成
-            //     $filePath = $file->storeAs('public/images', $fileName);             // 画像をストレージに保存
-
-            //     Log::info('File saved at path: ' . $filePath);
-            // }
 
             // ユーザー情報を登録
             User::create([
@@ -138,7 +124,6 @@ class Cause_ConnectController extends Controller
                     ]);
             }
 
-            // ログイン失敗の場合 (認証エラー)
             Log::warning('Login failed', [
                 'email' => $request->email,
                 'time' => now(),
@@ -170,7 +155,7 @@ class Cause_ConnectController extends Controller
     // ログアウト処理
     public function logout(Request $request)
     {
-        // 現在認証中のユーザーが持つすべてのトークンを削除
+        // 現在認証中のユーザーが持つトークンを削除
         $request->user()->tokens->each(function ($token) {
             $token->delete(); // トークンを削除
         });
@@ -178,4 +163,27 @@ class Cause_ConnectController extends Controller
         // ログアウト成功のレスポンス
         return response()->json(['message' => 'Logged out']);
     }
+
+    public function me(Request $request)
+    {
+        // リクエストに紐づく認証済みユーザーを取得
+        $authenticatedUser = $request->user();
+
+        Log::info('authenticatedUser: '. $authenticatedUser);
+
+        // データベースのユーザー情報を再取得
+        $user = User::with('address.prefectures') // addressとprefecture情報も一緒に取得
+        ->where('user_id', $authenticatedUser->user_id)
+        ->first();
+
+        Log::info('user'. $user);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // 照合後のユーザー情報を返す
+        return response()->json($user);
+    }
 }
+

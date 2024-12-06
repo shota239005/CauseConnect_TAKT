@@ -26,3 +26,5 @@ Route::post('/users', [Cause_ConnectController::class, 'store']);
 Route::post('/login', [Cause_ConnectController::class, 'login']);
 Route::get('/user', [Cause_ConnectController::class, 'getUser'])->middleware('auth:sanctum');
 Route::post('/logout', [Cause_ConnectController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/user/me', [Cause_ConnectController::class, 'me'])->middleware('auth:sanctum');
+
