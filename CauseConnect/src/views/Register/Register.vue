@@ -4,7 +4,8 @@ import { reactive, ref, onMounted } from 'vue'
 // axiosインスタンスをインポート
 // import apiClient from './axios'
 import apiClient from '@/axios'; // axios設定をインポート
-
+import { useRouter } from 'vue-router';  // vue-routerをインポート
+const router = useRouter();
 // 画像アップローダーコンポーネントをインポート（画像アップロードのため）
 // import PhotoUploader from '@/PhotoUploader.vue'
 
@@ -92,9 +93,12 @@ const submitForm = async () => {
 
     // 送信が成功した場合、メッセージを設定
     message.value = response.data.message || '登録が成功しました！'
-    resetUser() // 登録後、フォームの内容をリセット
+    resetUser(); // フォームリセット
+
+    // ホームページへ遷移
+    router.push({ name: "Home" });
+
     // 送信成功後に Home ページに遷移
-    //this.push('/'); // 適切なパスを指定
   } catch (error) {
     // 送信中にエラーが発生した場合
     console.error('登録処理中にエラーが発生しました:', error)
