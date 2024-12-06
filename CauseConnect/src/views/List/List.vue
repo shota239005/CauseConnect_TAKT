@@ -68,7 +68,7 @@ const resetFilters = () => {
 .search-container{
   width: 50%;
   margin-right: 190px;
-  margin-top: 0%;
+  margin-top: 10px;
   margin-bottom: 0%;
   padding: 0%;
 }
@@ -109,4 +109,5 @@ h1 {
   color: #999;
   text-align: center;
 }
+
 </style>

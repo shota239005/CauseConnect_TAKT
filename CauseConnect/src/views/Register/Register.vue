@@ -168,7 +168,7 @@ onMounted(() => {
         <div class="form-group-sex">
           <label for="sex">性別</label>
           <select id="sex" v-model="user.sex" required>
-            <option value="" disabled>性別を選択</option>
+            <option value="" disabled>性別</option>
             <option value="男性">男性</option>
             <option value="女性">女性</option>
             <option value="その他">その他</option>
@@ -188,14 +188,14 @@ onMounted(() => {
         <div class="form-group-todo">
           <label for="prefecture">都道府県</label>
           <select id="prefecture" v-model="user.prefecture" required>
-            <option value="" disabled>都道府県を選択</option>
+            <option value="" disabled>都道府県</option>
             <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
               {{ pref.pref }}
             </option>
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-post">
           <label for="post-code">郵便番号</label>
           <input type="text" id="post-code" v-model="user.post_code" placeholder="郵便番号を入力してください" required />
         </div>
@@ -215,10 +215,10 @@ onMounted(() => {
           <label for="intro">自己紹介</label>
           <textarea id="intro" v-model="user.intro" placeholder="自己紹介を記入してください" rows="5"></textarea>
         </div>
+        <button class="btn1"  type="submit">登録する</button>
       </div>
 
       <!-- 送信ボタン -->
-      <button class="btn1"  type="submit">登録する</button>
     </form>
 
     <p v-if="message" class="message">{{ message }}</p>
@@ -235,41 +235,53 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+form {
+  display: flex; /* 横並びを指定 */
+  justify-content: space-between; /* 子要素間のスペースを調整 */
+  flex-wrap: nowrap; /* 折り返しを防止 */
+  gap: 2%; /* 左右の間隔を調整 */
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .left-container,
 .right-container {
-  width: 49%; /* 横幅を50%以下にして間隔を確保 */
-  box-sizing: border-box; /* パディングやボーダーを含めた幅の計算 */
+  width: 48%; /* 両要素を横並びで収める */
+  box-sizing: border-box; /* パディングを含めた幅計算 */
 }
+
+
 
 h1 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-}
 
 .form-group {
   margin-bottom: 15px;
 }
 
 .form-group-b {
-width: 60%;
+width: 40%;
   margin-bottom: 15px;
 }
 
 .form-group-sex {
-width: 60%;
+width: 35%;
   margin-bottom: 15px;
 }
 
 .form-group-todo {
-width: 100%;
+width: 30%;
   margin-bottom: 15px;
 }
 
+.form-group-post {
+width: 20%;
+  margin-bottom: 15px;
+}
 
 label {
   display: block;
@@ -281,16 +293,31 @@ input,
 select,
 textarea {
   font-family: 'Zen Maru Gothic', serif;
-  width: 30%;
+  width: 100%; /* 各フォーム要素が親要素にフィット */
   padding: 8px;
   border: 1px solid #f7a400;
   border-radius: 4px;
 }
 
-
 .message {
   margin-top: 15px;
   color: green;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  form {
+    flex-direction: column; /* モバイルで縦並びに変更 */
+  }
+
+  .left-container,
+  .right-container {
+    width: 100%; /* モバイルで全幅を使う */
+  }
+}
+
+.btn1{
+  width: 102%;
+  color: #333;
 }
 </style>
