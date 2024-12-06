@@ -24,7 +24,6 @@ const handleApproval = (status) => {
 
 <template>
   <div class="progress-step3">
-    <h2>進行度3: 承認フェーズ</h2>
 
     <!-- 進行度2で提供されたデータの表示 -->
     <div class="data-section">

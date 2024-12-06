@@ -9,14 +9,14 @@ import axios from 'axios';
 
 // APIのベースURLを設定
 const apiClient = axios.create({
-  baseURL: 'http://172.16.3.136:8000/api',  // 環境変数を利用
+  baseURL: 'http://172.16.3.135:8000/api',  // 環境変数を利用
   headers: {
     'Content-Type': 'application/json',  // JSONデータ送信
   },
 });
 
 // リクエストインターセプターでトークンを自動的に追加
-apiClient.interceptors.request.use( 
+apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token'); // ローカルストレージからトークンを取得
     if (token) {

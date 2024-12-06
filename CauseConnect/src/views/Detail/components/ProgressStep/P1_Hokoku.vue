@@ -33,11 +33,10 @@ const handleCommentChange = (event, targetRef) => {
 
 <template>
   <div class="progress-step-container">
-    <h2>進行度 2: 実行報告内容</h2>
 
     <!-- 参加者写真とコメント -->
     <div class="section">
-      <h3>参加者の写真</h3>
+      <h3>依頼当日の集合写真</h3>
       <input type="file" @change="handlePhotoUpload($event, participantPhoto)" />
       <div v-if="participantPhoto">
         <img :src="participantPhoto" alt="参加者の写真" class="uploaded-photo" />
@@ -97,6 +96,7 @@ h2 {
 h3 {
   font-size: 18px;
   margin-bottom: 10px;
+  color: #333;
 }
 
 input[type="file"] {

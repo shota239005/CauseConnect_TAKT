@@ -109,7 +109,8 @@ export default {
   padding: 10px;
   border-radius: 8px;
   text-align: center;
-  color: #fff;
+  color: #333;
+  font-size: 30px;
 }
 
 .point-item.total {
@@ -134,10 +135,12 @@ export default {
   font-size: 1.2em;
   cursor: pointer;
   color: #333;
+  background-color: #f7a400
+  ;
 }
 
 .toggle-button:hover {
-  background-color: #f0f0f0;
+  background-color: #ff8c00;
 }
 
 .section {

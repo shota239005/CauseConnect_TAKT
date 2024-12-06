@@ -1,6 +1,5 @@
 <script>
 import RealTimeClock from './RealTimeClock.vue';
-import PointHistory from '@/views/Mypage/Component/PointHistory.vue';
 import apiClient from '@/axios'; // Axiosインスタンスをインポート
 
 export default {
@@ -52,7 +51,7 @@ export default {
   },
   components: {
     RealTimeClock,
-    PointHistory,
+    /*PointHistory,*/
   },
 };
 </script>
@@ -105,15 +104,6 @@ export default {
       <button class="btn1" @click="goToToko">依頼する</button>
     </div>
   </header>
-
-  <!-- ポイント履歴（ログイン済みの場合のみ表示） -->
-  <div v-if="isLoggedIn && user" class="point-history">
-    <h3>現在の保有ポイント</h3>
-    <p>{{ user.points }}ポイント</p> <!-- 仮のポイント値 -->
-
-    <h3>ポイント履歴</h3>
-    <PointHistory /> <!-- ここでポイント履歴を直接表示 -->
-  </div>
 </template>
 
 <style scoped>

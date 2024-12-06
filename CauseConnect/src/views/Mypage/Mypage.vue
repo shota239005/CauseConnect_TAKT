@@ -1,6 +1,9 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import apiClient from '@/axios'; // axiosインスタンスのインポート
+import PointHistory from './Component/PointHistory.vue';
+// ポイント履歴のサンプルデータ（サーバーから取得する場合、APIを使用）
+const currentPoints = ref(1200); // 現在の保有ポイント
 
 // ユーザーデータを格納する`reactive`オブジェクト
 const user = reactive({
@@ -67,6 +70,13 @@ onMounted(() => {
 <template>
   <div class="mypage-container">
     <h1>マイページ</h1>
+    <div>
+      <strong>
+        保有ポイント{{ currentPoints }}
+      </strong>
+      <PointHistory/>
+    </div>
+
 
     <!-- エラーメッセージが存在する場合に表示 -->
     <p v-if="message" class="message">{{ message }}</p>
@@ -81,11 +91,11 @@ onMounted(() => {
       <p><strong>電話番号:</strong> {{ user.tel }}</p>
       <p><strong>メールアドレス:</strong> {{ user.email }}</p>
       <p><strong>郵便番号:</strong> {{ user.address.post_code || '' }}</p>
-      <p><strong>都道府県:</strong> 
+      <p><strong>都道府県:</strong>
         {{ user.address.prefectures.pref || '' }}</p>
       <p><strong>住所:</strong>
-        {{ user.address.address1 || '' }} 
-        {{ user.address.address2 || '' }}</p> 
+        {{ user.address.address1 || '' }}
+        {{ user.address.address2 || '' }}</p>
       <p><strong>自己紹介:</strong> {{ user.intro }}</p>
     </div>
   </div>

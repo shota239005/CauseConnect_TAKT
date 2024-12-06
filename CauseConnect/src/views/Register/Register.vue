@@ -93,6 +93,8 @@ const submitForm = async () => {
     // 送信が成功した場合、メッセージを設定
     message.value = response.data.message || '登録が成功しました！'
     resetUser() // 登録後、フォームの内容をリセット
+    // 送信成功後に Home ページに遷移
+    this.push('/home'); // 適切なパスを指定
   } catch (error) {
     // 送信中にエラーが発生した場合
     console.error('登録処理中にエラーが発生しました:', error)

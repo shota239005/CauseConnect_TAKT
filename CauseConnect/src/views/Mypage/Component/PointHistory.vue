@@ -56,7 +56,7 @@ const togglePopup = () => {
 
       <!-- 現在の保有ポイント -->
       <div class="current-points">
-        <h3>現在の保有ポイント</h3>
+        <h2>現在の保有ポイント</h2>
         <p class="points-value">{{ currentPoints }} ポイント</p>
       </div>
 
@@ -159,16 +159,18 @@ const togglePopup = () => {
 
 /* ボタン */
 .show-history-button {
-  background-color: #4caf50;
+  background-color: #f7a400;
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
+  margin-left: 20px;
 }
 
 .show-history-button:hover {
-  background-color: #45a049;
+  background-color: #ffca5f
+;
 }
 </style>
