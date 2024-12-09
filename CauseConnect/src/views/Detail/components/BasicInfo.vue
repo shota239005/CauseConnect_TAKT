@@ -47,9 +47,13 @@ const request = {
     </div>
     <Map/>
     <div class="button-container">
-      <button class="syusshi" @click="Home">出資者で参加</button>
+      <RouterLink to="/">
+      <button class="syusshi" >出資者で参加</button>
+      </RouterLink>
       <p>どちらで参加しますか？</p>
-      <button class="jikko" id="jiko" @click="Home">実行者で参加</button>
+      <RouterLink to="/">
+        <button class="jikko" id="jiko" @click="Home">実行者で参加</button>
+      </RouterLink>
     </div>
 
   </div>

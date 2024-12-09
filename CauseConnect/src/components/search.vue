@@ -4,41 +4,40 @@ import apiClient from "@/axios"; // Axios設定をインポート
 
 export default {
   setup() {
-    // 選択状態を管理する変数
     const selectedPrefecture = ref("");
     const selectedArea = ref("");
     const selectedStatus = ref("");
 
-    // 都道府県と活動エリアのリスト
-    const prefectures = ref([]);
-    const areas = ref(["活動エリア▼", "道路", "山", "川", "海", "公園", "その他"]);
+    const prefectures = ref([]); // 都道府県データ
+    const areas = ref([]); // 活動エリアデータ
 
-    // 都道府県データを取得する関数
+    // 都道府県データを取得
     const fetchPrefectures = async () => {
       try {
-        // `/prefectures` APIエンドポイントからデータを取得
         const response = await apiClient.get("/prefectures");
-        prefectures.value = response.data; // データを`prefectures`に格納
+        prefectures.value = response.data;
       } catch (error) {
         console.error("都道府県データの取得に失敗しました:", error);
       }
     };
 
-    // `List.vue` にクエリ付きで遷移する関数
-    const navigateToList = () => {
-      const query = {
-        prefecture: selectedPrefecture.value || null,
-        area: selectedArea.value || null,
-        status: selectedStatus.value || null,
-      };
+    // 活動エリアデータを取得
 
-      // Vue Routerを使ってページ遷移
-      this.$router.push({ name: "List", query });
+    const fetchAreas = async () => {
+      try {
+        const response = await apiClient.get("/places");
+        console.log("取得したデータ:", response.data); // データをログに出力
+        areas.value = response.data;
+      } catch (error) {
+        console.error("データ取得失敗:", error);
+      }
     };
 
-    // コンポーネントがマウントされた時に都道府県を取得
+
+    // コンポーネントがマウントされた時にデータを取得
     onMounted(() => {
       fetchPrefectures();
+      fetchAreas();
     });
 
     return {
@@ -47,11 +46,11 @@ export default {
       selectedStatus,
       prefectures,
       areas,
-      navigateToList,
     };
   },
 };
 </script>
+
 
 <template>
   <div class="search-container">
@@ -59,9 +58,9 @@ export default {
       <!-- 都道府県プルダウン -->
       <div class="search-item">
         <select id="prefecture" v-model="selectedPrefecture">
-          <option value="" disabled selected hidden>都道府県▼</option>
-          <option v-for="pref in prefectures" :key="pref.id" :value="pref.name">
-            {{ pref.name }}
+          <option value="" disabled>都道府県▼</option>
+          <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
+            {{ pref.pref }}
           </option>
         </select>
       </div>
@@ -69,9 +68,9 @@ export default {
       <!-- 活動エリアプルダウン -->
       <div class="search-item">
         <select id="area" v-model="selectedArea">
-          <option value="" disabled selected hidden>活動エリア▼</option>
-          <option v-for="(area, index) in areas" :key="index" :value="area">
-            {{ area }}
+          <option value="" disabled>活動エリア▼</option>
+          <option v-for="area in areas" :key="area.area_id" :value="area.area_id">
+            {{ area.area }}
           </option>
         </select>
       </div>
@@ -79,7 +78,7 @@ export default {
       <!-- 募集状況プルダウン -->
       <div class="search-item">
         <select id="status" v-model="selectedStatus">
-          <option value="" disabled selected hidden>募集状況▼</option>
+          <option value="" disabled>募集状況▼</option>
           <option value="募集中">募集中</option>
           <option value="募集終了">募集終了</option>
           <option value="すべて">すべて</option>
@@ -110,7 +109,7 @@ export default {
 
 .search-row {
   display: flex;
-  justify-content:space-around;
+  justify-content: space-around;
   align-items: center;
   gap: 20px;
 }

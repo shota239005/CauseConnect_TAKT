@@ -55,9 +55,10 @@ const currentProgress = 2; // 仮の進行度データ（0:未着手、4:完了�
 }
 
 .search-container{
-  height: 10px;
-  margin-right: -40px;
-  margin-top: 0px;
-
+  width: 50%;
+  margin-right: 190px;
+  margin-top: 10px;
+  margin-bottom: 0%;
+  padding: 0%;
 }
 </style>
