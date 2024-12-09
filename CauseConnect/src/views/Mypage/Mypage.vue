@@ -38,15 +38,12 @@ const fetchUserData = async () => {
   }
 
   try {
-    // ユーザー情報を取得
     const response = await apiClient.get('/user/me', {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     const { data } = response;
     Object.assign(user, data);
-    
-    
 
     // 都道府県が取得されない場合の初期値
     if (!user.address || !user.address.prefectures) {
@@ -69,7 +66,52 @@ const fetchPrefectures = async () => {
   }
 };
 
-console.log();
+// ユーザーデータを更新
+const updateUserData = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      message.value = 'ログイン情報が見つかりません。再度ログインしてください。';
+      return;
+    }
+
+    const response = await apiClient.put('/user/update', user, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    message.value = 'ユーザー情報を更新しました。';
+    console.log('更新成功:', response.data);
+  } catch (error) {
+    console.error('ユーザーデータの更新に失敗しました:', error);
+    message.value = 'ユーザーデータの更新に失敗しました。';
+  }
+};
+
+// アカウント削除
+const deleteAccount = async () => {
+  if (!confirm('本当にアカウントを削除してもよろしいですか？')) {
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      message.value = 'ログイン情報が見つかりません。再度ログインしてください。';
+      return;
+    }
+
+    await apiClient.delete('/user/delete', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    message.value = 'アカウントが削除されました。';
+    localStorage.removeItem('token');
+    window.location.href = '/login'; // ログインページにリダイレクト
+  } catch (error) {
+    console.error('アカウント削除に失敗しました:', error);
+    message.value = 'アカウント削除に失敗しました。';
+  }
+};
 
 // 初期化
 onMounted(() => {
@@ -145,17 +187,10 @@ onMounted(() => {
       </div>
 
       <button type="submit">更新する</button>
+      <button type="button" @click="deleteAccount">アカウント削除</button>
     </form>
   </div>
 </template>
-
-
-
-
-
-
-
-
 
 
 <style scoped>
