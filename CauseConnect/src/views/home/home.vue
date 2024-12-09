@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router';  // vue-routerをインポート
 import Search from '@/components/search.vue';
 import Japan from '@/components/japan.vue';
 import ImageSlide from '@/views/Home/Component/ImageSlide.vue';
-import Juggler from '@/components/Juggler.vue';
 // 検索クエリを保持するためのref
 const searchQuery = ref('');
 const router = useRouter();
@@ -28,11 +27,6 @@ const searchRequests = () => {
     <ImageSlide/>
     <Japan/>
     <ImageSlide/>
-    <div>
-      <h1>おまけコーナー</h1>
-      <p>ここにはマル秘コンテンツが表示されています。</p>
-    </div>
-    <Juggler/>
   </div>
 </template>
 

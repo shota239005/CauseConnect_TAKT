@@ -134,7 +134,7 @@ export default {
   padding: 0.5rem;
   background-color: #f7a400;
   /* プルダウン内の背景をオレンジ色に設定 */
-  border: 1px solid #ccc;
+  border: 1px solid #f7a400;
   border-radius: 4px;
   color: rgb(255, 255, 255);
   /* テキスト色を白にする */
@@ -142,7 +142,9 @@ export default {
   /* ブラウザのデフォルトスタイルを無効化 */
   font-size: 25px;
   text-align: center;
-  box-shadow: 2px 2px #ccc;
+  box-shadow: 2px 2px #ff8c00
+
+  ;
 }
 
 .search-item select option {
@@ -163,7 +165,7 @@ export default {
   border-radius: 4px;
   font-size: 25px;
   text-align: center;
-  box-shadow: 2px 2px #ccc;
+  box-shadow: 2px 2px #ff8c00;
 
 }
 

@@ -62,6 +62,9 @@ export default {
     <div class="logo" @click="goToHome">
       <img src="../assets/CC_logo.png" />
     </div>
+
+    <RealTimeClock />
+
     <!-- ナビゲーションメニュー -->
     <nav class="nav-links">
       <router-link to="/">
@@ -73,7 +76,18 @@ export default {
       </router-link>
 
       <!-- ログイン状態に応じて表示切り替え -->
-      <div v-if="isLoggedIn">
+
+      <router-link to="/info">
+        <button class="btn1">当サイトについて</button>
+      </router-link>
+
+      <router-link to="/FAQ">
+        <button class="btn1">FAQ</button>
+      </router-link>
+
+
+
+    <div v-if="isLoggedIn">
         <router-link to="/mypage">
           <button class="btn1">マイページ</button>
         </router-link>
@@ -88,16 +102,8 @@ export default {
         </router-link>
       </div>
 
-      <router-link to="/info">
-        <button class="btn1">当サイトについて</button>
-      </router-link>
-
-      <router-link to="/FAQ">
-        <button class="btn1">FAQ</button>
-      </router-link>
     </nav>
 
-    <RealTimeClock />
 
     <!-- 依頼するボタン -->
     <div>

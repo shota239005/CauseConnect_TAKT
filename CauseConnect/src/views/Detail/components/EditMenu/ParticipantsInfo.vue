@@ -1,9 +1,9 @@
 <script setup>
 // 仮の参加者データ
 const participants = {
-  requester: '山田 太郎',
-  supporters: ['佐藤 花子', '鈴木 一郎', '田中 花子'],
-  executors: ['高橋 次郎', '中村 美咲'],
+  requester: 'タロー',
+  supporters: ['さっちゃん', 'タロー', 'がまかつ'],
+  executors: ['ガープ', 'ヒナ'],
 };
 </script>
 
