@@ -22,14 +22,17 @@ export default {
     };
 
     // 活動エリアデータを取得
+
     const fetchAreas = async () => {
       try {
-        const response = await apiClient.get("/places"); // `places` エンドポイントからデータ取得
-        areas.value = response.data; // データを `areas` に格納
+        const response = await apiClient.get("/places");
+        console.log("取得したデータ:", response.data); // データをログに出力
+        areas.value = response.data;
       } catch (error) {
-        console.error("活動エリアデータの取得に失敗しました:", error);
+        console.error("データ取得失敗:", error);
       }
     };
+
 
     // コンポーネントがマウントされた時にデータを取得
     onMounted(() => {
