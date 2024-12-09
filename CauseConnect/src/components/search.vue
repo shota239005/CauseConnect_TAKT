@@ -66,14 +66,6 @@ export default {
       </div>
 
       <!-- 活動エリアプルダウン -->
-      <!-- <div class="search-item">
-        <select id="area" v-model="selectedArea">
-          <option value="" disabled>活動エリア▼</option>
-          <option v-for="area in areas" :key="area.id" :value="area.id">
-            {{ area.name }}
-          </option>
-        </select>
-      </div> -->
       <div class="search-item">
         <select id="area" v-model="selectedArea">
           <option value="" disabled>活動エリア▼</option>
