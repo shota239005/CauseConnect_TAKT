@@ -1,5 +1,6 @@
 <script setup>
 import Navi from './components/Nav.vue'; // ナビゲーションバーコンポーネントをインポート
+import CopyLight from '@/components/CopyLight.vue';
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import Navi from './components/Nav.vue'; // ナビゲーションバーコンポ
       <router-view/> <!-- 遷移先のコンテンツが表示されます -->
 
     </div>
+    <CopyLight/>
 
   </template>
 

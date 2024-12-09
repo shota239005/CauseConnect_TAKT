@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 
-// 仮のデータ（進行度2で提供されたデータ）
 const providedData = ref({
   participantsPhoto: 'path_to_participants_photo.jpg',
   participantsComment: '参加者からのコメントがここに表示されます。',
@@ -13,10 +12,8 @@ const providedData = ref({
   afterExecutionComment: '実行後のコメントがここに表示されます。',
 });
 
-// 承認状態（仮の状態）
-const isApproved = ref(null); // null = 未選択, true = 承認, false = 非承認
+const isApproved = ref(null);
 
-// 承認・非承認ボタンの処理
 const handleApproval = (status) => {
   isApproved.value = status;
 };
@@ -24,8 +21,6 @@ const handleApproval = (status) => {
 
 <template>
   <div class="progress-step3">
-
-    <!-- 進行度2で提供されたデータの表示 -->
     <div class="data-section">
       <h3>参加者の写真とコメント</h3>
       <img :src="providedData.participantsPhoto" alt="参加者の写真" width="200" />
@@ -44,10 +39,17 @@ const handleApproval = (status) => {
       <p>{{ providedData.afterExecutionComment }}</p>
     </div>
 
-    <!-- 承認・非承認ボタン -->
     <div class="approval-buttons">
-      <button @click="handleApproval(true)" :class="{'active': isApproved === true}">承認</button>
-      <button @click="handleApproval(false)" :class="{'active': isApproved === false}">非承認</button>
+      <button class="btnNo"
+        @click="handleApproval(false)"
+        :class="{'selected': isApproved === false}">
+        非承認
+      </button>
+      <button class="btn1"
+        @click="handleApproval(true)"
+        :class="{'selected': isApproved === true}">
+        承認
+      </button>
     </div>
 
     <p v-if="isApproved !== null">
@@ -78,28 +80,47 @@ const handleApproval = (status) => {
 }
 
 .approval-buttons {
+  text-align: right;
   margin-top: 20px;
 }
 
 .approval-buttons button {
-  padding: 10px 20px;
   margin-right: 10px;
   cursor: pointer;
   border-radius: 4px;
-  background-color: #ffcb60;
   border: none;
 }
 
-.approval-buttons button:hover {
-  background-color: #feb626;
+.btnNo {
+  padding: 20px 40px;
+  color: #333;
+  font-size: 30px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn1{
+  padding: 20px 60px;
+  color: #333;
+  font-size: 30px;
+  font-weight: 500;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.approval-buttons .active {
-  background-color: #4caf50;
+
+.btn1:hover, .btn1.selected {
+  color: #333;
+  background-color: #ff8c00;
+  box-shadow: 0 0 0;
+  transform: translate(5px, 5px);
 }
 
-.approval-buttons button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.btnNo:hover, .btnNo.selected {
+  background-color: #4b2ddd;
+  color: #fff;
+  box-shadow: 0 0 0;
+  transform: translate(5px, 5px);
+}
+
+h3 {
+  color: #333;
 }
 </style>

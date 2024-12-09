@@ -19,7 +19,7 @@ export default {
 
 <template>
     <div class="map-url-form">
-      <label for="map-url">地図URLを入力</label>
+      <label for="map-url">GoogleMapのURLを入力すると、地図が表示されます。</label>
       <br>
       <input
         type="url"

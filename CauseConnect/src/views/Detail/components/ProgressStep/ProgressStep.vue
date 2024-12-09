@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import Chat from './Chat.vue';
 import Hokoku from './P1_Hokoku.vue';
 import Shonin from './P2_shonin.vue';
-import Review from './P4_Review.vue';
+import Review from './P3_Review.vue';
 
 // 進行度ごとのアコーディオンの開閉状態
 const isProgress1Open = ref(false);
