@@ -79,7 +79,7 @@ function formatAnswer(text) {
 <style scoped>
 .faq-container {
   padding: 20px;
-  max-width: 800px;
+  max-width: auto;
   margin: 0 auto;
   background-color: #f4f4f4;
 }
@@ -91,6 +91,7 @@ function formatAnswer(text) {
 }
 
 .faq-item {
+  padding: 20px 100px;
   border-bottom: 1px solid #ddd;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
