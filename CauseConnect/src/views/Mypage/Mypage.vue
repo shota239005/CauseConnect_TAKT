@@ -91,6 +91,8 @@ const updateUserData = async () => {
 
     message.value = 'ユーザー情報を更新しました。';
     console.log('更新成功:', response.data);
+    // 更新成功時にアラートを表示
+    alert('ユーザー情報が正常に更新されました！');
   } catch (error) {
 
     console.error('ユーザーデータの更新に失敗しました:', error);
