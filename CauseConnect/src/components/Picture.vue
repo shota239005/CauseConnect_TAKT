@@ -61,13 +61,3 @@ export default {
 };
 </script>
 
-<style>
-/* 見やすくするための画像スタイル */
-img {
-  max-width: 100%; /* コンテナ内で画像を縮小して表示 */
-  height: auto; /* アスペクト比を保つ */
-  margin-top: 10px;
-  border: 1px solid #ccc; /* 画像に薄い枠線 */
-  border-radius: 5px; /* 角を丸くしてデザインを向上 */
-}
-</style>
