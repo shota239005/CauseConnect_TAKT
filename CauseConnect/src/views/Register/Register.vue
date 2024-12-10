@@ -319,5 +319,7 @@ textarea {
 .btn1{
   width: 102%;
   color: #333;
+  font-size: 30px;
+  font-weight: 600;
 }
 </style>

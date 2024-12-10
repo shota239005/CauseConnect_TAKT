@@ -45,18 +45,18 @@ export default {
 <template>
   <div>
     <h1>ログインフォーム</h1>
-    <form @submit.prevent="login">
-      <div>
-        <label for="email">メールアドレス</label>
-        <input type="email" id="email" v-model="email" required />
-      </div>
-      <div>
-        <label for="password">パスワード</label>
-        <input type="password" id="password" v-model="password" required />
-      </div>
-      <button type="submit">ログイン</button>
-    </form>
-    <p v-if="error">{{ error }}</p>
+    <div class="formBox">
+      <form @submit.prevent="login">
+        <div>
+          <input type="email" id="email" v-model="email" placeholder="メールアドレスを入力" required />
+        </div>
+        <div>
+          <input type="password" id="password" v-model="password" placeholder="パスワードを入力" required />
+        </div>
+        <button class="btn1" type="submit">ログイン</button>
+      </form>
+      <p v-if="error">{{ error }}</p>
+    </div>
   </div>
 </template>
 
@@ -75,6 +75,14 @@ h1 {
   margin-bottom: 20px;
 }
 
+.formBox{
+  text-align: center;
+}
+
+.email{
+  padding: 20px 100px;
+}
+
 .form-group {
   margin-bottom: 20px;
 }
@@ -86,24 +94,19 @@ label {
 }
 
 input {
-  width: 100%;
+  width: 35%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 4px;
+  margin-bottom: 10px;
 }
 
-button.login-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #f7a400;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button.login-button:hover {
-  background-color: #ff8c00;
+.btn1{
+  margin-top: 10px;
+  padding: 8px 30px;
+  margin-right: 13px;
+  color: #333;
+  font-size: 20px;
 }
 
 .error-message {
