@@ -1,26 +1,25 @@
 <script setup>
 import axios from '@/axios'; // axios設定をインポート
-import MapURL from './components/mapURL.vue';
+import MapURL from './components/mapURL.vue'; // MapURLコンポーネントをインポート
 </script>
 
 <script>
 export default {
   data() {
     return {
-      requestPoints: '',
+      requestPoints: '', // 出資ポイント
       basicInfo: '', // 基本情報（フリー入力欄）
-      requestName: '',
-      requestCondition: '',
-      minPeople: 1,
-      maxPeople: 20,
-      activityDate: '',
-      hours: Array.from({ length: 24 }, (_, i) => i), // 0～23の時間配列
+      requestName: '', // 依頼名
+      requestCondition: '', // 依頼達成条件
+      minPeople: 1, // 下限人数
+      maxPeople: 20, // 上限人数
+      activityDate: '', // 活動日
       startTime: '0', // 開始時刻（デフォルト0時）
       endTime: '23', // 終了時刻（デフォルト23時）
-      prefecture: '',
-      address1: '',
-      address2: '',
-      equipmentNeeded: '無',
+      prefecture: '', // 都道府県ID（pref_id）
+      address1: '', // 住所1
+      address2: '', // 住所2
+      equipmentNeeded: '無', // 必要備品
       activityAreas: {
         road: false,
         mountain: false,
@@ -28,24 +27,24 @@ export default {
         sea: false,
         park: false,
         other: false,
-      },
+      }, // 活動エリア
       activityTheme: {
         regionalBeautification: false,
-      },
+      }, // 活動テーマ
       recommendedAge: {
         all: false,
         senior: false,
         adult: false,
         student: false,
         other: false,
-      },
+      }, // 推奨年齢
       features: {
         familyFriendly: false,
         beginnerFriendly: false,
         physical: false,
-      },
-      areaDetails: '', // エリア詳細（フリー入力欄）
-      requestDetails: '', // 依頼詳細（フリー入力欄）
+      }, // 特徴
+      areaDetails: '', // エリア詳細
+      requestDetails: '', // 依頼詳細
     };
   },
   methods: {
@@ -63,31 +62,40 @@ export default {
     },
     async submitRequest() {
       try {
+        // 必須フィールドのバリデーション
+        if (!this.requestName || !this.requestCondition || !this.activityDate) {
+          alert("依頼名、依頼達成条件、活動日は必須です");
+          return;
+        }
+
         // 入力データをまとめる
         const payload = {
-          requestPoints: this.requestPoints,
-          basicInfo: this.basicInfo,
-          requestName: this.requestName,
-          requestCondition: this.requestCondition,
-          minPeople: this.minPeople,
-          maxPeople: this.maxPeople,
-          activityDate: this.activityDate,
-          startTime: this.startTime,
-          endTime: this.endTime,
-          prefecture: this.prefecture,
-          address1: this.address1,
-          address2: this.address2,
-          equipmentNeeded: this.equipmentNeeded,
-          activityAreas: this.activityAreas,
-          activityTheme: this.activityTheme,
-          recommendedAge: this.recommendedAge,
-          features: this.features,
-          areaDetails: this.areaDetails,
-          requestDetails: this.requestDetails,
+          client_id: localStorage.getItem('user_id'), // 依頼者ID（ログインユーザーID）
+          case_name: this.requestName,
+          achieve: this.requestCondition,
+          lower_limit: this.minPeople,
+          upper_limit: this.maxPeople,
+          case_date: this.activityDate,
+          start_activty: this.startTime,
+          end_activty: this.endTime,
+          address_id: this.getAddressId(), // 正しい住所IDを送信
+          equipment: this.equipmentNeeded,
+          area_id: this.getActivityAreaId(), // 活動エリアID
+          theme_id: this.getActivityThemeId(), // 活動テーマID
+          rec_age_id: this.getRecommendedAgeId(), // 推奨年齢ID
+          feature_id: this.getFeatureId(), // 特徴ID
+          area_detail: this.areaDetails,
+          content: this.basicInfo,
+          contents: this.requestDetails,
+          state_id: 1, // 仮に初期進捗状況ID（例: 進行中）
         };
 
         // サーバーにPOSTリクエストを送信
-        const response = await axios.post('/request', payload);
+        const response = await axios.post('/api/request', payload, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // トークンを送信
+          },
+        });
 
         // 成功時のメッセージ
         alert('依頼が投稿されました！');
@@ -101,30 +109,83 @@ export default {
         }
       }
     },
+    // 住所IDを取得（例: 都道府県IDに基づいて住所IDを決定）
+    getAddressId() {
+      // 仮の住所IDマッピング。実際には住所IDを取得する方法を追加する必要があります
+      return this.prefecture || null;
+    },
+    getActivityAreaId() {
+      const selectedArea = Object.keys(this.activityAreas).find(
+        (key) => this.activityAreas[key]
+      );
+      const areaMap = {
+        road: 1,
+        mountain: 2,
+        river: 3,
+        sea: 4,
+        park: 5,
+        other: 6,
+      };
+      return areaMap[selectedArea] || null;
+    },
+    getActivityThemeId() {
+      const selectedTheme = Object.keys(this.activityTheme).find(
+        (key) => this.activityTheme[key]
+      );
+      const themeMap = {
+        regionalBeautification: 1,
+      };
+      return themeMap[selectedTheme] || null;
+    },
+    getRecommendedAgeId() {
+      const selectedAge = Object.keys(this.recommendedAge).find(
+        (key) => this.recommendedAge[key]
+      );
+      const ageMap = {
+        all: 1,
+        senior: 2,
+        adult: 3,
+        student: 4,
+        other: 5,
+      };
+      return ageMap[selectedAge] || null;
+    },
+    getFeatureId() {
+      const selectedFeature = Object.keys(this.features).find(
+        (key) => this.features[key]
+      );
+      const featureMap = {
+        familyFriendly: 1,
+        beginnerFriendly: 2,
+        physical: 3,
+      };
+      return featureMap[selectedFeature] || null;
+    },
   },
 };
 </script>
 
 
+ 
+ 
 <template>
   <div class="toko-page">
     <h1 class="page-title">依頼を投稿する</h1>
-
+ 
     <!-- フォーム -->
     <form @submit.prevent="submitRequest">
       <!-- 依頼ポイント -->
       <div class="form-group">
-
         <label for="request-points">依頼ポイント</label>
         <input id="request-points" v-model="requestPoints" placeholder="100" required>ポイント
       </div>
-
+ 
       <!-- 依頼名 -->
       <div class="form-group">
         <label for="request-name">依頼名</label>
         <input type="text" id="request-name" v-model="requestName" placeholder="依頼の名前を入力してください" required />
       </div>
-
+ 
       <!-- 募集人数 -->
       <div class="form-group">
         <label for="min-people">募集人数</label>
@@ -132,7 +193,7 @@ export default {
           <select id="min-people" v-model="minPeople">
             <option v-for="num in 20" :key="'min-' + num" :value="num">{{ num }}</option>
           </select>
-          ～
+          ～ 
           <select id="max-people" v-model="maxPeople">
             <option v-for="num in 20" :key="'max-' + num" :value="num">{{ num }}</option>
           </select>
@@ -152,10 +213,8 @@ export default {
         <div class="flex">
           <select id="start-time" v-model="startTime">
             <option v-for="hour in hours" :key="'start-' + hour" :value="hour">{{ hour }}時</option>
-
           </select>
-          ～
-
+          ～ 
           <select id="end-time" v-model="endTime">
             <option v-for="hour in hours" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
           </select>
@@ -276,6 +335,7 @@ export default {
         <label for="photo-upload-2">写真をアップロード2</label>
         <input type="file" id="photo-upload-2" @change="handleFileUpload2" accept="image/*" />
       </div>
+
       <MapURL />
 
       <!-- 送信ボタン -->
@@ -283,6 +343,8 @@ export default {
     </form>
   </div>
 </template>
+
+
 
 
 <style scoped>

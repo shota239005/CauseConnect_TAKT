@@ -72,19 +72,27 @@ const fetchPrefectures = async () => {
 // ユーザーデータを更新
 const updateUserData = async () => {
   try {
+    console.log("トークン取得開始");
     const token = localStorage.getItem('token');
+    console.log("トークン取得終了");
+
     if (!token) {
       message.value = 'ログイン情報が見つかりません。再度ログインしてください。';
       return;
     }
 
+    console.log("レスポンス取得開始");
+    console.log(user);
+
     const response = await apiClient.put('/user/update', user, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("レスポンス取得終了");
 
     message.value = 'ユーザー情報を更新しました。';
     console.log('更新成功:', response.data);
   } catch (error) {
+
     console.error('ユーザーデータの更新に失敗しました:', error);
     message.value = 'ユーザーデータの更新に失敗しました。';
   }
@@ -130,7 +138,7 @@ onMounted(() => {
       <strong>
         保有ポイント{{ currentPoints }}
       </strong>
-      <PointHistory/>
+      <PointHistory />
     </div>
 
 
@@ -173,12 +181,13 @@ onMounted(() => {
       </div>
       <div>
         <label for="prefectures">都道府県:</label>
-        <select id="prefectures" v-model="user.address.prefectures.pref">
-          <option v-for="pref in prefecture" :key="pref.pref_id" :value="pref.pref" :selected="pref.pref === user.address.prefectures.pref">
+        <select id="prefectures" v-model="user.address.prefectures.pref_id">
+          <option v-for="pref in prefecture" :key="pref.pref_id" :value="pref.pref_id">
             {{ pref.pref }}
           </option>
         </select>
       </div>
+
       <div>
         <label for="address1">住所1:</label>
         <input id="address1" v-model="user.address.address1" type="text" />
@@ -257,4 +266,3 @@ textarea {
   text-align: center;
 }
 </style>
-
