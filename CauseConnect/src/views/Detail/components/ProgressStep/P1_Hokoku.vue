@@ -29,6 +29,31 @@ const handlePhotoUpload = (event, targetRef) => {
 const handleCommentChange = (event, targetRef) => {
   targetRef.value = event.target.value;
 };
+
+// フォーム送信処理
+const handleSubmit = () => {
+  const formData = {
+    participant: {
+      photo: participantPhoto.value,
+      comment: participantComment.value,
+    },
+    location: {
+      photo: locationPhoto.value,
+      comment: locationComment.value,
+    },
+    before: {
+      photo: beforePhoto.value,
+      comment: beforeComment.value,
+    },
+    after: {
+      photo: afterPhoto.value,
+      comment: afterComment.value,
+    },
+  };
+  console.log("送信されたデータ:", formData);
+  alert("フォームが送信されました！");
+  // 必要に応じて、APIにデータを送信するコードを追加してください
+};
 </script>
 
 <template>
@@ -72,6 +97,11 @@ const handleCommentChange = (event, targetRef) => {
         <img :src="afterPhoto" alt="実行後の写真" class="uploaded-photo" />
       </div>
       <textarea v-model="afterComment" placeholder="実行後に関するコメントを入力してください"></textarea>
+    </div>
+
+    <!-- 送信ボタン -->
+    <div class="section-btn">
+      <button @click="handleSubmit" class="btn1">送信</button>
     </div>
   </div>
 </template>
@@ -119,4 +149,18 @@ textarea {
   resize: vertical;
   min-height: 100px;
 }
+
+.section-btn{
+  text-align: right;
+}
+
+.btn1{
+  padding: 20px 70px;
+  color: #333;
+  font-size: 30px;
+  font-weight: 500;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+
 </style>

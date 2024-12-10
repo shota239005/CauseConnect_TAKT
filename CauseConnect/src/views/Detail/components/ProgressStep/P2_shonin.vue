@@ -1,15 +1,19 @@
 <script setup>
 import { ref } from 'vue';
+import syugoImage from '@/assets/img/syugo.png';
+import basyoImage from '@/assets/img/basyo.png';
+import maeImage from '@/assets/img/mae.jpg';
+import atoImage from '@/assets/img/ato.png';
 
 const providedData = ref({
-  participantsPhoto: 'path_to_participants_photo.jpg',
-  participantsComment: '参加者からのコメントがここに表示されます。',
-  locationPhoto: 'path_to_location_photo.jpg',
-  locationComment: '依頼場所に関するコメントがここに表示されます。',
-  beforeExecutionPhoto: 'path_to_before_execution_photo.jpg',
-  beforeExecutionComment: '実行前のコメントがここに表示されます。',
-  afterExecutionPhoto: 'path_to_after_execution_photo.jpg',
-  afterExecutionComment: '実行後のコメントがここに表示されます。',
+  participantsPhoto: syugoImage,
+  participantsComment: '当日参加者達の写真です。',
+  locationPhoto: basyoImage,
+  locationComment: '依頼内容の場所です。',
+  beforeExecutionPhoto: maeImage,
+  beforeExecutionComment: '現状、たくさんのゴミがありました。',
+  afterExecutionPhoto: atoImage,
+  afterExecutionComment: '清掃後の写真です。',
 });
 
 const isApproved = ref(null);
@@ -59,6 +63,8 @@ const handleApproval = (status) => {
 </template>
 
 <style scoped>
+
+
 .progress-step3 {
   padding: 20px;
   background-color: #f9f9f9;
@@ -76,7 +82,7 @@ const handleApproval = (status) => {
 }
 
 .data-section img {
-  margin-bottom: 10px;
+  margin-bottom: -10px;
 }
 
 .approval-buttons {
@@ -122,5 +128,6 @@ const handleApproval = (status) => {
 
 h3 {
   color: #333;
+  margin-top: 40px;
 }
 </style>
