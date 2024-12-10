@@ -44,6 +44,7 @@ const handleApproval = (status) => {
     </div>
 
     <div class="approval-buttons">
+      <h2>※承認を押すとポイントが付与されます</h2>
       <button class="btnNo"
         @click="handleApproval(false)"
         :class="{'selected': isApproved === false}">
