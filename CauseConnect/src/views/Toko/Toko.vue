@@ -19,6 +19,8 @@ export default {
       prefecture: '', // 都道府県ID（pref_id）
       address1: '', // 住所1
       address2: '', // 住所2
+      Participation: '無', // 参加
+
       equipmentNeeded: '無', // 必要備品
       activityAreas: {
         road: false,
@@ -238,6 +240,23 @@ export default {
           <input type="text" id="address2" v-model="address2" placeholder="住所2" />
         </div>
       </div>
+      
+
+      <!-- 実行も参加 -->
+      <div class="form-group">
+        <label class="inline-label">当日参加</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" value="可" v-model="Participation" />
+            可
+          </label>
+          <label class="radio-label">
+            <input type="radio" value="不可" v-model="Participation" />
+            不可
+          </label>
+        </div>
+      </div>
+
 
       <!-- 必要備品 -->
       <div class="form-group">
