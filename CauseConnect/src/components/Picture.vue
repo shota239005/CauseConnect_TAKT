@@ -17,6 +17,7 @@ export default {
     // ファイル選択時の処理
     onFileChange(event) {
       this.selectedFile = event.target.files[0];
+      console.log('選択されたファイル:', this.selectedFile); // ファイル確認ログ
     },
 
     // 画像アップロード処理
@@ -31,16 +32,32 @@ export default {
       formData.append('picture_type', this.pictureType);
       formData.append('picture', this.selectedFile);
 
+      // フォームデータのログを表示
+      console.log('アップロードするデータ:');
+      console.log('Case ID:', this.caseId);
+      console.log('Picture Type:', this.pictureType);
+      console.log('選択されたファイル:', this.selectedFile);
+
       try {
         const response = await apiClient.post('/images', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
+        console.log('アップロード成功:', response); // 成功時のレスポンスログ
         this.uploadedImageUrl = response.data.url; // サーバーが返した画像URL
         alert('画像が正常にアップロードされました。');
       } catch (error) {
         console.error('画像のアップロードに失敗しました:', error);
+        if (error.response) {
+          console.error('レスポンスデータ:', error.response.data);
+          console.error('ステータスコード:', error.response.status);
+          console.error('ヘッダー:', error.response.headers);
+        } else if (error.request) {
+          console.error('リクエストエラー:', error.request);
+        } else {
+          console.error('エラー詳細:', error.message);
+        }
         alert('画像のアップロードに失敗しました。');
       }
     },
@@ -52,15 +69,31 @@ export default {
         return;
       }
 
+      // リクエスト前のデータログ
+      console.log('取得リクエストデータ:');
+      console.log('Fetch Case ID:', this.fetchCaseId);
+      console.log('Fetch Picture Type:', this.fetchPictureType);
+
       try {
         const response = await apiClient.get(`/images/${this.fetchCaseId}/${this.fetchPictureType}`, {
           responseType: 'blob',
         });
+        console.log('取得成功:', response); // 成功時のレスポンスログ
         const url = URL.createObjectURL(response.data);
+        console.log('生成されたBlob URL:', url); // Blob URLを確認
         this.fetchedImageUrl = url;
         alert('画像を正常に取得しました。');
       } catch (error) {
         console.error('画像の取得に失敗しました:', error);
+        if (error.response) {
+          console.error('レスポンスデータ:', error.response.data);
+          console.error('ステータスコード:', error.response.status);
+          console.error('ヘッダー:', error.response.headers);
+        } else if (error.request) {
+          console.error('リクエストエラー:', error.request);
+        } else {
+          console.error('エラー詳細:', error.message);
+        }
         alert('画像の取得に失敗しました。');
       }
     },
