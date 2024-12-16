@@ -44,7 +44,10 @@ export default {
 
 <template>
   <div>
-    <h1>ログインフォーム</h1>
+    <div class="title">
+      <h1>ログインフォーム</h1>
+    </div>
+
     <div class="formBox">
       <form @submit.prevent="login">
         <div>
@@ -68,6 +71,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
+  text-align: center; /* コンテンツを中央揃え */
 }
 
 h1 {

@@ -26,9 +26,6 @@ html, body {
   height: 100%;
 }
 
-.yt{
-  display: flex;
-}
 
   /* 必要に応じてスタイルを追加 */
   </style>
