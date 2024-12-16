@@ -1,8 +1,10 @@
 <script>
+import { ref } from 'vue';
 import ParticipantsInfo from "./EditMenu/ParticipantsInfo.vue";
 import RequesterMenu from "./EditMenu/RequesterMenu.vue";
 import ContributorMenu from "./EditMenu/ContributorMenu.vue";
 import ExecutorMenu from "./EditMenu/ExecutorMenu.vue";
+
 
 export default {
   name: "EditMenu",
@@ -18,11 +20,25 @@ export default {
       isRequesterMenuVisible: true,
       isContributorMenuVisible: true,
       isExecutorMenuVisible: true,
+      totalPoints: 0, // 総額を保持するデータ
+      executorsCount: 0, // 実行者人数を保持するデータ
     };
+  },
+  computed: {
+    rewardPerPerson() {
+      // 実行者人数が0でない場合、報酬/人を計算
+      return this.executorsCount > 0 ? (this.totalPoints / this.executorsCount).toFixed(0) : 0;
+    },
   },
   methods: {
     toggleSection(section) {
       this[section] = !this[section];
+    },
+    updateTotalPoints(newTotalPoints) {
+      this.totalPoints = newTotalPoints; // 親コンポーネントでポイント更新
+    },
+    updateExecutors(newExecutorsCount) {
+      this.executorsCount = newExecutorsCount; // 実行者人数を更新
     },
   },
 };
@@ -36,11 +52,11 @@ export default {
       <div class="points-container">
         <div class="point-item total">
           <p>総額</p>
-          <p>800P</p>
+          <p>{{ totalPoints }}P</p> <!-- 総額を表示 -->
         </div>
-        <div class="point-item per-person">
-          <p>1人当たり</p>
-          <p>200P</p>
+        <div class="point-item per-person" :style="{ backgroundColor: rewardColor }">
+          <p>報酬/人</p>
+          <p>{{ rewardPerPerson }}P</p> <!-- 切り捨てられた報酬/人 -->
         </div>
       </div>
     </div>
@@ -50,7 +66,10 @@ export default {
       <button class="toggle-button" @click="toggleSection('isParticipantsInfoVisible')">
         参加者一覧 {{ isParticipantsInfoVisible ? '▲' : '▼' }}
       </button>
-      <ParticipantsInfo v-if="isParticipantsInfoVisible" />
+      <ParticipantsInfo
+        v-if="isParticipantsInfoVisible"
+        @updatePoints="updateTotalPoints"
+        @updateExecutors="updateExecutors" /> <!-- 参加者情報の更新を受け取る -->
     </div>
 
     <!-- メニュー -->

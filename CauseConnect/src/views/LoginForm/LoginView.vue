@@ -1,6 +1,5 @@
 <script>
 import apiClient from '@/axios'; // axiosインスタンスのインポート
-import UserProfile from './components/UserProfile.vue';
 
 export default {
   data() {
@@ -22,8 +21,9 @@ export default {
         // トークンをローカルストレージに保存
         localStorage.setItem('token', response.data.token);
 
-        // ログイン成功後、ダッシュボードへリダイレクト
-        this.$router.push('/');
+        // ページをリダイレクト（ページ全体をリロードして遷移）
+        window.location.href = '/'; // ホームページ（または任意のURL）にリダイレクト
+
       } catch (err) {
         // エラーハンドリング強化：レスポンスがない場合やリクエストが失敗した場合の対処
         if (err.response) {
@@ -58,7 +58,7 @@ export default {
         </div>
         <button class="btn1" type="submit">ログイン</button>
       </form>
-      <p v-if="error">{{ error }}</p>
+      <p v-if="error" class="error-message">{{ error }}</p>
     </div>
   </div>
 </template>

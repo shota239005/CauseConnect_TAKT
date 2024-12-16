@@ -2,36 +2,28 @@
 import { ref } from 'vue';
 
 const participants = ref([
-  { id: 1, name: 'さっちゃん', review: null },
-  { id: 2, name: 'がまかつ', review: null },
-  { id: 3, name: 'ガープ', review: null },
-  { id: 4, name: 'ヒナ', review: null }
+  { id: 1, name: 'さっちゃん', review: 0 },
+  { id: 2, name: 'がまかつ', review: 0 },
+  { id: 3, name: 'ガープ', review: 0 },
+  { id: 4, name: 'ヒナ', review: 0 },
 ]);
 
 const isConfirmed = ref(false);
 
-const updateReview = (participantId, review) => {
+const updateReview = (participantId, stars) => {
   const participant = participants.value.find(p => p.id === participantId);
   if (participant) {
-    participant.review = review;
+    participant.review = stars;
   }
 };
 
 const confirmReviews = () => {
-  const allReviewed = participants.value.every(p => p.review !== null);
+  const allReviewed = participants.value.every(p => p.review > 0);
   if (allReviewed) {
     isConfirmed.value = true;
     alert('レビューが確定しました');
   } else {
     alert('すべての参加者のレビューを選択してください');
-  }
-};
-
-const isClicked = ref(false); // クリック状態を管理
-
-const handleButtonClick = () => {
-  if (!isConfirmed.value) {
-    isClicked.value = true; // ボタンがクリックされた状態にする
   }
 };
 </script>
@@ -42,29 +34,23 @@ const handleButtonClick = () => {
 
     <div v-for="participant in participants" :key="participant.id" class="participant">
       <h4>{{ participant.name }}</h4>
-      <div class="review-buttons">
-        <button
-          class="btn1"
-          @click="updateReview(participant.id, 'good')"
-          :class="{ selected: participant.review === 'good' }"
+      <div class="star-rating">
+        <span
+          v-for="star in 5"
+          :key="star"
+          class="star"
+          :class="{ selected: star <= participant.review }"
+          @click="updateReview(participant.id, star)"
         >
-          よかった！
-        </button>
-        <button
-          class="btnNo"
-          @click="updateReview(participant.id, 'bad')"
-          :class="{ selected: participant.review === 'bad' }"
-        >
-          う～ん
-        </button>
+          ★
+        </span>
       </div>
     </div>
 
     <div class="check">
       <button
         class="check-btn"
-        @click="() => { handleButtonClick(); confirmReviews(); }"
-        :class="{ clicked: isClicked }"
+        @click="confirmReviews"
         :disabled="isConfirmed"
       >
         確定
@@ -86,29 +72,20 @@ const handleButtonClick = () => {
   margin-bottom: 20px;
 }
 
-.btn1,.btnNo {
-  color: #333;
-  font-size: 20px;
-  font-weight: 900;
-}
-.review-buttons {
+.star-rating {
   display: flex;
-  gap: 10px;
+  gap: 5px;
+  cursor: pointer;
 }
 
-.btn1.selected {
-  color: #333;
-  background-color: #ff8c00;
-  box-shadow: 0 0 0;
-  transform: translate(5px, 5px);
+.star {
+  font-size: 24px;
+  color: #ccc;
+  transition: color 0.3s;
 }
 
-.btnNo.selected {
-  background-color: #4b2ddd;
-  color: #fff;
-  box-shadow: 0 0 0;
-  transform: translate(5px, 5px);
-
+.star.selected {
+  color: #ffc107;
 }
 
 .check {
@@ -116,24 +93,23 @@ const handleButtonClick = () => {
 }
 
 .check-btn {
-  font-family: "Zen Maru Gothic", serif;
-  text-align: right;
   background-color: #ffcb60;
   color: #333;
   border: none;
-  padding: 20px 70px;
-  font-size: 40px;
+  padding: 10px 30px;
+  font-size: 18px;
   cursor: pointer;
   border-radius: 5px;
   transition: 0.3s ease-in-out;
-  box-shadow: 5px 5px 0 #ff8c00;
 }
 
-.check-btn.clicked, /* クリックされたときのスタイル */
-.check-btn:hover {
-  color: #333;
-  background-color: #ff8c00;
-  box-shadow: 0 0 0;
-  transform: translate(5px, 5px);
+.check-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.confirmation-message {
+  color: green;
+  font-weight: bold;
 }
 </style>

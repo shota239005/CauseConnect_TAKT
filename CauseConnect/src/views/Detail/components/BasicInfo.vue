@@ -127,7 +127,7 @@ strong {
   color: #333;
   margin-left: 20px; /* 余白をリセット */
   white-space: nowrap; /* 自動改行を防ぐ */
-  font-size: 30px; /* フォントサイズを調整 */
+  font-size: 26px; /* フォントサイズを調整 */
 }
 
 .syusshi,

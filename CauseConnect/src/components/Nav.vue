@@ -1,4 +1,5 @@
 <script>
+import { ref } from 'vue';
 import RealTimeClock from './RealTimeClock.vue';
 import apiClient from '@/axios'; // Axiosインスタンスをインポート
 import HamburgerMenu from './HamburgerMenu.vue';
@@ -44,7 +45,7 @@ export default {
       this.isLoggedIn = false;
       this.user = null;
       alert('ログアウトしました');
-      this.$router.push('/login'); // ログインページへリダイレクト
+      this.$router.push('/'); // ログインページへリダイレクト
     },
     // ロゴをクリックした時にトップページに遷移
     goToHome() {
@@ -106,7 +107,7 @@ export default {
         <button class="btn1">依頼一覧</button>
       </router-link>
 
-      <button class="btn1" @click="openFavoModal">お気に入り一覧</button> <!-- 変更点 -->
+      <button class="btn1" @click="openFavoModal">お気に入り一覧</button>
 
       <router-link to="/FAQ">
         <button class="btn1">FAQ</button>
@@ -193,7 +194,6 @@ export default {
 
 /* 依頼するボタンのスタイル */
 div {
-  /*display: inline-flex;*/
   align-items: center;
   gap: 10px;
 }
@@ -233,40 +233,38 @@ div button:hover {
   border-radius: 8px;
   flex-direction: column;
   align-items: center;
-  width: 90%; /* 画面幅の90%に調整 */
-  max-width: 500px; /* モーダルの最大幅を600pxに制限 */
+  width: 90%;
+  max-width: 500px; /* モーダルの最大幅を500pxに制限 */
   max-height: 700px; /* 高さを画面の90%以内に調整 */
   overflow-y: auto; /* コンテンツが多い場合スクロール */
 }
 
-
-
 /* 閉じるボタンのスタイル（右上に配置） */
 .close-btn {
-  position: absolute; /* 絶対位置に変更 */
-  top: 5px; /* 上から10px */
-  right: 10px; /* 右から10px */
-  font-size: 60px; /* 「×」のサイズを調整 */
-  background-color: transparent; /* 背景を透明に */
-  color: #333; /* 初期文字色 */
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 60px;
+  background-color: transparent;
+  color: #333;
   border: none;
   padding: 0;
   cursor: pointer;
 }
 
 .close-btn:hover {
-  color: #ff0000; /* ホバー時に文字色のみ変わる */
-  background-color: transparent; /* 背景色は変更しない */}
+  color: #ff0000;
+  background-color: transparent;
+}
 
 /* スマホサイズでの表示調整 */
 @media (max-width: 844px) {
-  .nav-links, /* ナビゲーションリンクを非表示 */
+  .nav-links,
   .logo,
   .real-time-clock {
     display: none;
   }
 
-  /* 必要な要素のみ表示 */
   .hamburger-menu,
   .auth-buttons,
   .request-button {
