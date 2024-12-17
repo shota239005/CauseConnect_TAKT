@@ -1,23 +1,3 @@
-<template>
-  <div class="slider-container" @mouseenter="pauseSlide" @mouseleave="resumeSlide">
-    <!-- 無限スクロール用スライド -->
-    <div class="slides-wrapper">
-      <div
-        v-for="(slide, index) in slides"
-        :key="index"
-        class="slide"
-        @click="navigateToPage(slide)"
-      >
-        <div class="slide-content">
-          <img :src="slide.image" alt="slide image" class="slide-image" />
-          <h2>{{ slide.title }}</h2>
-          <p>{{ slide.description }}</p>
-          <p>現在の総額ポイント：８００P</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
 
 <script>
 import p1Img from '@/assets/img/basyo.png';
@@ -55,12 +35,34 @@ export default {
 };
 </script>
 
+<template>
+  <div class="slider-container" @mouseenter="pauseSlide" @mouseleave="resumeSlide">
+    <!-- 無限スクロール用スライド -->
+    <div class="slides-wrapper">
+      <div
+        v-for="(slide, index) in slides"
+        :key="index"
+        class="slide"
+        @click="navigateToPage(slide)"
+      >
+        <div class="slide-content">
+          <img :src="slide.image" alt="slide image" class="slide-image" />
+          <h2>{{ slide.title }}</h2>
+          <p>{{ slide.description }}</p>
+          <p>現在の総額ポイント：８００P</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 
 <style scoped>
 .slider-container {
   position: relative;
   width: 100%;
   height: 400px;
+  margin-bottom: 40px;
 }
 
 .slides-wrapper {
