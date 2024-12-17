@@ -28,38 +28,38 @@ export default {
         placeholder="地図のURLを入力してください"
         required
       />
-      <!--<button @click="showMap">地図を表示</button>-->
+      <button @click="showMap">地図を表示</button>
 
-      <div v-if="mapUrl" class="map-preview">
+<div v-if="mapUrl" class="map-preview">
         <iframe :src="mapUrl" width="858px" height="400px" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </div>
     </div>
   </template>
 
+<style scoped>
+#map-url {
+  width: 838px;
+}
 
-  <style scoped>
-  #map-url{
-    width: 838px;
-  }
-  .map-url-form {
-    font-family: "Zen Maru Gothic", serif;
-    margin-top: 20px;
-  }
+.map-url-form {
+  font-family: "Zen Maru Gothic", serif;
+  margin-top: 20px;
+}
 
-  .map-url-form label {
-    font-weight: bold;
-  }
+.map-url-form label {
+  font-weight: bold;
+}
 
-  .map-url-form input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+.map-url-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  .map-preview iframe {
-    margin-top: 20px;
-    border-radius: 5px;
-  }
-  </style>
+.map-preview iframe {
+  margin-top: 20px;
+  border-radius: 5px;
+}
+</style>
