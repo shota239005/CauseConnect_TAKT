@@ -19,6 +19,7 @@ const request = reactive({
   address2: '', // 住所2
   participation: '', //依頼者参加
   equipmentNeeded: '無', // 必要備品
+  // areaDetails: '', // Google Map URLを追加
 });
 
 // 都道府県リストを格納するref変数
@@ -31,6 +32,8 @@ const recommendedAges = ref([]); // 推奨年齢データを格納
 const selectedAges = ref([]); // 選択された推奨年齢IDを格納
 const features = ref([]); // 特徴データを格納する変数
 const selectedFeatures = ref([]); // 選択された特徴IDを格納
+// const mapUrl = ref(); // Map URLの値を管理するref
+
 
 // フィードバックメッセージを格納するref変数
 const message = ref('');
@@ -49,11 +52,10 @@ const fetchUserData = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const userId = response.data.id;  // ユーザーIDを取得
-    // 必要であれば、その他のユーザー情報も取得
 
     // ユーザー情報をrequestオブジェクトにセットする
-    request.user_id = userId;  // ユーザーIDをrequestに設定
+    request.user_id = response.data.id;
+
 
   } catch (error) {
     console.error('ユーザーデータの取得に失敗しました:', error);
@@ -113,6 +115,12 @@ const fetchFeatures = async () => {
   }
 };
 
+//Google Map URLを追加
+// const props = defineProps({
+//   url: String,
+// });
+
+
 
 const submitRequest = async () => {
   try {
@@ -154,7 +162,7 @@ const submitRequest = async () => {
       client_id: userId,  // トークンで取得したユーザーIDを使用
       case_name: request.requestName,  // 依頼名
       achieve: request.requestCondition, // 依頼達成条件
-      aria_detail: request.areaDetails, //エリア詳細
+      area_detail: request.areaDetails, //エリア詳細
       lower_limit: request.minPeople, // 下限人数
       upper_limit: request.maxPeople, // 上限人数
       exec_date: request.activityDate, // 活動日
@@ -172,6 +180,7 @@ const submitRequest = async () => {
       content: request.basicInfo, // 内容(基本情報)
       contents: request.requestDetails, // 内容(依頼詳細)
       state_id: 1, // 仮の進捗状況ID
+      // map_url: mapUrl.value, // Google Map URLを追加
     };
 
     // デバッグ用ログ
@@ -399,7 +408,7 @@ onMounted(() => {
         <input type="file" id="photo-upload-2" @change="handleFileUpload2" accept="image/*" />
       </div>
 
-      <MapURL />
+      <MapURL :url="mapUrl" />
 
       <!-- 送信ボタン -->
       <button type="submit" class="btn1">投稿する</button>
