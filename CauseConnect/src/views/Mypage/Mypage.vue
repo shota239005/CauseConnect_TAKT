@@ -4,6 +4,7 @@ import apiClient from '@/axios'; // axiosインスタンスのインポート
 import PointHistory from './Component/PointHistory.vue';
 // ポイント履歴のサンプルデータ（サーバーから取得する場合、APIを使用）
 const currentPoints = ref(1200); // 現在の保有ポイント
+import PhotoUploader from './Component/PhotoUploader.vue';
 
 // ユーザーデータ
 const user = reactive({
@@ -141,6 +142,7 @@ onMounted(() => {
         保有ポイント{{ currentPoints }}
       </strong>
       <PointHistory />
+      <PhotoUploader/>
     </div>
 
 
