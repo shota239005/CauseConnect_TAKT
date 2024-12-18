@@ -1,3 +1,6 @@
+<!--ゴールとして、それぞれの参加者をクリックすると、
+その参加者のプロフィールを閲覧できたらいいね-->
+
 <script setup>
 import { defineEmits } from 'vue';
 
@@ -59,8 +62,6 @@ emit('updateExecutors', executorsCount);
 
 <style scoped>
 .participants-info {
-  padding: 15px;
-  border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
   width: 100%;

@@ -49,7 +49,7 @@ const confirmReviews = () => {
 
     <div class="check">
       <button
-        class="check-btn"
+        class="btn1"
         @click="confirmReviews"
         :disabled="isConfirmed"
       >
@@ -92,16 +92,12 @@ const confirmReviews = () => {
   text-align: right;
 }
 
-.check-btn {
-  background-color: #ffcb60;
+.btn1{
+  width: 190px;
+  font-size: 30px;
   color: #333;
-  border: none;
-  padding: 10px 30px;
-  font-size: 18px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: 0.3s ease-in-out;
 }
+
 
 .check-btn:disabled {
   background-color: #ccc;

@@ -20,7 +20,8 @@
 
 .footer{
   margin-top: 20px;
-  background-color:#f7a400;
+  background-color:#333;
+  color: #f7a400;
   text-align: center;
 }
 </style>

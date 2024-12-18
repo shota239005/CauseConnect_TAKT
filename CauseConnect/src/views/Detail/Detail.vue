@@ -1,5 +1,5 @@
 <script setup>
-import BasicInfo from './components/BasicInfo.vue';
+import BasicInfo from './components/BasicInfo/BasicInfo.vue';
 import Editmenu from './components/Editmenu.vue';
 import ProgressStep from './components/ProgressStep/ProgressStep.vue';
 import search from '@/components/search.vue';
