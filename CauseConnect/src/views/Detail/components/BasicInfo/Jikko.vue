@@ -11,6 +11,7 @@ const handleClose = () => {
 
 // 確定ボタンのクリック処理
 const handleConfirm = () => {
+  alert('実行者として参加しました！チャットで挨拶のコメントをしてみましょう！');
   emit('close'); // 確定後、ポップアップを閉じる
 };
 </script>
@@ -20,7 +21,7 @@ const handleConfirm = () => {
   <div class="overlay" @click="handleClose">
     <!-- ポップアップコンテンツ -->
     <div class="jikko-popup" @click.stop>
-      <h1>実行者で参加するで間違いないですか？</h1>
+      <h1>"実行者で参加する"で間違いないですか？</h1>
       <div class="button-container">
         <button class="close-button" @click="handleClose">キャンセル</button>
         <button class="jikko" @click="handleConfirm">確定</button>
@@ -87,7 +88,6 @@ h1 {
 .jikko{
   padding: 20px 40px;
 }
-
 
 .close-button:hover {
   background-color: #d32f2f;

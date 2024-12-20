@@ -8,7 +8,6 @@ export default {
   <div class="menu-category">
     <h4>依頼者</h4>
     <ul>
-      <li>・依頼内容を編集</li>
       <li>・依頼ポイントを追加</li>
       <li>・依頼を削除</li>
       <li>・メンバー管理</li>
