@@ -26,11 +26,20 @@ export default {
     <nav :class="{ 'menu-open': isOpen }" class="menu">
       <ul>
         <router-link to="/">
-        <li><a @click="goToHome">Home</a></li>
+          <li><a @click="goToHome">ホーム</a></li>
         </router-link>
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <router-link to="/list">
+          <li><a href="#about">依頼一覧</a></li>
+        </router-link>
+        <router-link to="/login">
+          <li><a href="#services">ログイン</a></li>
+        </router-link>
+        <router-link to="/FAQ">
+          <li><a href="#contact">FAQ</a></li>
+        </router-link>
+        <router-link to="/info">
+          <li><a href="#contact">当サイト/新規登録</a></li>
+        </router-link>
       </ul>
     </nav>
   </div>
@@ -94,6 +103,7 @@ export default {
 }
 
 .menu ul {
+  text-align: center;
   list-style: none;
   padding: 0;
   margin: 0;

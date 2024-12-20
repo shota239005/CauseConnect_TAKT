@@ -45,7 +45,7 @@ const requests = ref([
 <style scoped>
 .request-list {
   margin-left: 20px;
-  margin-right: -10px;
+  margin-right: -0px;
 }
 .request-item {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
