@@ -120,8 +120,6 @@ const fetchFeatures = async () => {
 //   url: String,
 // });
 
-
-
 const submitRequest = async () => {
   try {
     // 必須フィールドのバリデーション
