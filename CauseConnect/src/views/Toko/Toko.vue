@@ -2,7 +2,7 @@
 import apiClient from '@/axios'; // axios設定をインポート
 import { reactive, ref, onMounted } from 'vue'; // Vueのreactiveとrefをインポート
 import MapURL from './components/mapURL.vue'; // MapURLコンポーネントをインポート
-
+import PhotoUploaderGroup from "./components/PhotoUploaderGroup.vue";
 // 初期状態の依頼データを格納するreactiveオブジェクト
 const request = reactive({
   requestPoints: '', // 出資ポイント
@@ -20,7 +20,17 @@ const request = reactive({
   participation: '', //依頼者参加
   equipmentNeeded: '無', // 必要備品
   // areaDetails: '', // Google Map URLを追加
+  caseId: null, // 投稿後にセットされる依頼ID
 });
+// アップロードされた写真を格納
+const uploadedPhotos = reactive({});
+
+// 写真アップロード設定
+const photoUploaders = ref([
+  { pictureType: 1, label: "基本情報の写真" },
+  { pictureType: 2, label: "依頼詳細の写真" },
+]);
+
 
 // 都道府県リストを格納するref変数
 const prefectures = ref([]);
@@ -34,6 +44,13 @@ const features = ref([]); // 特徴データを格納する変数
 const selectedFeatures = ref([]); // 選択された特徴IDを格納
 // const mapUrl = ref(); // Map URLの値を管理するref
 
+// 写真アップロード更新処理
+const handlePhotosUpdated = ({ pictureType, file }) => {
+  uploadedPhotos[`photo${pictureType}`] = file;
+  // アップロードされたファイルの詳細をログに出力
+  console.log(`アップローダータイプ: ${pictureType}`);
+  console.log(`アップロードされたファイル:`, file);
+};
 
 // フィードバックメッセージを格納するref変数
 const message = ref('');
@@ -130,89 +147,78 @@ const submitRequest = async () => {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      message.value = 'ログイン情報が見つかりません。再度ログインしてください。';
+      message.value = "ログイン情報が見つかりません。再度ログインしてください。";
       return;
     }
 
-    // トークンを使ってユーザー情報を取得
+    // ユーザー情報の取得
     const userResponse = await apiClient.get('/user/me', {
       headers: { Authorization: `Bearer ${token}` },
     });
-    const userId = userResponse.data.user_id;  // ユーザーIDを取得
+    const userId = userResponse.data.user_id;
 
     // エリアIDを昇順に並び替え
     const sortedAreas = [...selectedAreas.value].sort((a, b) => Number(a) - Number(b));
+    const formattedAreas = sortedAreas.join(',');
+    const formattedThemes = selectedThemes.value.join(',');
+    const formattedAges = [...selectedAges.value].sort((a, b) => Number(a) - Number(b)).join(',');
+    const formattedFeatures = [...selectedFeatures.value].sort((a, b) => Number(a) - Number(b)).join(',');
 
-    // 推奨年齢IDを昇順に並び替え
-    const sortedAges = [...selectedAges.value].sort((a, b) => Number(a) - Number(b));
+    // `FormData` を作成
+    const formData = new FormData();
+    formData.append("sup_point", request.requestPoints);
+    formData.append("client_id", userId);
+    formData.append("case_name", request.requestName);
+    formData.append("achieve", request.requestCondition);
+    formData.append("area_detail", request.areaDetails);
+    formData.append("lower_limit", request.minPeople);
+    formData.append("upper_limit", request.maxPeople);
+    formData.append("exec_date", request.activityDate);
+    formData.append("start_activty", request.startTime);
+    formData.append("end_activty", request.endTime);
+    formData.append("address1", request.address1);
+    formData.append("address2", request.address2);
+    formData.append("pref_id", request.prefecture);
+    formData.append("participation_id", request.participation ? 1 : 0);
+    formData.append("equipment", request.equipmentNeeded);
+    formData.append("area_id", formattedAreas);
+    formData.append("theme_id", formattedThemes);
+    formData.append("rec_age_id", formattedAges);
+    formData.append("feature_id", formattedFeatures);
+    formData.append("content", request.basicInfo);
+    formData.append("contents", request.requestDetails);
+    formData.append("state_id", 1); // 仮の進捗状況ID
 
-    // 特徴IDを昇順に並び替え
-    const sortedFeatures = [...selectedFeatures.value].sort((a, b) => Number(a) - Number(b));
+    // 画像データを追加
+    Object.keys(uploadedPhotos).forEach((key) => {
+      formData.append(key, uploadedPhotos[key]);
+    });
 
-    const formattedAreas = sortedAreas.join(','); // 活動テーマID（カンマ区切りの文字列）
-    const formattedThemes = selectedThemes.value.join(','); // 活動エリアID（カンマ区切りの文字列）
-    const formattedAges = sortedAges.join(','); // 推奨年齢ID（カンマ区切りの文字列）
-    const formattedFeatures = sortedFeatures.join(','); // 特徴ID（カンマ区切りの文字列）
-
-    // 送信するデータをまとめる（リアクティブ性を除去）
-    const payload = {
-      sup_point: request.requestPoints,
-      client_id: userId,  // トークンで取得したユーザーIDを使用
-      case_name: request.requestName,  // 依頼名
-      achieve: request.requestCondition, // 依頼達成条件
-      area_detail: request.areaDetails, //エリア詳細
-      lower_limit: request.minPeople, // 下限人数
-      upper_limit: request.maxPeople, // 上限人数
-      exec_date: request.activityDate, // 活動日
-      start_activty: request.startTime, // 活動開始時間
-      end_activty: request.endTime, // 活動終了時間
-      address1: request.address1, // 住所１
-      address2: request.address2, // 住所２
-      pref_id: request.prefecture, // 都道府県ID
-      participation_id: request.participation ? 1 : 0, // true/false を 1/0 に変換
-      equipment: request.equipmentNeeded, // 必要備品
-      area_id: formattedAreas, // 活動エリアID
-      theme_id: formattedThemes, // 活動テーマID
-      rec_age_id: formattedAges, // 推奨年齢ID
-      feature_id: formattedFeatures, // 特徴ID（カンマ区切り）
-      content: request.basicInfo, // 内容(基本情報)
-      contents: request.requestDetails, // 内容(依頼詳細)
-      state_id: 1, // 仮の進捗状況ID
-      // map_url: mapUrl.value, // Google Map URLを追加
-    };
-
-    // デバッグ用ログ
-    console.log('送信時のペイロード:', payload);
-    console.log('token:', token);
+    // デバッグ: 送信データを確認
+    console.log("送信するFormData:");
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
     // APIリクエスト
-    const response = await apiClient.post('/request', payload, {
+    const response = await apiClient.post('/request', formData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
 
-    // 成功メッセージ
-    message.value = '依頼が投稿されました！';
-    console.log('レスポンス:', response.data);
+    // 成功時の処理
+    message.value = "依頼が投稿されました！";
+    console.log("送信成功:", response.data);
   } catch (error) {
-    console.error('送信エラー:', error);
-
-    // エラー処理
-    if (error.response) {
-      console.error('サーバーレスポンス:', error.response);
-      message.value = error.response.data?.message || '送信に失敗しました。';
-    } else if (error.request) {
-      console.error('リクエストエラー:', error.request);
-      message.value = 'サーバーから応答がありません。';
-    } else {
-      console.error('その他のエラー:', error.message);
-      message.value = '送信中にエラーが発生しました。';
-    }
+    console.error("送信エラー:", error.response?.data || error);
+    message.value = "送信に失敗しました。";
   }
 };
+
 
 // コンポーネントがマウントされたときの処理
 onMounted(() => {
@@ -390,11 +396,7 @@ onMounted(() => {
       </div>
 
       <!-- 写真アップロード1 -->
-      <div class="form-group">
-        <label for="photo-upload-1">写真をアップロード1</label>
-        <input type="file" id="photo-upload-1" @change="handleFileUpload1" accept="image/*" />
-      </div>
-
+      <PhotoUploaderGroup :uploaders="[photoUploaders[0]]" @photosUpdated="handlePhotosUpdated" />
       <!-- 依頼詳細（フリー入力） -->
       <div class="form-group">
         <label for="request-details">依頼詳細</label>
@@ -403,10 +405,7 @@ onMounted(() => {
       </div>
 
       <!-- 写真アップロード2 -->
-      <div class="form-group">
-        <label for="photo-upload-2">写真をアップロード2</label>
-        <input type="file" id="photo-upload-2" @change="handleFileUpload2" accept="image/*" />
-      </div>
+      <PhotoUploaderGroup :uploaders="[photoUploaders[1]]" @photosUpdated="handlePhotosUpdated" />
 
       <MapURL :url="mapUrl" />
 

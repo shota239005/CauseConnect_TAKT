@@ -25,6 +25,13 @@ const requests = ref([
     date: "2024-12-20",
     location: "長野県松本市",
   },
+  {
+    id: 4,
+    name: "山のトレイル整備",
+    description: "登山道の整備活動です。",
+    date: "2024-12-20",
+    location: "長野県松本市",
+  },
 ]);
 </script>
 
