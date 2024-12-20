@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "ContributorPopup",
+  name: "iraiContributorPopup",
   props: {
     isVisible: {
       type: Boolean,
@@ -33,8 +33,7 @@ export default {
 <template>
   <div v-if="isVisible" class="popup-overlay" @click.self="$emit('close')">
     <div class="popup-content">
-      <h3>依頼ポイントを追加</h3>
-      <p>追加するポイント数を入力してください。</p>
+      <p>追加する依頼ポイント数を入力してください。</p>
       <div class="form-group">
         <input type="number" v-model="points" placeholder="ポイント数" class="input-field" />
       </div>
@@ -43,6 +42,11 @@ export default {
         <button @click="cancel" class="cancel-button">キャンセル</button>
       </div>
     </div>
+    <!-- ポップアップ -->
+    <ContributorPopup
+    :isVisible="isPopupVisible"
+    @close="togglePopup"
+    />
   </div>
 </template>
 

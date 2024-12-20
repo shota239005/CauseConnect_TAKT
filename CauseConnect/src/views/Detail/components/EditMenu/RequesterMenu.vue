@@ -1,17 +1,40 @@
 <script>
+import IraiContributorPopup from './IraiContributorPopup.vue';
+
 export default {
-  name: "RequesterMenu",
+  name: "ContributorMenu",
+  components: {
+    IraiContributorPopup,
+  },
+  data() {
+    return {
+      isPopupVisible: false, // ポップアップの表示状態
+    };
+  },
+  methods: {
+    togglePopup() {
+      this.isPopupVisible = !this.isPopupVisible; // ポップアップの表示/非表示を切り替え
+    },
+  },
 };
+
 </script>
 
 <template>
   <div class="menu-category">
     <h4>依頼者</h4>
     <ul>
-      <li>・依頼ポイントを追加</li>
+      ・<button @click="togglePopup" class="popup-trigger">依頼ポイントを追加</button>
       <li>・依頼を削除</li>
       <li>・メンバー管理</li>
     </ul>
+
+        <!-- ポップアップ -->
+        <IraiContributorPopup
+      :isVisible="isPopupVisible"
+      @close="togglePopup"
+    />
+
   </div>
 </template>
 
@@ -38,4 +61,16 @@ export default {
   color: #333;
   font-size: 0.9em;
 }
+.popup-trigger {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.popup-trigger:hover {
+  text-decoration: underline;
+}
+
 </style>
