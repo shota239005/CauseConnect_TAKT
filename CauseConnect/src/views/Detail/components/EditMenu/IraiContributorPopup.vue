@@ -1,9 +1,17 @@
 <script>
 export default {
-  name: "iraiContributorPopup",
+  name: "IraiContributorPopup",
   props: {
     isVisible: {
       type: Boolean,
+      required: true,
+    },
+    iraiPoint: { // 現在のポイントを親コンポーネントから受け取る
+      type: Number,
+      required: true,
+    },
+    balancePoints: { // 保有ポイントを親コンポーネントから受け取る
+      type: Number,
       required: true,
     },
   },
@@ -12,6 +20,12 @@ export default {
     return {
       points: "", // 入力されたポイント数
     };
+  },
+  computed: {
+    sumPoints() {
+      // 現在のポイントと入力されたポイントの合計を計算
+      return this.iraiPoint + (parseInt(this.points) || 0);
+    },
   },
   methods: {
     addPoints() {
@@ -31,35 +45,43 @@ export default {
 </script>
 
 <template>
-  <div v-if="isVisible" class="popup-overlay" @click.self="$emit('close')">
-    <div class="popup-content">
-      <p>追加する依頼ポイント数を入力してください。</p>
-      <div class="form-group">
-        <input type="number" v-model="points" placeholder="ポイント数" class="input-field" />
-      </div>
-      <div class="button-group">
-        <button @click="addPoints" class="confirm-button">追加</button>
-        <button @click="cancel" class="cancel-button">キャンセル</button>
+  <div v-if="isVisible" class="overlay" @click.self="$emit('close')">
+    <div class="iraiPoint-popup" @click.stop>
+      <h1>現在のポイント {{ iraiPoint }} からいくら追加しますか？</h1>
+
+      <!-- 保有ポイントの表示 -->
+      <p>保有ポイント：{{ balancePoints }} ポイント</p>
+
+      <!-- ポイント入力フォーム -->
+      <form>
+        <label for="points">ポイント：</label>
+        <input
+          type="number"
+          id="points"
+          v-model="points"
+          placeholder="ポイントを入力"
+          class="input-field"
+        />
+        <p>{{ iraiPoint }} + {{ points || 0 }} = {{ sumPoints }}</p>
+      </form>
+
+      <div class="button-container">
+        <button class="cancel-button" @click="cancel">キャンセル</button>
+        <button class="confirm-button" @click="addPoints">追加</button>
       </div>
     </div>
-    <!-- ポップアップ -->
-    <ContributorPopup
-    :isVisible="isPopupVisible"
-    @close="togglePopup"
-    />
   </div>
 </template>
 
 <style scoped>
 .input-field {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-
-  -moz-appearance: textfield;
-  /* Firefox用 */
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  margin-top: 10px;
+  margin-right: 40px;
 }
 
 .input-field::-webkit-inner-spin-button,
@@ -68,7 +90,7 @@ export default {
   margin: 0;
 }
 
-.popup-overlay {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -78,70 +100,66 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 999;
 }
 
-.popup-content {
-  background: #fff;
-  padding: 20px;
+.iraiPoint-popup {
+  background-color: white;
+  border: 2px solid #0f61ba;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 300px;
+  max-width: 600px;
+  width: 90%;
 }
 
-h3 {
-  margin-bottom: 15px;
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
 p {
+  font-size: 18px;
   margin-bottom: 20px;
   color: #333;
 }
 
-.form-group {
+form {
   margin-bottom: 20px;
 }
 
-.input-field {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+.button-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
 }
 
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+.cancel-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: white;
+  border: 2px solid #d32f2f;
+  color: red;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .confirm-button {
-  background-color: #7ed957;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0f61ba;
+  color: white;
   border-radius: 5px;
   cursor: pointer;
-  flex: 1;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f;
+  color: white;
 }
 
 .confirm-button:hover {
   background-color: #6cc84b;
-}
-
-.cancel-button {
-  background-color: #ff8c00;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  flex: 1;
-}
-
-.cancel-button:hover {
-  background-color: #e67600;
 }
 </style>
