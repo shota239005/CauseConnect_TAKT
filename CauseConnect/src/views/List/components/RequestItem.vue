@@ -14,7 +14,7 @@ import FavoriteIcon from "@/components/FavoriteIcon.vue";
 <template>
   <div class="request-item">
     <!-- お気に入りアイコンを右上に配置 -->
-    <FavoriteIcon class="favorite-icon" />
+     <FavoriteIcon class="favorite-icon" />
 
     <!-- 左側に画像の仮枠を表示 -->
     <div class="request-image">
@@ -34,7 +34,7 @@ import FavoriteIcon from "@/components/FavoriteIcon.vue";
       <router-link :to="`/details/${request.id}`" class="details-link">詳細を見る</router-link>
     </div>
   </div>
-</template>
+</template>S
 
 <style scoped>
 .request-item {

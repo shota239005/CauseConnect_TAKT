@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import { ref, onMounted } from "vue";
 import apiClient from "@/axios"; // Axios設定をインポート
 
@@ -22,7 +22,6 @@ export default {
     };
 
     // 活動エリアデータを取得
-
     const fetchAreas = async () => {
       try {
         const response = await apiClient.get("/places");
@@ -32,7 +31,6 @@ export default {
         console.error("データ取得失敗:", error);
       }
     };
-
 
     // コンポーネントがマウントされた時にデータを取得
     onMounted(() => {
@@ -51,6 +49,138 @@ export default {
 };
 </script>
 
+<template>
+  <div class="search-container">
+    <div class="search-row">
+      <-- 都道府県プルダウン -->
+<!-- <div class="search-item">
+        <select id="prefecture" v-model="selectedPrefecture">
+          <option value="" disabled>都道府県▼</option>
+          <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
+            {{ pref.pref }}
+          </option>
+        </select>
+      </div>
+
+      <-- 活動エリアプルダウン -->
+<!-- <div class="search-item">
+        <select id="area" v-model="selectedArea">
+          <option value="" disabled>活動エリア▼</option>
+          <option v-for="area in areas" :key="area.area_id" :value="area.area_id">
+            {{ area.area }}
+          </option>
+        </select>
+      </div> -->
+
+<!-- 募集状況プルダウン -->
+<!-- <div class="search-item">
+        <select id="status" v-model="selectedStatus">
+          <option value="" disabled>募集状況▼</option>
+          <option value="募集中">募集中</option>
+          <option value="募集終了">募集終了</option>
+          <option value="すべて">すべて</option>
+        </select>
+      </div> -->
+
+<!-- 検索ボタン -->
+<!-- <div class="search-item">
+        <button @click="navigateToList">検索</button>
+      </div>
+    </div>
+  </div>
+</template> -->
+
+<script>
+import { ref, onMounted } from "vue";
+import apiClient from "@/axios"; // Axios設定をインポート
+
+import RequestList from "@/views/List/components/RequestList.vue"; // RequestList コンポーネントをインポート
+
+export default {
+  
+   components: {
+     RequestList, // コンポーネントを登録
+   },
+
+  setup() {
+    const selectedPrefecture = ref("");
+    const selectedArea = ref("");
+    const selectedStatus = ref("");
+
+    const prefectures = ref([]); // 都道府県データ
+    const areas = ref([]); // 活動エリアデータ
+    const searchResults = ref([]); // 検索結果
+
+    // 都道府県データを取得
+    const fetchPrefectures = async () => {
+      try {
+        const response = await apiClient.get("/prefectures");
+        prefectures.value = response.data;
+      } catch (error) {
+        console.error("都道府県データの取得に失敗しました:", error);
+      }
+    };
+
+    // 活動エリアデータを取得
+    const fetchAreas = async () => {
+      try {
+        const response = await apiClient.get("/places");
+        areas.value = response.data;
+      } catch (error) {
+        console.error("データ取得失敗:", error);
+      }
+    };
+
+    // 検索処理
+    const searchPosts = async () => {
+      try {
+        // 送信するパラメータのオブジェクトを作成
+        const params = {};
+
+        // `selectedPrefecture` が null でない場合のみ
+        if (selectedPrefecture.value) {
+          params.prefecture_id = selectedPrefecture.value;
+        }
+
+        // `selectedArea` が null でない場合のみ
+        if (selectedArea.value) {
+          params.area_id = selectedArea.value;
+        }
+
+        // `selectedStatus` が null でない場合のみ
+        if (selectedStatus.value) {
+          params.status = selectedStatus.value;
+        }
+
+        // API へリクエストを送信
+        const response = await apiClient.get("/search-posts", { params });
+        
+        // 検索結果が取得できたら searchResults を更新
+        searchResults.value = response.data;
+        console.log("searchResults updated:", searchResults.value);
+      } catch (error) {
+        console.error("検索処理中にエラーが発生しました:", error);
+      }
+    };
+
+    // コンポーネントがマウントされた時にデータを取得
+    onMounted(() => {
+      fetchPrefectures();
+      fetchAreas();
+    });
+
+    return {
+      selectedPrefecture,
+      selectedArea,
+      selectedStatus,
+      prefectures,
+      areas,
+      searchResults,
+      searchPosts,
+    };
+  },
+};
+</script>
 
 <template>
   <div class="search-container">
@@ -66,14 +196,6 @@ export default {
       </div>
 
       <!-- 活動エリアプルダウン -->
-      <!-- <div class="search-item">
-        <select id="area" v-model="selectedArea">
-          <option value="" disabled>活動エリア▼</option>
-          <option v-for="area in areas" :key="area.id" :value="area.id">
-            {{ area.name }}
-          </option>
-        </select>
-      </div> -->
       <div class="search-item">
         <select id="area" v-model="selectedArea">
           <option value="" disabled>活動エリア▼</option>
@@ -87,20 +209,22 @@ export default {
       <div class="search-item">
         <select id="status" v-model="selectedStatus">
           <option value="" disabled>募集状況▼</option>
-          <option value="募集中">募集中</option>
-          <option value="募集終了">募集終了</option>
-          <option value="すべて">すべて</option>
+          <option value="1">募集中</option>
+          <option value="2">募集終了</option>
         </select>
       </div>
 
       <!-- 検索ボタン -->
       <div class="search-item">
-        <button @click="navigateToList">検索</button>
+        <button @click="searchPosts">検索</button>
       </div>
     </div>
-  </div>
-</template>
 
+    <!-- 検索結果を RequestList コンポーネントに渡す -->
+    <RequestList :requests="searchResults" />
+  </div>
+
+</template>
 
 <style scoped>
 .search-container {
@@ -142,9 +266,7 @@ export default {
   /* ブラウザのデフォルトスタイルを無効化 */
   font-size: 25px;
   text-align: center;
-  box-shadow: 2px 2px #ff8c00
-
-  ;
+  box-shadow: 2px 2px #ff8c00;
 }
 
 .search-item select option {

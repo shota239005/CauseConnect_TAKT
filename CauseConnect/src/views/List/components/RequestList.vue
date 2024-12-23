@@ -1,9 +1,9 @@
-<script setup>
+<!-- <script setup>
 import { ref } from "vue";
-import RequestItem from "./RequestItem.vue"; // RequestItemコンポーネントをインポート
+import RequestItem from "./RequestItem.vue"; // RequestItemコンポーネントをインポート -->
 
-// ダミーデータの依頼リスト
-const requests = ref([
+<!-- // ダミーデータの依頼リスト -->
+<!-- const requests = ref([
   {
     id: 1,
     name: "地域美化活動",
@@ -25,13 +25,50 @@ const requests = ref([
     date: "2024-12-20",
     location: "長野県松本市",
   },
-]);
+  {
+    id: 3,
+    name: "4山のトレイル整備",
+    description: "登山道の整備活動です。",
+    date: "2024-12-20",
+    location: "長野県松本市",
+  },
+]); -->
+<!-- </script> -->
+
+<!-- <template>
+  <div class="request-list">
+    <-- 依頼リストを表示 -->
+    <!-- <div>
+      <RequestItem
+        v-for="request in requests"
+        :key="request.id"
+        :request="request"
+        class="request-item"
+      />
+    </div>
+  </div>
+</template> -->
+
+<script setup>
+import { defineProps } from "vue";
+import RequestItem from "./RequestItem.vue"; // RequestItem コンポーネントをインポート
+
+// 親コンポーネントから `requests` を受け取る
+const props = defineProps({
+  requests: {
+    type: Array,
+    required: true,
+  },
+});
+
+console.log("RequestList で受け取った requests:", props.requests);
 </script>
 
 <template>
   <div class="request-list">
-    <!-- 依頼リストを表示 -->
+    
     <div>
+      <!-- リストアイテムを表示 -->
       <RequestItem
         v-for="request in requests"
         :key="request.id"
@@ -41,6 +78,7 @@ const requests = ref([
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .request-list {
