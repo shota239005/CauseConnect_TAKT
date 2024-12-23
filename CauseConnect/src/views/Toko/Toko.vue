@@ -47,6 +47,7 @@ const mapUrl = ref(
 );
 // `mapUrl` の変更を監視して `request.googleMap` を更新
 watch(mapUrl, (newValue) => {
+  console.log("mapUrlが変更されました:", newValue); // デバッグログ
   request.googleMap = newValue;
 });
 
