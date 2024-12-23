@@ -5,6 +5,7 @@ import apiClient from '@/axios'; // Axiosインスタンスをインポート
 import HamburgerMenu from './HamburgerMenu.vue';
 import FavoPopup from '@/views/Favo/FavoPopup.vue';
 import LoginView from '@/views/LoginForm/LoginView.vue'; // Login.vueをインポート
+import GetAccount from '@/components/GetAccount.vue';
 
 export default {
   name: "Navi",
@@ -45,7 +46,7 @@ export default {
       this.isLoggedIn = false;
       this.user = null;
       alert('ログアウトしました');
-      this.$router.push('/'); // ログインページへリダイレクト
+      window.location.href = '/'; // ログインページへリダイレクトしつつリロード
     },
     // ロゴをクリックした時にトップページに遷移
     goToHome() {
@@ -74,7 +75,7 @@ export default {
     }
   },
   components: {
-    RealTimeClock,
+    GetAccount,
     HamburgerMenu,
     FavoPopup,
     LoginView, // Loginコンポーネントを追加
@@ -94,8 +95,11 @@ export default {
       <img src="../assets/CC_logo.png" />
     </div>
 
-    <!-- リアルタイム時計 -->
+    <GetAccount class="getAccount" />
+
+    <!-- リアルタイム時計
     <RealTimeClock class="real-time-clock" />
+    -->
 
     <!-- ナビゲーションメニュー -->
     <nav class="nav-links">
