@@ -1,8 +1,8 @@
 <script setup>
 import apiClient from '@/axios'; // axios設定をインポート
-import { reactive, ref, onMounted } from 'vue'; // Vueのreactiveとrefをインポート
+import { reactive, ref, onMounted, watch } from 'vue'; // Vueのreactiveとrefをインポート
 import MapURL from './components/mapURL.vue'; // MapURLコンポーネントをインポート
-import PhotoUploaderGroup from "./components/PhotoUploaderGroup.vue";
+
 // 初期状態の依頼データを格納するreactiveオブジェクト
 const request = reactive({
   requestPoints: '', // 出資ポイント
@@ -19,8 +19,16 @@ const request = reactive({
   address2: '', // 住所2
   participation: '', //依頼者参加
   equipmentNeeded: '無', // 必要備品
-  // areaDetails: '', // Google Map URLを追加
   caseId: null, // 投稿後にセットされる依頼ID
+  googleMap: '', 
+});
+// Google Map URLを管理
+const mapUrl = ref(
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp'
+);
+// `mapUrl` の変更を監視して `request.googleMap` を更新
+watch(mapUrl, (newValue) => {
+  request.googleMap = newValue;
 });
 // アップロードされた写真を格納
 const uploadedPhotos = reactive({});
@@ -79,6 +87,7 @@ const fetchUserData = async () => {
     message.value = 'ユーザーデータの取得に失敗しました。再度ログインしてください。';
   }
 };
+
 
 // 都道府県データを取得する非同期関数
 const fetchPrefectures = async () => {
@@ -159,7 +168,7 @@ const submitRequest = async () => {
     });
     const userId = userResponse.data.user_id;
 
-    // エリアIDを昇順に並び替え
+    // IDを整形
     const sortedAreas = [...selectedAreas.value].sort((a, b) => Number(a) - Number(b));
     const formattedAreas = sortedAreas.join(',');
     const formattedThemes = selectedThemes.value.join(',');
@@ -172,14 +181,14 @@ const submitRequest = async () => {
     formData.append("client_id", userId);
     formData.append("case_name", request.requestName);
     formData.append("achieve", request.requestCondition);
-    formData.append("area_detail", request.areaDetails);
+    formData.append("area_detail", request.areaDetails || "");
     formData.append("lower_limit", request.minPeople);
     formData.append("upper_limit", request.maxPeople);
     formData.append("exec_date", request.activityDate);
     formData.append("start_activty", request.startTime);
     formData.append("end_activty", request.endTime);
     formData.append("address1", request.address1);
-    formData.append("address2", request.address2);
+    formData.append("address2", request.address2 || "");
     formData.append("pref_id", request.prefecture);
     formData.append("participation_id", request.participation ? 1 : 0);
     formData.append("equipment", request.equipmentNeeded);
@@ -188,13 +197,15 @@ const submitRequest = async () => {
     formData.append("rec_age_id", formattedAges);
     formData.append("feature_id", formattedFeatures);
     formData.append("content", request.basicInfo);
-    formData.append("contents", request.requestDetails);
+    formData.append("contents", request.requestDetails || "");
     formData.append("state_id", 1); // 仮の進捗状況ID
+    request.googleMap = mapUrl.value;
+    formData.append("google_map", request.googleMap || ""); // Map URLを追加    // デバッグ: mapUrl の型と値を確認
+    console.log("mapUrl の値:", mapUrl);
 
-    // 画像データを追加
-    Object.keys(uploadedPhotos).forEach((key) => {
-      formData.append(key, uploadedPhotos[key]);
-    });
+    // 写真データを追加
+    if (uploadedPhotos.photo1) formData.append('photo1', uploadedPhotos.photo1);
+    if (uploadedPhotos.photo2) formData.append('photo2', uploadedPhotos.photo2);
 
     // デバッグ: 送信データを確認
     console.log("送信するFormData:");
@@ -213,9 +224,20 @@ const submitRequest = async () => {
     // 成功時の処理
     message.value = "依頼が投稿されました！";
     console.log("送信成功:", response.data);
+    console.log("送信するFormData:");
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+
   } catch (error) {
     console.error("送信エラー:", error.response?.data || error);
-    message.value = "送信に失敗しました。";
+
+    // エラーメッセージを設定
+    if (error.response?.data?.message) {
+      message.value = `送信失敗: ${error.response.data.message}`;
+    } else {
+      message.value = "送信に失敗しました。";
+    }
   }
 };
 
@@ -407,7 +429,9 @@ onMounted(() => {
       <!-- 写真アップロード2 -->
       <PhotoUploaderGroup :uploaders="[photoUploaders[1]]" @photosUpdated="handlePhotosUpdated" />
 
-      <MapURL :url="mapUrl" />
+      <!-- MapURLコンポーネントを使用 -->
+      <MapURL v-model="request.googleMap" />
+
 
       <!-- 送信ボタン -->
       <button type="submit" class="btn1">投稿する</button>
