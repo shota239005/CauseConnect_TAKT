@@ -9,6 +9,7 @@ defineProps({
 
 // FavoriteIcon をインポート
 import FavoriteIcon from "@/components/FavoriteIcon.vue";
+
 </script>
 
 <template>
@@ -34,7 +35,7 @@ import FavoriteIcon from "@/components/FavoriteIcon.vue";
       <router-link :to="`/details/${request.id}`" class="details-link">詳細を見る</router-link>
     </div>
   </div>
-</template>S
+</template>
 
 <style scoped>
 .request-item {

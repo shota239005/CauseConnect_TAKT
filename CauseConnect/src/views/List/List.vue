@@ -14,6 +14,15 @@ const filters = ref({
   date: "",
 });
 
+// 受け取った検索結果を保持する
+const searchResults = ref([]);
+
+// search.vue からの結果を受け取る
+const updateResults = (results) => {
+  searchResults.value = results;
+  console.log("Received search results:", searchResults.value);
+};
+
 // フィルタリング処理をモック化
 const applyFilters = (newFilters) => {
   loading.value = true;
@@ -34,8 +43,11 @@ const resetFilters = () => {
 </script>
 
 <template>
-  <search/>
   <div class="list-page">
+
+    <!-- search.vue のコンポーネント -->
+    <search @update-results="updateResults" />
+
     <div class="list-container">
       <!-- 左側: フィルター -->
       <div class="refine-sidebar">
@@ -46,6 +58,7 @@ const resetFilters = () => {
       <!-- 右側: 依頼リスト -->
       <div class="list-content">
         <h1>依頼一覧</h1>
+        <RequestList :requests="searchResults" />
 
         <!-- ローディングスピナー -->
         <div v-if="loading" class="loading-spinner">
@@ -57,22 +70,26 @@ const resetFilters = () => {
           条件を入力して依頼を絞り込んでください。
         </p>
 
-        <!-- フィルター適用後の依頼リスト -->
-        <RequestList v-if="!loading" :filters="filters" />
+       <!-- RequestList に検索結果を渡す
+        <-- <RequestList v-if="!loading" :requests="searchResults" :filters="filters" /> -->
       </div>
+
     </div>
+
   </div>
+
 </template>
 
 <style scoped>
-.search-container{
+.search-container {
   width: 50%;
   margin-right: 190px;
   margin-top: 10px;
   margin-bottom: 0%;
   padding: 0%;
 }
-.btn1{
+
+.btn1 {
   color: #333;
 }
 
@@ -109,5 +126,4 @@ h1 {
   color: #999;
   text-align: center;
 }
-
 </style>

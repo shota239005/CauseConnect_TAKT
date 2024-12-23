@@ -90,101 +90,90 @@ export default {
   </div>
 </template> -->
 
-<script>
-import { ref, onMounted } from "vue";
+<script setup>
+import { ref, onMounted, defineEmits } from "vue";
 import apiClient from "@/axios"; // Axios設定をインポート
 
-import RequestList from "@/views/List/components/RequestList.vue"; // RequestList コンポーネントをインポート
+// `defineEmits`を使って親にイベントを送信する準備
+const emit = defineEmits();
 
-export default {
-  
-   components: {
-     RequestList, // コンポーネントを登録
-   },
+const selectedPrefecture = ref("");
+const selectedArea = ref("");
+const selectedStatus = ref("");
 
-  setup() {
-    const selectedPrefecture = ref("");
-    const selectedArea = ref("");
-    const selectedStatus = ref("");
+const prefectures = ref([]); // 都道府県データ
+const areas = ref([]); // 活動エリアデータ
+const searchResults = ref([]); // 検索結果
 
-    const prefectures = ref([]); // 都道府県データ
-    const areas = ref([]); // 活動エリアデータ
-    const searchResults = ref([]); // 検索結果
-
-    // 都道府県データを取得
-    const fetchPrefectures = async () => {
-      try {
-        const response = await apiClient.get("/prefectures");
-        prefectures.value = response.data;
-      } catch (error) {
-        console.error("都道府県データの取得に失敗しました:", error);
-      }
-    };
-
-    // 活動エリアデータを取得
-    const fetchAreas = async () => {
-      try {
-        const response = await apiClient.get("/places");
-        areas.value = response.data;
-      } catch (error) {
-        console.error("データ取得失敗:", error);
-      }
-    };
-
-    // 検索処理
-    const searchPosts = async () => {
-      try {
-        // 送信するパラメータのオブジェクトを作成
-        const params = {};
-
-        // `selectedPrefecture` が null でない場合のみ
-        if (selectedPrefecture.value) {
-          params.prefecture_id = selectedPrefecture.value;
-        }
-
-        // `selectedArea` が null でない場合のみ
-        if (selectedArea.value) {
-          params.area_id = selectedArea.value;
-        }
-
-        // `selectedStatus` が null でない場合のみ
-        if (selectedStatus.value) {
-          params.status = selectedStatus.value;
-        }
-
-        // API へリクエストを送信
-        const response = await apiClient.get("/search-posts", { params });
-        
-        // 検索結果が取得できたら searchResults を更新
-        searchResults.value = response.data;
-        console.log("searchResults updated:", searchResults.value);
-      } catch (error) {
-        console.error("検索処理中にエラーが発生しました:", error);
-      }
-    };
-
-    // コンポーネントがマウントされた時にデータを取得
-    onMounted(() => {
-      fetchPrefectures();
-      fetchAreas();
-    });
-
-    return {
-      selectedPrefecture,
-      selectedArea,
-      selectedStatus,
-      prefectures,
-      areas,
-      searchResults,
-      searchPosts,
-    };
-  },
+// 都道府県データを取得
+const fetchPrefectures = async () => {
+  try {
+    const response = await apiClient.get("/prefectures");
+    prefectures.value = response.data;
+  } catch (error) {
+    console.error("都道府県データの取得に失敗しました:", error);
+  }
 };
+
+// 活動エリアデータを取得
+const fetchAreas = async () => {
+  try {
+    const response = await apiClient.get("/places");
+    areas.value = response.data;
+  } catch (error) {
+    console.error("データ取得失敗:", error);
+  }
+};
+
+// 検索処理
+const searchPosts = async () => {
+  try {
+    // 送信するパラメータのオブジェクトを作成
+    const params = {
+    };
+
+    // `selectedPrefecture` が null でない場合のみ
+    if (selectedPrefecture.value) {
+      params.prefecture_id = selectedPrefecture.value;
+    }
+
+    // `selectedArea` が null でない場合のみ
+    if (selectedArea.value) {
+      params.area_id = selectedArea.value;
+    }
+
+    // `selectedStatus` が null でない場合のみ
+    if (selectedStatus.value) {
+      params.status = selectedStatus.value;
+    }
+
+    // API へリクエストを送信
+    const response = await apiClient.get("/search-posts", { params });
+
+    // 検索結果を更新し、親コンポーネントに送信
+    searchResults.value = response.data;
+    console.log("searchResults updated:", searchResults.value);
+
+    // 親コンポーネントに検索結果を渡す
+    emit("update-results", searchResults.value);
+
+  } catch (error) {
+    console.error("検索処理中にエラーが発生しました:", error);
+  }
+};
+
+// コンポーネントがマウントされた時にデータを取得
+onMounted(() => {
+  fetchPrefectures();
+  fetchAreas();
+});
+
 </script>
 
 <template>
   <div class="search-container">
     <div class="search-row">
+
       <!-- 都道府県プルダウン -->
       <div class="search-item">
         <select id="prefecture" v-model="selectedPrefecture">
@@ -220,8 +209,6 @@ export default {
       </div>
     </div>
 
-    <!-- 検索結果を RequestList コンポーネントに渡す -->
-    <RequestList :requests="searchResults" />
   </div>
 
 </template>

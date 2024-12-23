@@ -61,20 +61,14 @@ const props = defineProps({
   },
 });
 
-console.log("RequestList で受け取った requests:", props.requests);
+console.log("Received requests in RequestList:", props.requests);
+
 </script>
 
 <template>
   <div class="request-list">
-    
-    <div>
-      <!-- リストアイテムを表示 -->
-      <RequestItem
-        v-for="request in requests"
-        :key="request.id"
-        :request="request"
-        class="request-item"
-      />
+    <div v-for="request in requests" :key="request.id">
+      <RequestItem :request="request" />
     </div>
   </div>
 </template>
