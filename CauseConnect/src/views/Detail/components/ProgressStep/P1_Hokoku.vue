@@ -1,108 +1,83 @@
 <script setup>
 import { ref } from "vue";
+import PhotoUploaderGroup from "@/views/Toko/components/PhotoUploaderGroup.vue";
+import apiClient from '@/axios'; // axios設定をインポート
+// 初期データ
+const uploaders = [
+  { pictureType: 3, label: "参加者写真" },
+  { pictureType: 4, label: "依頼場所写真" },
+  { pictureType: 5, label: "実行前写真" },
+  { pictureType: 6, label: "実行後写真" },
+];
 
-// 参加者情報
-const participantPhoto = ref(null);
-const participantComment = ref("");
+// 画像データを管理
+const photos = ref([]); // { pictureType, file } を配列で保持
 
-// 依頼場所情報
-const locationPhoto = ref(null);
-const locationComment = ref("");
+// コメントデータ
+const comments = ref({
+  comment1: "", // 参加者コメント
+  comment2: "", // 依頼場所コメント
+  comment3: "", // 実行前コメント
+  comment4: "", // 実行後コメント
+});
 
-// 実行前の情報
-const beforePhoto = ref(null);
-const beforeComment = ref("");
-
-// 実行後の情報
-const afterPhoto = ref(null);
-const afterComment = ref("");
-
-// 写真アップロード処理
-const handlePhotoUpload = (event, targetRef) => {
-  const file = event.target.files[0];
-  if (file) {
-    targetRef.value = URL.createObjectURL(file);
+// 画像が更新されたら呼ばれる
+const handlePhotosUpdated = ({ pictureType, file }) => {
+  const existingIndex = photos.value.findIndex((item) => item.pictureType === pictureType);
+  if (existingIndex !== -1) {
+    photos.value[existingIndex].file = file; // 上書き
+  } else {
+    photos.value.push({ pictureType, file });
   }
 };
 
-// コメント送信処理
-const handleCommentChange = (event, targetRef) => {
-  targetRef.value = event.target.value;
-};
+// 保存処理
+const handleSubmit = async () => {
+  const formData = new FormData();
+  formData.append("case_id", 123); // 仮の依頼ID、適宜動的に変更
 
-// フォーム送信処理
-const handleSubmit = () => {
-  const formData = {
-    participant: {
-      photo: participantPhoto.value,
-      comment: participantComment.value,
-    },
-    location: {
-      photo: locationPhoto.value,
-      comment: locationComment.value,
-    },
-    before: {
-      photo: beforePhoto.value,
-      comment: beforeComment.value,
-    },
-    after: {
-      photo: afterPhoto.value,
-      comment: afterComment.value,
-    },
-  };
-  console.log("送信されたデータ:", formData);
-  alert("フォームが送信されました！");
-  // 必要に応じて、APIにデータを送信するコードを追加してください
+  // 写真をフォームに追加
+  photos.value.forEach(({ pictureType, file }) => {
+    formData.append(`photos[${pictureType}]`, file); // バックエンド側で処理
+  });
+
+  // コメントをフォームに追加
+  Object.keys(comments.value).forEach((key) => {
+    formData.append(key, comments.value[key]);
+  });
+
+  try {
+    const response = await apiClient.post("/api/hokoku", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("保存成功:", response.data);
+    alert("保存が成功しました！");
+  } catch (error) {
+    console.error("保存エラー:", error);
+    alert("保存に失敗しました。");
+  }
 };
 </script>
 
 <template>
-  <div class="progress-step-container">
+  <div>
+    <PhotoUploaderGroup :uploaders="uploaders" @photosUpdated="handlePhotosUpdated" />
 
-    <!-- 参加者写真とコメント -->
-    <div class="section">
-      <h3>依頼当日の集合写真</h3>
-      <input type="file" @change="handlePhotoUpload($event, participantPhoto)" />
-      <div v-if="participantPhoto">
-        <img :src="participantPhoto" alt="参加者の写真" class="uploaded-photo" />
-      </div>
-      <textarea v-model="participantComment" placeholder="参加者に関するコメントを入力してください"></textarea>
+    <div>
+      <label>参加者コメント</label>
+      <textarea v-model="comments.comment1"></textarea>
+
+      <label>依頼場所コメント</label>
+      <textarea v-model="comments.comment2"></textarea>
+
+      <label>実行前コメント</label>
+      <textarea v-model="comments.comment3"></textarea>
+
+      <label>実行後コメント</label>
+      <textarea v-model="comments.comment4"></textarea>
     </div>
 
-    <!-- 依頼場所の写真とコメント -->
-    <div class="section">
-      <h3>依頼場所の写真</h3>
-      <input type="file" @change="handlePhotoUpload($event, locationPhoto)" />
-      <div v-if="locationPhoto">
-        <img :src="locationPhoto" alt="依頼場所の写真" class="uploaded-photo" />
-      </div>
-      <textarea v-model="locationComment" placeholder="依頼場所に関するコメントを入力してください"></textarea>
-    </div>
-
-    <!-- 実行前の写真とコメント -->
-    <div class="section">
-      <h3>実行前の写真</h3>
-      <input type="file" @change="handlePhotoUpload($event, beforePhoto)" />
-      <div v-if="beforePhoto">
-        <img :src="beforePhoto" alt="実行前の写真" class="uploaded-photo" />
-      </div>
-      <textarea v-model="beforeComment" placeholder="実行前に関するコメントを入力してください"></textarea>
-    </div>
-
-    <!-- 実行後の写真とコメント -->
-    <div class="section">
-      <h3>実行後の写真</h3>
-      <input type="file" @change="handlePhotoUpload($event, afterPhoto)" />
-      <div v-if="afterPhoto">
-        <img :src="afterPhoto" alt="実行後の写真" class="uploaded-photo" />
-      </div>
-      <textarea v-model="afterComment" placeholder="実行後に関するコメントを入力してください"></textarea>
-    </div>
-
-    <!-- 送信ボタン -->
-    <div class="section-btn">
-      <button @click="handleSubmit" class="btn1">送信</button>
-    </div>
+    <button @click="handleSubmit">保存</button>
   </div>
 </template>
 
