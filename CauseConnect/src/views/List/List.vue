@@ -2,7 +2,7 @@
 import RequestList from "./components/RequestList.vue"; // RequestListコンポーネントをインポート
 import Refine from "./components/Refine.vue"; // フィルターコンポーネントをインポート
 import search from "@/components/search.vue";
-import { ref } from "vue";
+import { ref,} from "vue";
 
 // ローディング状態を管理
 const loading = ref(false);
@@ -17,10 +17,10 @@ const filters = ref({
 // 受け取った検索結果を保持する
 const searchResults = ref([]);
 
-// search.vue からの結果を受け取る
+// 子コンポーネント `Search.vue` からのイベントを受け取る
 const updateResults = (results) => {
+  console.log("List.vue:", results);
   searchResults.value = results;
-  console.log("Received search results:", searchResults.value);
 };
 
 // フィルタリング処理をモック化
@@ -70,12 +70,8 @@ const resetFilters = () => {
           条件を入力して依頼を絞り込んでください。
         </p>
 
-       <!-- RequestList に検索結果を渡す
-        <-- <RequestList v-if="!loading" :requests="searchResults" :filters="filters" /> -->
       </div>
-
     </div>
-
   </div>
 
 </template>

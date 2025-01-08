@@ -61,7 +61,7 @@ const props = defineProps({
   },
 });
 
-console.log("Received requests in RequestList:", props.requests);
+console.log("RequestList:", props);
 
 </script>
 

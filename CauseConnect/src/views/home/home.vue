@@ -5,6 +5,7 @@ import Search from '@/components/search.vue';
 import Japan from '@/components/japan.vue';
 import ImageSlide from './Component/ImageSlide.vue';
 import Info from '../Info/Info.vue';
+
 // 検索クエリを保持するためのref
 const searchQuery = ref('');
 const router = useRouter();

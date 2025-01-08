@@ -93,9 +93,13 @@ export default {
 <script setup>
 import { ref, onMounted, defineEmits } from "vue";
 import apiClient from "@/axios"; // Axios設定をインポート
+import { useRouter } from "vue-router"; // vue-router をインポート
 
 // `defineEmits`を使って親にイベントを送信する準備
 const emit = defineEmits();
+
+// ルーターを使ってページ遷移を行う
+const router = useRouter();
 
 const selectedPrefecture = ref("");
 const selectedArea = ref("");
@@ -152,10 +156,20 @@ const searchPosts = async () => {
 
     // 検索結果を更新し、親コンポーネントに送信
     searchResults.value = response.data;
-    console.log("searchResults updated:", searchResults.value);
+    console.log("search:", searchResults.value);
+
+    // 検索結果が配列か確認
+    if (Array.isArray(response.data)) {
+      // console.log("検索結果は配列です。", response.data);
+    } else {
+      // console.error("検索結果が配列ではありません。", response.data);
+    }
 
     // 親コンポーネントに検索結果を渡す
     emit("update-results", searchResults.value);
+
+    // 検索結果を更新後、List.vue に遷移
+    router.push('/list');
 
   } catch (error) {
     console.error("検索処理中にエラーが発生しました:", error);
