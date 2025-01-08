@@ -3,48 +3,36 @@ export default {
   props: {
     uploaders: {
       type: Array,
-      required: true, // アップローダー情報をリストとして受け取る
-    },
-    caseId: {
-      type: Number,
-      required: false, // オプションとして投稿後の依頼IDを受け取る
+      required: true,
     },
   },
   data() {
     return {
-      previews: {}, // プレビュー画像のURLを保持
+      previews: {},
     };
   },
   methods: {
-    /**
-     * ファイル選択ダイアログを開く
-     * @param {Number} pictureType - 現在のアップローダーの識別子
-     */
     triggerFileInput(pictureType) {
-      this.$nextTick(() => {
-        // 静的な ref の中から特定の入力要素を取得
-        const fileInput = Array.from(this.$refs.fileInputs).find(
-          (input) => input.dataset.pictureType == pictureType
-        );
-        if (fileInput && typeof fileInput.click === "function") {
-          fileInput.click();
-        } else {
-          console.error(`Invalid file input for pictureType: ${pictureType}`);
-        }
-      });
+      const fileInput = this.$refs.fileInputs.find(input => input.dataset.pictureType == pictureType);
+      if (fileInput && typeof fileInput.click === "function") {
+        fileInput.click();
+      } else {
+        console.error(`Invalid file input for pictureType: ${pictureType}`);
+      }
     },
-
-    /**
-     * ファイル選択後の処理
-     * @param {Event} event - ファイル選択イベント
-     * @param {Number} pictureType - 現在のアップローダーの識別子
-     */
     handleFileChange(event, pictureType) {
-      const file = event.target.files[0]; // 選択されたファイルを取得
+      const file = event.target.files[0];
       if (file) {
-        // プレビュー画像のURLを生成して保持
+        const validTypes = ["image/jpeg", "image/png", "image/gif"];
+        if (!validTypes.includes(file.type)) {
+          alert("JPEG, PNG, GIF形式の画像を選択してください。");
+          return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          alert("画像サイズは2MB以下にしてください。");
+          return;
+        }
         this.previews[pictureType] = URL.createObjectURL(file);
-        // 親コンポーネントにファイルデータを通知
         this.$emit("photosUpdated", { pictureType, file });
       } else {
         console.warn(`No file selected for pictureType: ${pictureType}`);
@@ -64,16 +52,16 @@ export default {
         </button>
         <input
           type="file"
-          ref="fileInputs" 
-          :data-picture-type="uploader.pictureType" 
+          ref="fileInputs"
+          :data-picture-type="uploader.pictureType"
           @change="handleFileChange($event, uploader.pictureType)"
           accept="image/*"
-          style="display: none;"
+          class="hidden-input"
         />
         <img
           v-if="previews[uploader.pictureType]"
           :src="previews[uploader.pictureType]"
-          alt="プレビュー画像"
+          :alt="`${uploader.label}のプレビュー画像`"
           class="preview"
         />
       </div>
@@ -85,40 +73,44 @@ export default {
 .photo-uploader-group {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 各アップローダー間のスペース */
+  gap: 20px;
 }
 
 .uploader {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* ラベルとコントロール間のスペース */
+  gap: 10px;
 }
 
 .uploader-controls {
   display: flex;
   align-items: center;
-  gap: 10px; /* ボタンとプレビュー画像の間のスペース */
+  gap: 10px;
 }
 
 .select-photo-btn {
   padding: 10px 15px;
-  background-color: #ff8c00; /* ボタンの背景色 */
+  background-color: #ff8c00;
   color: white;
   border: none;
-  border-radius: 5px; /* ボタンの角を丸める */
+  border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
 }
 
 .select-photo-btn:hover {
-  background-color: #e57c00; /* ホバー時の背景色 */
+  background-color: #e57c00;
 }
 
 .preview {
-  width: 100px; /* プレビュー画像の幅 */
-  height: 100px; /* プレビュー画像の高さ */
-  object-fit: cover; /* 画像を中央に収める */
-  border: 1px solid #ccc; /* 枠線 */
-  border-radius: 5px; /* 角を丸める */
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.hidden-input {
+  display: none;
 }
 </style>

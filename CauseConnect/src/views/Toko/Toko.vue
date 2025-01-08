@@ -2,6 +2,7 @@
 import apiClient from '@/axios'; // axios設定をインポート
 import { reactive, ref, onMounted, watch } from 'vue'; // Vueのreactiveとrefをインポート
 import MapURL from './components/mapURL.vue'; // MapURLコンポーネントをインポート
+import PhotoUploaderGroup from './components/PhotoUploaderGroup.vue'; // パスを確認
 
 // 初期状態の依頼データを格納するreactiveオブジェクト
 const request = reactive({

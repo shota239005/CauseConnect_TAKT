@@ -34,7 +34,7 @@ const handlePhotosUpdated = ({ pictureType, file }) => {
 // 保存処理
 const handleSubmit = async () => {
   const formData = new FormData();
-  formData.append("case_id", 123); // 仮の依頼ID、適宜動的に変更
+  formData.append("case_id", 1); // 仮の依頼ID、適宜動的に変更
 
   // 写真をフォームに追加
   photos.value.forEach(({ pictureType, file }) => {
