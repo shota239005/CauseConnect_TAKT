@@ -1,40 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import apiClient from '@/axios'; // axiosインスタンスをインポート
 
-// ポイント履歴のサンプルデータ（サーバーから取得する場合、APIを使用）
-const currentPoints = ref(1200); // 現在の保有ポイント
+// 現在の保有ポイント
+const currentPoints = ref(0);
 
-// 過去の取引履歴（仮のデータ）
-const transactionHistory = ref([
-  {
-    id: 1,
-    type: "購入",
-    points: 500,
-    totalPoints: 1500,
-    date: "2024-11-01 10:30:00",
-  },
-  {
-    id: 2,
-    type: "交換",
-    points: -200,
-    totalPoints: 1300,
-    date: "2024-11-10 15:00:00",
-  },
-  {
-    id: 3,
-    type: "出資",
-    points: -300,
-    totalPoints: 1000,
-    date: "2024-11-15 09:45:00",
-  },
-  {
-    id: 4,
-    type: "報酬",
-    points: 200,
-    totalPoints: 1200,
-    date: "2024-11-20 14:00:00",
-  },
-]);
+// 過去の取引履歴を保持
+const transactionHistory = ref([]);
 
 // ポップアップを表示するかどうかのフラグ
 const isPopupVisible = ref(false);
@@ -43,6 +15,28 @@ const isPopupVisible = ref(false);
 const togglePopup = () => {
   isPopupVisible.value = !isPopupVisible.value;
 };
+
+// データ取得
+const fetchPointHistory = async () => {
+  try {
+    const response = await apiClient.get('/points/history'); // API呼び出し
+    console.log('APIレスポンス:', response.data);
+
+    // レスポンスデータを反映
+    currentPoints.value = response.data.current_points || 0;
+    transactionHistory.value = response.data.history || [];
+
+    console.log('現在のポイント:', currentPoints.value);
+    console.log('取引履歴:', transactionHistory.value);
+  } catch (error) {
+    console.error('ポイント履歴の取得に失敗:', error);
+    currentPoints.value = 0;
+    transactionHistory.value = [];
+  }
+};
+
+// コンポーネントがマウントされたときにデータを取得
+onMounted(fetchPointHistory);
 </script>
 
 <template>
@@ -63,20 +57,23 @@ const togglePopup = () => {
       <!-- 過去の取引履歴 -->
       <div class="transaction-history">
         <h3>取引履歴</h3>
-        <ul>
-          <li v-for="transaction in transactionHistory" :key="transaction.id" class="transaction-item">
+        <ul v-if="transactionHistory.length > 0">
+          <li v-for="transaction in transactionHistory" :key="transaction.timestamp" class="transaction-item">
             <div>
-              <strong>{{ transaction.type }}</strong> |
-              <span>{{ transaction.date }}</span>
+              <strong>{{ transaction.description }}</strong> |
+              <span>{{ transaction.timestamp }}</span>
             </div>
             <div>
-              <span :class="{'positive': transaction.points > 0, 'negative': transaction.points < 0}">
+              <span :class="{
+                positive: transaction.points > 0,
+                negative: transaction.points < 0,
+              }">
                 {{ transaction.points > 0 ? `+${transaction.points}` : transaction.points }}
               </span>
-              <span> 合計: {{ transaction.totalPoints }} ポイント</span>
             </div>
           </li>
         </ul>
+        <p v-else>取引履歴はありません。</p>
       </div>
     </div>
   </div>
@@ -170,7 +167,6 @@ const togglePopup = () => {
 }
 
 .show-history-button:hover {
-  background-color: #ffca5f
-;
+  background-color: #ffca5f;
 }
 </style>
