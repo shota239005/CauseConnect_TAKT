@@ -1,6 +1,6 @@
 <script setup>
 import FavoriteIcon from "@/components/FavoriteIcon.vue"; // FavoriteIcon をインポート
-import { defineProps, onMounted, ref } from "vue";
+import { defineProps, onMounted, reactive } from "vue";
 import apiClient from "@/axios"; // APIクライアントをインポート
 
 // 親コンポーネントから受け取る `request` プロパティを定義
@@ -9,34 +9,34 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-});
-
-console.log("RequestItem:", props.request);
-
-const request = ref(props.request);
-const prefectures = ref([]);
+}); 
 
 // 都道府県名を取得するための関数
-const fetchPrefectures = async () => {
+const fetchPrefectureName = async (prefId) => {
   try {
     const response = await apiClient.get("/prefectures");
-    prefectures.value = response.data;
-
+    const prefectures = response.data;
+    
     // `pref_id` に基づいて都道府県名を設定
-    const prefecture = prefectures.value.find(
-      (pref) => pref.pref_id === request.value.pref_id
-    );
-    request.value.pref_name = prefecture ? prefecture.pref : "不明な都道府県";
+    const prefecture = prefectures.find((pref) => pref.pref_id === prefId);
+    return prefecture ? prefecture.pref : "不明な都道府県";
 
   } catch (error) {
     console.error("都道府県データの取得に失敗しました:", error);
+    return "不明な都道府県";
   }
 };
 
-// コンポーネントがマウントされた際に都道府県データを取得
-onMounted(() => {
-  fetchPrefectures();
+// `request` を `reactive` にして変更を加える
+const request = reactive({ ...props.request });
+
+// 都道府県名を取得してリクエストデータに追加
+onMounted(async () => {
+  if (!request.pref_name) {
+    request.pref_name = await fetchPrefectureName(request.pref_id);
+  }
 });
+
 </script>
 
 <template>
@@ -54,7 +54,7 @@ onMounted(() => {
     <div class="request-info">
       <h3>{{ request.case_name }}</h3>
 
-      <p><strong>日付:</strong> {{ request.exec_date }}</p>
+      <p><strong>日付:</strong> {{ request.case_date }}</p>
       <p><strong>都道府県:</strong> {{  request.pref_name }}</p>
       <p><strong>場所:</strong> {{ request.address1 }} {{ request.address2 }}</p>
       <p><strong>活動内容:</strong> {{ request.content }}</p>

@@ -2,7 +2,8 @@
 import RequestList from "./components/RequestList.vue"; // RequestListコンポーネントをインポート
 import Refine from "./components/Refine.vue"; // フィルターコンポーネントをインポート
 import search from "@/components/search.vue";
-import { ref,} from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router"; 
 
 // ローディング状態を管理
 const loading = ref(false);
@@ -16,6 +17,20 @@ const filters = ref({
 
 // 受け取った検索結果を保持する
 const searchResults = ref([]);
+// ルート情報を取得
+const route = useRoute();
+
+// クエリパラメータから検索結果を取得して初期化
+onMounted(() => {
+  if (route.query.results) {
+    try {
+      searchResults.value = JSON.parse(route.query.results); // クエリから受け取った結果をパース
+    } catch (error) {
+      console.error("検索結果のパースに失敗しました:", error);
+      searchResults.value = []; // パース失敗時は空配列を設定
+    }
+  }
+});
 
 // 子コンポーネント `Search.vue` からのイベントを受け取る
 const updateResults = (results) => {
