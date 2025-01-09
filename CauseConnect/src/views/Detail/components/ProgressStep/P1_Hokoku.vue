@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import PhotoUploaderGroup from "@/views/Toko/components/PhotoUploaderGroup.vue";
 import apiClient from '@/axios'; // axios設定をインポート
+
 // 初期データ
 const uploaders = [
   { pictureType: 3, label: "参加者写真" },
@@ -15,10 +16,10 @@ const photos = ref([]); // { pictureType, file } を配列で保持
 
 // コメントデータ
 const comments = ref({
-  comment1: "", // 参加者コメント
-  comment2: "", // 依頼場所コメント
-  comment3: "", // 実行前コメント
-  comment4: "", // 実行後コメント
+  comment1: "これは参加者コメントのテストです", // 参加者コメント
+  comment2: "これは依頼場所コメントのテストです", // 依頼場所コメント
+  comment3: "これは実行前コメントのテストです", // 実行前コメント
+  comment4: "これは実行後コメントのテストです", // 実行後コメント
 });
 
 // 画像が更新されたら呼ばれる
@@ -34,7 +35,7 @@ const handlePhotosUpdated = ({ pictureType, file }) => {
 // 保存処理
 const handleSubmit = async () => {
   const formData = new FormData();
-  formData.append("case_id", 1); // 仮の依頼ID、適宜動的に変更
+  formData.append("case_id", 35); // テスト用の依頼ID
 
   // 写真をフォームに追加
   photos.value.forEach(({ pictureType, file }) => {
@@ -136,6 +137,4 @@ textarea {
   font-weight: 500;
   transition: transform 0.3s, box-shadow 0.3s;
 }
-
-
 </style>
