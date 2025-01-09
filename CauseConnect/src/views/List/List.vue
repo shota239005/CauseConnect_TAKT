@@ -3,7 +3,8 @@ import RequestList from "./components/RequestList.vue"; // RequestListコンポ�
 import Refine from "./components/Refine.vue"; // フィルターコンポーネントをインポート
 import search from "@/components/search.vue";
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router"; 
+import { useRoute } from "vue-router";
+import apiClient from "@/axios";
 
 // ローディング状態を管理
 const loading = ref(false);
@@ -17,6 +18,23 @@ const filters = ref({
 
 // 受け取った検索結果を保持する
 const searchResults = ref([]);
+
+// 初期データを取得する関数
+const fetchInitialData = async () => {
+  loading.value = true;
+  try {
+    const response = await apiClient.get("/requests"); // APIエンドポイントに合わせて修正
+    // case_date の降順でソート
+    searchResults.value = response.data.sort((a, b) => {
+      return new Date(b.case_date) - new Date(a.case_date);
+    });
+  } catch (error) {
+    console.error("データ取得エラー:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
 // ルート情報を取得
 const route = useRoute();
 
@@ -29,6 +47,9 @@ onMounted(() => {
       console.error("検索結果のパースに失敗しました:", error);
       searchResults.value = []; // パース失敗時は空配列を設定
     }
+  }
+  else {
+    fetchInitialData(); // 検索条件がない場合は初期データを取得
   }
 });
 
@@ -79,16 +100,9 @@ const resetFilters = () => {
         <div v-if="loading" class="loading-spinner">
           <p>ロード中...</p>
         </div>
-
-        <!-- フィルタリング条件がない場合のメッセージ -->
-        <p v-if="!loading && !filters.keyword && !filters.location && !filters.date" class="no-filters">
-          条件を入力して依頼を絞り込んでください。
-        </p>
-
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
