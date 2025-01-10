@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import apiClient from '@/axios'; // axiosインスタンスをインポート
 
-// 現在の保有ポイント
+// 現在の保有ポイント（合計値を表示）
 const currentPoints = ref(0);
 
 // 過去の取引履歴を保持
@@ -14,6 +14,11 @@ const isPopupVisible = ref(false);
 // ポップアップの表示/非表示をトグル
 const togglePopup = () => {
   isPopupVisible.value = !isPopupVisible.value;
+
+  // ポップアップを開いたときに最新データを取得
+  if (isPopupVisible.value) {
+    fetchPointHistory();
+  }
 };
 
 // データ取得
@@ -23,10 +28,16 @@ const fetchPointHistory = async () => {
     console.log('APIレスポンス:', response.data);
 
     // レスポンスデータを反映
-    currentPoints.value = response.data.current_points || 0;
     transactionHistory.value = response.data.history || [];
 
-    console.log('現在のポイント:', currentPoints.value);
+    // 合計ポイントを計算
+    const totalPoints = transactionHistory.value.reduce((sum, transaction) => {
+      return sum + transaction.points; // 各取引のポイントを加算
+    }, 0);
+
+    currentPoints.value = totalPoints;
+
+    console.log('現在のポイント合計:', currentPoints.value);
     console.log('取引履歴:', transactionHistory.value);
   } catch (error) {
     console.error('ポイント履歴の取得に失敗:', error);

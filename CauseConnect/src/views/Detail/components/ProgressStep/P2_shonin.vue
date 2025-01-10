@@ -1,99 +1,63 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-const providedData = ref({
-  participantsPhoto: '',
-  participantsComment: '',
-  locationPhoto: '',
-  locationComment: '',
-  beforeExecutionPhoto: '',
-  beforeExecutionComment: '',
-  afterExecutionPhoto: '',
-  afterExecutionComment: '',
-});
-
-const isApproved = ref(null);
-const loading = ref(false);
-
-const fetchData = async () => {
-  try {
-    loading.value = true;
-    const response = await axios.get('/api/request-report/35'); // 例: case_id=35
-    const data = response.data;
-
-    // データが存在しない場合に備えたデフォルト値
-    const photos = data.photos || [];
-    const report = data.report || {};
-
-    // データを更新
-    providedData.value = {
-      participantsPhoto: photos.find((photo) => photo.picture_type === 3)?.picture || '',
-      participantsComment: report.comment1 || '参加者のコメントがありません',
-      locationPhoto: photos.find((photo) => photo.picture_type === 4)?.picture || '',
-      locationComment: report.comment2 || '依頼場所のコメントがありません',
-      beforeExecutionPhoto: photos.find((photo) => photo.picture_type === 5)?.picture || '',
-      beforeExecutionComment: report.comment3 || '実行前のコメントがありません',
-      afterExecutionPhoto: photos.find((photo) => photo.picture_type === 6)?.picture || '',
-      afterExecutionComment: report.comment4 || '実行後のコメントがありません',
-    };
-  } catch (error) {
-    console.error('データの取得に失敗しました:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const handleApproval = (status) => {
-  isApproved.value = status;
-};
-
-onMounted(fetchData);
-</script>
-
 <template>
   <div class="progress-step3">
-    <div v-if="loading" class="loading">データを読み込んでいます...</div>
-
-    <div v-else>
+    <div v-if="reportData && photos.length">
       <div class="data-section">
-        <h3>参加者の写真とコメント</h3>
-        <img :src="providedData.participantsPhoto" alt="参加者の写真" width="200" />
-        <p>{{ providedData.participantsComment }}</p>
-
-        <h3>依頼場所の写真とコメント</h3>
-        <img :src="providedData.locationPhoto" alt="依頼場所の写真" width="200" />
-        <p>{{ providedData.locationComment }}</p>
-
-        <h3>実行前の写真とコメント</h3>
-        <img :src="providedData.beforeExecutionPhoto" alt="実行前の写真" width="200" />
-        <p>{{ providedData.beforeExecutionComment }}</p>
-
-        <h3>実行後の写真とコメント</h3>
-        <img :src="providedData.afterExecutionPhoto" alt="実行後の写真" width="200" />
-        <p>{{ providedData.afterExecutionComment }}</p>
+        <h3>依頼報告と写真</h3>
+        <div v-for="(photo, index) in photos" :key="photo.picture_type" class="report-item">
+          <p v-if="index === 0"><strong>参加者コメント:</strong> {{ reportData.comment1 }}</p>
+          <p v-if="index === 1"><strong>依頼場所コメント:</strong> {{ reportData.comment2 }}</p>
+          <p v-if="index === 2"><strong>実行前コメント:</strong> {{ reportData.comment3 }}</p>
+          <p v-if="index === 3"><strong>実行後コメント:</strong> {{ reportData.comment4 }}</p>
+          <img :src="`http://172.16.3.135:8000/storage/${photo.picture}`" :alt="`写真タイプ${photo.picture_type}`" />
+        </div>
       </div>
+    </div>
+    <p v-else-if="error" class="error-message">{{ error }}</p>
+    <p v-else class="loading">読み込み中...</p>
 
-      <div class="approval-buttons">
-        <h2>※承認を押すとポイントが付与されます</h2>
-        <button class="btnNo"
-          @click="handleApproval(false)"
-          :class="{'selected': isApproved === false}">
-          非承認
-        </button>
-        <button class="btn1"
-          @click="handleApproval(true)"
-          :class="{'selected': isApproved === true}">
-          承認
-        </button>
-      </div>
-
-      <p v-if="isApproved !== null">
-        承認結果: {{ isApproved ? '承認済み' : '非承認' }}
-      </p>
+    <div class="approval-buttons">
+      <h2>※承認を押すとポイントが付与されます</h2>
+      <button class="btn-no">非承認</button>
+      <button class="btn-yes">承認</button>
     </div>
   </div>
 </template>
+
+<script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+export default {
+  setup() {
+    const reportData = ref(null); // コメントデータ
+    const photos = ref([]); // 写真データ
+    const error = ref(null); // エラーメッセージ
+
+    const fetchReportData = async (caseId) => {
+      try {
+        // APIからデータを取得
+        const response = await axios.get(`http://172.16.3.135:8000/api/request-report/${caseId}`);
+        reportData.value = response.data.report;
+        photos.value = response.data.photos;
+      } catch (err) {
+        // エラー処理
+        error.value = 'データの取得に失敗しました';
+        console.error(err);
+      }
+    };
+
+    onMounted(() => {
+      fetchReportData(35); // 固定された case_id = 35 を使用
+    });
+
+    return {
+      reportData,
+      photos,
+      error,
+    };
+  },
+};
+</script>
 
 <style scoped>
 .progress-step3 {
@@ -101,6 +65,7 @@ onMounted(fetchData);
   background-color: #f9f9f9;
   border-radius: 8px;
   margin-top: 20px;
+  font-family: Arial, sans-serif;
 }
 
 .data-section {
@@ -112,8 +77,24 @@ onMounted(fetchData);
   margin-bottom: 10px;
 }
 
-.data-section img {
-  margin-bottom: -10px;
+.data-section p {
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.report-item {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.report-item img {
+  max-width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 10px;
 }
 
 .approval-buttons {
@@ -121,53 +102,45 @@ onMounted(fetchData);
   margin-top: 20px;
 }
 
+.approval-buttons h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
 .approval-buttons button {
   margin-right: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
-  border-radius: 4px;
   border: none;
-}
-
-.btnNo {
-  padding: 20px 40px;
-  color: #333;
-  font-size: 30px;
+  border-radius: 4px;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.btn1 {
-  padding: 20px 60px;
-  color: #333;
-  font-size: 30px;
-  font-weight: 500;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.btn1:hover,
-.btn1.selected {
-  color: #333;
-  background-color: #ff8c00;
-  box-shadow: 0 0 0;
-  transform: translate(5px, 5px);
-}
-
-.btnNo:hover,
-.btnNo.selected {
-  background-color: #4b2ddd;
+.btn-no {
+  background-color: #ff6666;
   color: #fff;
-  box-shadow: 0 0 0;
-  transform: translate(5px, 5px);
 }
 
-h3 {
-  color: #333;
-  margin-top: 40px;
+.btn-yes {
+  background-color: #66cc66;
+  color: #fff;
+}
+
+.btn-no:hover, .btn-yes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  color: #d9534f;
+  font-size: 16px;
+  margin-top: 20px;
 }
 
 .loading {
-  font-size: 18px;
-  color: #666;
-  text-align: center;
-  margin: 20px;
+  color: #999;
+  font-size: 16px;
+  margin-top: 20px;
 }
 </style>

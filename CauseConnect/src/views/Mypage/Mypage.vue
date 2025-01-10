@@ -3,10 +3,10 @@ import { ref, reactive, onMounted } from 'vue';
 import apiClient from '@/axios'; // axiosインスタンスのインポート
 import PointHistory from './Component/PointHistory.vue';
 import PurchasePoints from './Component/PurchasePoints.vue';
-
-// ポイント履歴のサンプルデータ（サーバーから取得する場合、APIを使用）
-const currentPoints = ref(1200); // 現在の保有ポイント
 import PhotoUploader from './Component/PhotoUploader.vue';
+
+// 現在の保有ポイント（合計値を反映）
+const currentPoints = ref(0);
 
 // ユーザーデータ
 const user = reactive({
@@ -35,7 +35,7 @@ const prefecture = ref([]);
 // フィードバックメッセージ
 const message = ref('');
 
-// ログインしているユーザー情報を取得
+// ログインしているユーザー情報とポイント履歴を取得
 const fetchUserData = async () => {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -44,20 +44,28 @@ const fetchUserData = async () => {
   }
 
   try {
-    const response = await apiClient.get('/user/me', {
+    const userResponse = await apiClient.get('/user/me', {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const { data } = response;
-    Object.assign(user, data);
+    const pointsResponse = await apiClient.get('/points/history', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-    // 都道府県が取得されない場合の初期値
-    if (!user.address || !user.address.prefectures) {
-      user.address.prefectures = '';
-    }
+    // ユーザーデータを反映
+    Object.assign(user, userResponse.data);
+
+    // ポイント履歴の合計値を計算して反映
+    const totalPoints = pointsResponse.data.history.reduce((sum, transaction) => {
+      return sum + transaction.points;
+    }, 0);
+    currentPoints.value = totalPoints;
+
+    message.value = 'データを正常に取得しました。';
   } catch (error) {
-    console.error('ユーザーデータの取得に失敗しました:', error);
-    message.value = 'ユーザーデータの取得に失敗しました。再度ログインしてください。';
+    console.error('データ取得に失敗:', error);
+    message.value = 'データ取得に失敗しました。再度ログインしてください。';
+    currentPoints.value = 0;
   }
 };
 
@@ -75,29 +83,20 @@ const fetchPrefectures = async () => {
 // ユーザーデータを更新
 const updateUserData = async () => {
   try {
-    console.log("トークン取得開始");
     const token = localStorage.getItem('token');
-    console.log("トークン取得終了");
-
     if (!token) {
       message.value = 'ログイン情報が見つかりません。再度ログインしてください。';
       return;
     }
 
-    console.log("レスポンス取得開始");
-    console.log(user);
-
     const response = await apiClient.put('/user/update', user, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("レスポンス取得終了");
 
     message.value = 'ユーザー情報を更新しました。';
-    console.log('更新成功:', response.data);
-    // 更新成功時にアラートを表示
     alert('ユーザー情報が正常に更新されました！');
+    console.log('更新成功:', response.data);
   } catch (error) {
-
     console.error('ユーザーデータの更新に失敗しました:', error);
     message.value = 'ユーザーデータの更新に失敗しました。';
   }
@@ -140,16 +139,13 @@ onMounted(() => {
   <div class="mypage-container">
     <h1>マイページ</h1>
     <div>
-      <strong>
-        保有ポイント{{ currentPoints }}
-      </strong>
+      <strong>保有ポイント: {{ currentPoints }}</strong>
       <PointHistory />
       <!-- ポイント購入ポップアップボタン -->
       <PurchasePoints @pointsPurchased="fetchUserData" />
 
       <PhotoUploader />
     </div>
-
 
     <!-- フィードバックメッセージ -->
     <p v-if="message" class="message">{{ message }}</p>
@@ -175,7 +171,7 @@ onMounted(() => {
       <div>
         <label for="sex">性別:</label>
         <select id="sex" v-model="user.sex">
-          <option v-for="option in sexes" :key="option" :value="option" :selected="option === user.sex">
+          <option v-for="option in sexes" :key="option" :value="option">
             {{ option }}
           </option>
         </select>
@@ -190,13 +186,12 @@ onMounted(() => {
       </div>
       <div>
         <label for="prefectures">都道府県:</label>
-        <select id="prefectures" v-model="user.address.prefectures.pref_id">
+        <select id="prefectures" v-model="user.address.prefectures">
           <option v-for="pref in prefecture" :key="pref.pref_id" :value="pref.pref_id">
             {{ pref.pref }}
           </option>
         </select>
       </div>
-
       <div>
         <label for="address1">住所1:</label>
         <input id="address1" v-model="user.address.address1" type="text" />
@@ -219,6 +214,7 @@ onMounted(() => {
     </form>
   </div>
 </template>
+
 
 
 <style scoped>

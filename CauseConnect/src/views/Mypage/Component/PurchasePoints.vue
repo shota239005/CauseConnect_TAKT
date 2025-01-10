@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import apiClient from "@/axios"; // axios 設定をインポート
-
+const emit = defineEmits(['update-parent']);
 const isPopupVisible = ref(false); // ポップアップの表示フラグ
 const pointsToPurchase = ref(0); // 購入ポイント数
 const message = ref(''); // フィードバックメッセージ
@@ -14,16 +14,17 @@ const togglePopup = () => {
 // ポイント購入処理
 const purchasePoints = async () => {
     try {
-        const response = await apiClient.post('/api/points/purchase', { points: purchaseAmount.value });
-
+        const response = await apiClient.post('/points/purchase', { points: pointsToPurchase.value });
 
 
 
         message.value = response.data.message;
         pointsToPurchase.value = 0; // フォームをリセット
+         // 親コンポーネントに更新通知を送る
+         emit('update-parent'); // カスタムイベントを発火
     } catch (error) {
         console.error('購入エラー:', error.response?.data || error);
-        message.value = 'ポイント購入中にエラーが発生しました。';
+        message.value = error.response?.data?.message || 'ポイント購入中にエラーが発生しました。';
     }
 };
 </script>

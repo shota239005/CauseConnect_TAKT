@@ -48,7 +48,7 @@ const handleSubmit = async () => {
   });
 
   try {
-    const response = await apiClient.post("/api/hokoku", formData, {
+    const response = await apiClient.post("/request-report", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     console.log("保存成功:", response.data);
