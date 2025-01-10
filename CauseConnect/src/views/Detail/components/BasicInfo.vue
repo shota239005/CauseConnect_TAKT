@@ -1,61 +1,67 @@
 <script setup>
 import Map from '@/components/Map.vue';
 import Home from '@/views/home/home.vue';
-// 仮のモックデータ
-const request = {
-  requestName: '地域美化活動',
-  activityDate: '2024-12-01',
-  startTime: '9',
-  endTime: '15',
-  prefecture: '東京都',
-  address1: '渋谷区',
-  address2: '代々木公園',
-  equipmentNeeded: '無',
-  basicInfo: '地域の公園を掃除して、美化を促進します。',
-  requestDetails: '参加者全員で代々木公園のゴミ拾いを行います。手袋は各自持参してください。',
-};
+
+// 親コンポーネントから受け取る `request` プロパティを定義
+const props = defineProps({
+  request: {
+    type: Object,
+    required: true,
+  },
+});
+
+// デバッグ用ログ
+// console.log('BasicInfo request:', props.request);
+
+// 実際に使うデータ
+const requestData = props.request[0]; // データが `0` のキーに入っている場合
+console.log('BasicInfo requestData:', requestData);
 </script>
 
 <template>
   <div class="basic-info">
     <h2>基本情報</h2>
 
+    <!-- デバッグ用 -->
+    <!-- <pre>{{ request }}</pre>
+    <pre>{{ requestData }}</pre> -->
+
     <!-- 仮の画像枠 -->
     <div class="image-container">
       <div class="image-placeholder">画像をここに表示</div>
     </div>
 
-    <!-- モックデータを表示 -->
+    <!-- requestData を表示 -->
     <div class="info">
-      <p><strong>依頼名：</strong>{{ request.requestName }}</p>
-      <p><strong>活動日：</strong>{{ request.activityDate }}</p>
+      <p><strong>依頼名：</strong>{{ requestData.case_name }}</p>
+      <p><strong>活動日：</strong>{{ requestData.case_date }}</p>
       <p>
-        <strong>活動時間：</strong>{{ request.startTime }}時～
-        {{ request.endTime }}時
+        <strong>活動時間：</strong>{{ requestData.start_activty }}時～{{ requestData.end_activty }}時
       </p>
       <p>
-        <strong>場所：</strong>{{ request.prefecture }} {{ request.address1 }}
-        {{ request.address2 }}
+        <strong>場所：</strong>{{ requestData.area_detail }}
       </p>
-      <p><strong>必要備品：</strong>{{ request.equipmentNeeded }}</p>
-      <p><strong>活動目的：</strong>{{ request.basicInfo }}</p>
-      <p><strong>依頼詳細：</strong>{{ request.requestDetails }}</p>
+      <p><strong>必要備品：</strong>{{ requestData.equipment }}</p>
+      <p><strong>活動目的：</strong>{{ requestData.contents }}</p>
+      <p><strong>依頼詳細：</strong>{{ requestData.content }}</p>
     </div>
-        <!-- 仮の画像枠 -->
-        <div class="image-container">
+
+    <!-- 仮の画像枠 -->
+    <div class="image-container">
       <div class="image-placeholder">画像をここに表示</div>
     </div>
-    <Map/>
+
+    <Map />
+
     <div class="button-container">
       <RouterLink to="/">
-      <button class="syusshi" >出資者で参加</button>
+        <button class="syusshi">出資者で参加</button>
       </RouterLink>
       <p>どちらで参加しますか？</p>
       <RouterLink to="/">
         <button class="jikko" id="jiko" @click="Home">実行者で参加</button>
       </RouterLink>
     </div>
-
   </div>
 </template>
 

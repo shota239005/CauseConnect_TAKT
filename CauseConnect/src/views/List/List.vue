@@ -23,7 +23,7 @@ const searchResults = ref([]);
 const fetchInitialData = async () => {
   loading.value = true;
   try {
-    const response = await apiClient.get("/requests"); // APIエンドポイントに合わせて修正
+    const response = await apiClient.get("/search-posts"); // APIエンドポイントに合わせて修正
     //case_date の降順でソート
     searchResults.value = response.data.sort((a, b) => {
       return new Date(b.case_date) - new Date(a.case_date);
@@ -76,6 +76,7 @@ const resetFilters = () => {
     date: "",
   };
 };
+
 </script>
 
 <template>

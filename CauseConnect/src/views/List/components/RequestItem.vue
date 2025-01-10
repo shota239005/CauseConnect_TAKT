@@ -60,7 +60,11 @@ onMounted(async () => {
       <p><strong>活動内容:</strong> {{ request.content }}</p>
 
       <!-- 詳細ページへのリンク -->
-      <router-link :to="`/details/${request.id}`" class="details-link">詳細を見る</router-link>
+      <router-link :to="`/details/${request.case_id}`" class="details-link">詳細を見る</router-link>
+
+      <!-- 詳細ページへのリンク -->
+      <!-- <router-link :to="`/detail?id=${request.case_id}`" class="details-link">詳細を見る</router-link> -->
+
     </div>
   </div>
 </template>
