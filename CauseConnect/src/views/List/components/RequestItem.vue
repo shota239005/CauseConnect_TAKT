@@ -9,14 +9,14 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-}); 
+});
 
 // 都道府県名を取得するための関数
 const fetchPrefectureName = async (prefId) => {
   try {
     const response = await apiClient.get("/prefectures");
     const prefectures = response.data;
-    
+
     // `pref_id` に基づいて都道府県名を設定
     const prefecture = prefectures.find((pref) => pref.pref_id === prefId);
     return prefecture ? prefecture.pref : "不明な都道府県";

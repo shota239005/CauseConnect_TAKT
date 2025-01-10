@@ -168,12 +168,12 @@ export default {
 </script>
 
 
- 
- 
+
+
 <template>
   <div class="toko-page">
     <h1 class="page-title">依頼を投稿する</h1>
- 
+
     <!-- フォーム -->
     <form @submit.prevent="submitRequest">
       <!-- 依頼ポイント -->
@@ -181,13 +181,13 @@ export default {
         <label for="request-points">依頼ポイント</label>
         <input id="request-points" v-model="requestPoints" placeholder="100" required>ポイント
       </div>
- 
+
       <!-- 依頼名 -->
       <div class="form-group">
         <label for="request-name">依頼名</label>
         <input type="text" id="request-name" v-model="requestName" placeholder="依頼の名前を入力してください" required />
       </div>
- 
+
       <!-- 募集人数 -->
       <div class="form-group">
         <label for="min-people">募集人数</label>
@@ -195,7 +195,7 @@ export default {
           <select id="min-people" v-model="minPeople">
             <option v-for="num in 20" :key="'min-' + num" :value="num">{{ num }}</option>
           </select>
-          ～ 
+          ～
           <select id="max-people" v-model="maxPeople">
             <option v-for="num in 20" :key="'max-' + num" :value="num">{{ num }}</option>
           </select>
@@ -216,7 +216,7 @@ export default {
           <select id="start-time" v-model="startTime">
             <option v-for="hour in hours" :key="'start-' + hour" :value="hour">{{ hour }}時</option>
           </select>
-          ～ 
+          ～
           <select id="end-time" v-model="endTime">
             <option v-for="hour in hours" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
           </select>
@@ -240,7 +240,7 @@ export default {
           <input type="text" id="address2" v-model="address2" placeholder="住所2" />
         </div>
       </div>
-      
+
 
       <!-- 実行も参加 -->
       <div class="form-group">
