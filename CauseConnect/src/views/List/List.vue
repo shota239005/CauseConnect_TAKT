@@ -24,7 +24,7 @@ const fetchInitialData = async () => {
   loading.value = true;
   try {
     const response = await apiClient.get("/requests"); // APIエンドポイントに合わせて修正
-    // case_date の降順でソート
+    //case_date の降順でソート
     searchResults.value = response.data.sort((a, b) => {
       return new Date(b.case_date) - new Date(a.case_date);
     });
@@ -56,7 +56,7 @@ onMounted(() => {
 // 子コンポーネント `Search.vue` からのイベントを受け取る
 const updateResults = (results) => {
   console.log("List.vue:", results);
-  searchResults.value = results;
+  searchResults.value = results; // 受け取った検索結果で更新
 };
 
 // フィルタリング処理をモック化

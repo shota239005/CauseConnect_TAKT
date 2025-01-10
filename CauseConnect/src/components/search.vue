@@ -38,6 +38,9 @@ const fetchAreas = async () => {
 // 検索処理
 const searchPosts = async () => {
   try {
+     // 検索結果をリセット
+     searchResults.value = [];
+     emit("update-results", []); // 親コンポーネントにも空の配列を通知
     // 送信するパラメータのオブジェクトを作成
     const params = {
     };
