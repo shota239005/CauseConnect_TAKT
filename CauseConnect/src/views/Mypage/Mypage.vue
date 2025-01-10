@@ -138,11 +138,23 @@ onMounted(() => {
 <template>
   <div class="mypage-container">
     <h1>マイページ</h1>
+    <div class="points-section">
+      <div class="points-card">
+        <div class="points-info">
+          <h2>🪙保有ポイント</h2>
+          <p>{{ currentPoints }} pt</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <PointHistory />
+        <!-- ポイント購入ポップアップボタン -->
+        <PurchasePoints @pointsPurchased="fetchUserData" />
+      </div>
+    </div>
+
+
     <div>
-      <strong>保有ポイント: {{ currentPoints }}</strong>
-      <PointHistory />
-      <!-- ポイント購入ポップアップボタン -->
-      <PurchasePoints @pointsPurchased="fetchUserData" />
 
       <PhotoUploader />
     </div>
@@ -270,4 +282,60 @@ textarea {
   color: green;
   text-align: center;
 }
+
+.points-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 0px;
+  height: 100%;
+}
+
+.points-card, .actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.points-card {
+  background: #fff3cd;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  height: 75px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.points-icon, .points-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.points-info {
+  display: flex;
+  flex-direction: column; /* 縦並びに変更 */
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  gap: 2px; /* タイトルとポイント数の間の余白を狭く */
+  line-height: 0.5; /* 行間を狭くして文字の間隔を近く */
+}
+
+.points-info p {
+  font-size: 32px; /* ポイント数の数字を大きく */
+  font-weight: bold;
+  margin: 0;
+}
+
+
+.actions {
+  gap: 15px;
+}
+
 </style>

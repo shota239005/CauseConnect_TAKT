@@ -131,7 +131,7 @@ export default {
 
     <!-- アップロードボタン -->
     <button @click="uploadImage" class="upload-btn" :disabled="isUploading">
-      {{ isUploading ? "アップロード中..." : "アップロード" }}
+      {{ isUploading ? "アップロード中..." : "🔄" }}
     </button>
   </div>
 </template>
@@ -186,14 +186,14 @@ export default {
 }
 
 .upload-btn {
-  margin-top: 20px;
+  /* margin-top: 20px;
   padding: 10px 20px;
-  background-color: #ff8c00;
+  background-color: #ff8c00; */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 15rem;
 }
 
 .upload-btn:hover {

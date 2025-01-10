@@ -90,7 +90,9 @@ onMounted(fetchPointHistory);
   </div>
 
   <!-- トリガーボタン（マイページ内でボタンをクリックすると表示） -->
-  <button @click="togglePopup" class="show-history-button">ポイント履歴を見る</button>
+  <button @click="togglePopup" class="show-history-button">
+    ポイント履歴
+  </button>
 </template>
 
 <style scoped>
@@ -175,9 +177,19 @@ onMounted(fetchPointHistory);
   border-radius: 5px;
   font-size: 16px;
   margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.show-history-button::before {
+  content: "📜";
+  font-size: 20px;
 }
 
 .show-history-button:hover {
   background-color: #ffca5f;
+  transform: scale(1.05);
 }
 </style>
