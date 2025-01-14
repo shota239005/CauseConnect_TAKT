@@ -2,7 +2,9 @@
 import RequestList from "./components/RequestList.vue"; // RequestListコンポーネントをインポート
 import Refine from "./components/Refine.vue"; // フィルターコンポーネントをインポート
 import search from "@/components/search.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import apiClient from "@/axios";
 
 // ローディング状態を管理
 const loading = ref(false);
@@ -13,6 +15,49 @@ const filters = ref({
   location: "",
   date: "",
 });
+
+// 受け取った検索結果を保持する
+const searchResults = ref([]);
+
+// 初期データを取得する関数
+const fetchInitialData = async () => {
+  loading.value = true;
+  try {
+    const response = await apiClient.get("/search-posts"); // APIエンドポイントに合わせて修正
+    //case_date の降順でソート
+    searchResults.value = response.data.sort((a, b) => {
+      return new Date(b.case_date) - new Date(a.case_date);
+    });
+  } catch (error) {
+    console.error("データ取得エラー:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// ルート情報を取得
+const route = useRoute();
+
+// クエリパラメータから検索結果を取得して初期化
+onMounted(() => {
+  if (route.query.results) {
+    try {
+      searchResults.value = JSON.parse(route.query.results); // クエリから受け取った結果をパース
+    } catch (error) {
+      console.error("検索結果のパースに失敗しました:", error);
+      searchResults.value = []; // パース失敗時は空配列を設定
+    }
+  }
+  else {
+    fetchInitialData(); // 検索条件がない場合は初期データを取得
+  }
+});
+
+// 子コンポーネント `Search.vue` からのイベントを受け取る
+const updateResults = (results) => {
+  console.log("List.vue:", results);
+  searchResults.value = results; // 受け取った検索結果で更新
+};
 
 // フィルタリング処理をモック化
 const applyFilters = (newFilters) => {
@@ -31,11 +76,15 @@ const resetFilters = () => {
     date: "",
   };
 };
+
 </script>
 
 <template>
-  <search/>
   <div class="list-page">
+
+    <!-- search.vue のコンポーネント -->
+    <search @update-results="updateResults" />
+
     <div class="list-container">
       <!-- 左側: フィルター -->
       <div class="refine-sidebar">
@@ -46,33 +95,27 @@ const resetFilters = () => {
       <!-- 右側: 依頼リスト -->
       <div class="list-content">
         <h1>依頼一覧</h1>
+        <RequestList :requests="searchResults" />
 
         <!-- ローディングスピナー -->
         <div v-if="loading" class="loading-spinner">
           <p>ロード中...</p>
         </div>
-
-        <!-- フィルタリング条件がない場合のメッセージ -->
-        <p v-if="!loading && !filters.keyword && !filters.location && !filters.date" class="no-filters">
-          条件を入力して依頼を絞り込んでください。
-        </p>
-
-        <!-- フィルター適用後の依頼リスト -->
-        <RequestList v-if="!loading" :filters="filters" />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.search-container{
+.search-container {
   width: 50%;
   margin-right: 190px;
   margin-top: 10px;
   margin-bottom: 0%;
   padding: 0%;
 }
-.btn1{
+
+.btn1 {
   color: #333;
 }
 
@@ -109,5 +152,4 @@ h1 {
   color: #999;
   text-align: center;
 }
-
 </style>

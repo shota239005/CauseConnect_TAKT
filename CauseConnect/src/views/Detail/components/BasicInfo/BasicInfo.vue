@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import Jikko from './Jikko.vue';
 import Syusshi from './Syusshi.vue';
 import Map from '@/components/Map.vue';
+<<<<<<< HEAD:CauseConnect/src/views/Detail/components/BasicInfo/BasicInfo.vue
 
 // モックデータ
 const request = {
@@ -30,19 +31,42 @@ const openPopup = (type) => {
 const closePopup = () => {
   activePopup.value = null;
 };
+=======
+import Home from '@/views/home/home.vue';
+
+// 親コンポーネントから受け取る `request` プロパティを定義
+const props = defineProps({
+  request: {
+    type: Object,
+    required: true,
+  },
+});
+
+// デバッグ用ログ
+// console.log('BasicInfo:', props.request);
+
+// データ構造に対応する変数
+const requestData = props.request[0]; // データが `0` のキーに入っている場合
+console.log('BasicInfo:', requestData);
+>>>>>>> teamTA:CauseConnect/src/views/Detail/components/BasicInfo.vue
 </script>
 
 <template>
   <div class="basic-info">
     <h2>基本情報</h2>
 
+    <!-- デバッグ用 -->
+    <!-- <pre>{{ request }}</pre>
+    <pre>{{ requestData }}</pre> -->
+
     <!-- 仮の画像枠 -->
     <div class="image-container">
       <div class="image-placeholder">画像をここに表示</div>
     </div>
 
-    <!-- モックデータを表示 -->
+    <!-- requestData を表示 -->
     <div class="info">
+<<<<<<< HEAD:CauseConnect/src/views/Detail/components/BasicInfo/BasicInfo.vue
       <p><strong>依頼名：</strong>{{ request.requestName }}</p>
       <p><strong>活動日：</strong>{{ request.activityDate }}</p>
       <p>
@@ -62,13 +86,38 @@ const closePopup = () => {
     <!-- ボタン -->
     <div class="button-container">
       <button class="syusshi" @click="openPopup('syusshi')">出資者で参加</button>
+=======
+      <p><strong>依頼名：</strong>{{ requestData.case_name || 'データなし' }}</p>
+      <p><strong>活動日：</strong>{{ requestData.case_date  || 'データなし' }}</p>
+      <p><strong>活動時間：</strong>{{ requestData.start_activty || '不明' }}時～{{ requestData.end_activty || '不明' }}時</p>
+      <p><strong>場所：</strong>{{ requestData.area_detail  || 'データなし' }}</p>
+      <p><strong>必要備品：</strong>{{ requestData.equipment  || 'データなし' }}</p>
+      <p><strong>依頼達成条件：</strong>{{ requestData.achieve  || 'データなし' }}</p>
+      <p><strong>依頼詳細：</strong>{{ requestData.contents  || 'データなし' }}</p>
+    </div>
+
+    <!-- 仮の画像枠 -->
+    <div class="image-container">
+      <div class="image-placeholder">画像をここに表示</div>
+    </div>
+
+    <Map />
+
+    <div class="button-container">
+      <RouterLink to="/">
+        <button class="syusshi">出資者で参加</button>
+      </RouterLink>
+>>>>>>> teamTA:CauseConnect/src/views/Detail/components/BasicInfo.vue
       <p>どちらで参加しますか？</p>
       <button class="jikko" @click="openPopup('jikko')">実行者で参加</button>
     </div>
+<<<<<<< HEAD:CauseConnect/src/views/Detail/components/BasicInfo/BasicInfo.vue
 
     <!-- ポップアップ -->
     <Syusshi v-if="activePopup === 'syusshi'" @close="closePopup" />
     <Jikko v-if="activePopup === 'jikko'" @close="closePopup" />
+=======
+>>>>>>> teamTA:CauseConnect/src/views/Detail/components/BasicInfo.vue
   </div>
 </template>
 

@@ -254,6 +254,9 @@ onMounted(() => {
 
 </script>
 
+
+
+
 <template>
   <div class="toko-page">
     <h1 class="page-title">依頼を投稿する</h1>
@@ -280,7 +283,7 @@ onMounted(() => {
             <option v-for="num in 20" :key="'min-' + num" :value="num">{{ num }}</option>
           </select>
           ～
-          <select id="max-people" v-model="request.maxPeople">
+          <select id="max-people" v-model="maxPeople">
             <option v-for="num in 20" :key="'max-' + num" :value="num">{{ num }}</option>
           </select>
           人
@@ -301,8 +304,8 @@ onMounted(() => {
             <option v-for="hour in 24" :key="'start-' + hour" :value="hour">{{ hour }}時</option>
           </select>
           ～
-          <select id="end-time" v-model="request.endTime">
-            <option v-for="hour in 24" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
+          <select id="end-time" v-model="endTime">
+            <option v-for="hour in hours" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
           </select>
         </div>
       </div>

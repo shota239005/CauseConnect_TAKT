@@ -18,9 +18,14 @@ const routes = [
   { path: '/Register', name: 'Register', component: Register },
   { path: '/list', name: 'List', component: List }, // リストページ
   { path: '/mypage', name: 'Mypage', component: Mypage }, // マイページルート
-  { path: '/details/:id', name: 'Detail', component: Detail },
+  {
+    path: '/details/:id',
+    name: 'Detail',
+    component: Detail,
+    props: true, // URL パラメータを props として渡す
+  },
+  // { path: '/details/:id', name: 'Detail', component: Detail, props: true },
   { path: '/Favo', name: 'Favo', component: Favo },//お気に入り一覧
-
 ]
 
 const router = createRouter({

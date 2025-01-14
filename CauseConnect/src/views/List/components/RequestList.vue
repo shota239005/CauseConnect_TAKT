@@ -1,16 +1,14 @@
 <script setup>
-import { ref } from "vue";
-import RequestItem from "./RequestItem.vue"; // RequestItemコンポーネントをインポート
+import { defineProps } from "vue";
+import RequestItem from "./RequestItem.vue"; // RequestItem コンポーネントをインポート
 
-// ダミーデータの依頼リスト
-const requests = ref([
-  {
-    id: 1,
-    name: "地域美化活動",
-    description: "地域の公園を掃除する活動です。",
-    date: "2024-12-01",
-    location: "東京都渋谷区",
+// 親コンポーネントから `requests` を受け取る
+const props = defineProps({
+  requests: {
+    type: Array,
+    required: true,
   },
+<<<<<<< HEAD
   {
     id: 2,
     name: "川の清掃",
@@ -33,19 +31,26 @@ const requests = ref([
     location: "長野県松本市",
   },
 ]);
+=======
+});
+>>>>>>> teamTA
 </script>
 
 <template>
   <div class="request-list">
-    <!-- 依頼リストを表示 -->
-    <div>
-      <RequestItem
-        v-for="request in requests"
-        :key="request.id"
-        :request="request"
-        class="request-item"
-      />
+
+    <!-- リストが空の場合のメッセージ -->
+    <div v-if="requests.length === 0" class="no-requests">
+      現在、表示できる依頼はありません。
     </div>
+
+     <!-- リストがある場合は表示 -->
+     <div v-else>
+      <div v-for="request in requests" :key="request.id">
+        <RequestItem :request="request" />
+      </div>
+    </div>
+
   </div>
 </template>
 
