@@ -11,11 +11,11 @@ const props = defineProps({
 });
 
 // デバッグ用ログ
-// console.log('BasicInfo request:', props.request);
+// console.log('BasicInfo:', props.request);
 
-// 実際に使うデータ
+// データ構造に対応する変数
 const requestData = props.request[0]; // データが `0` のキーに入っている場合
-console.log('BasicInfo requestData:', requestData);
+console.log('BasicInfo:', requestData);
 </script>
 
 <template>
@@ -33,17 +33,13 @@ console.log('BasicInfo requestData:', requestData);
 
     <!-- requestData を表示 -->
     <div class="info">
-      <p><strong>依頼名：</strong>{{ requestData.case_name }}</p>
-      <p><strong>活動日：</strong>{{ requestData.case_date }}</p>
-      <p>
-        <strong>活動時間：</strong>{{ requestData.start_activty }}時～{{ requestData.end_activty }}時
-      </p>
-      <p>
-        <strong>場所：</strong>{{ requestData.area_detail }}
-      </p>
-      <p><strong>必要備品：</strong>{{ requestData.equipment }}</p>
-      <p><strong>活動目的：</strong>{{ requestData.contents }}</p>
-      <p><strong>依頼詳細：</strong>{{ requestData.content }}</p>
+      <p><strong>依頼名：</strong>{{ requestData.case_name || 'データなし' }}</p>
+      <p><strong>活動日：</strong>{{ requestData.case_date  || 'データなし' }}</p>
+      <p><strong>活動時間：</strong>{{ requestData.start_activty || '不明' }}時～{{ requestData.end_activty || '不明' }}時</p>
+      <p><strong>場所：</strong>{{ requestData.area_detail  || 'データなし' }}</p>
+      <p><strong>必要備品：</strong>{{ requestData.equipment  || 'データなし' }}</p>
+      <p><strong>依頼達成条件：</strong>{{ requestData.achieve  || 'データなし' }}</p>
+      <p><strong>依頼詳細：</strong>{{ requestData.contents  || 'データなし' }}</p>
     </div>
 
     <!-- 仮の画像枠 -->

@@ -1,40 +1,10 @@
-<!-- <script setup>
-import BasicInfo from './components/BasicInfo.vue';
-import Editmenu from './components/Editmenu.vue';
-import ProgressStep from './components/ProgressStep/ProgressStep.vue';
-import search from '@/components/search.vue';
-
-// 進行度の状態（0～4）
-const currentProgress = 2; // 仮の進行度データ（0:未着手、4:完了）
-</script>
-
-<template>
-  <search/>
-    <div class="detail-page">
-        <-- 上部：基本情報＆参加者情報 -->
-        <!-- <div class="upper-section">
-            <div class="left-section">
-                <BasicInfo />
-            </div>
-            <div class="right-section">
-                <Editmenu />
-            </div>
-        </div>
-
-        <-- 下部：進行度1～4 -->
-        <!-- <div class="progress-section">
-            <ProgressStep />
-        </div>
-    </div>
-</template> -->
-
 <script setup>
 import BasicInfo from './components/BasicInfo.vue';
 import Editmenu from './components/Editmenu.vue';
 import ProgressStep from './components/ProgressStep/ProgressStep.vue';
 import search from '@/components/search.vue';
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import apiClient from '@/axios'; // Axios クライアントをインポート
 
 // URL パラメータの 'id' を props として受け取る
@@ -61,7 +31,7 @@ const fetchRequestDetails = async () => {
     loading.value = false;
 
     // データ取得後にログを表示
-    console.log("取得したデータ:", requestDetails.value);
+    console.log("Detail.vue:", requestDetails.value);
   } catch (error) {
     console.error("データ取得に失敗しました:", error);
     loading.value = false;
@@ -70,6 +40,16 @@ const fetchRequestDetails = async () => {
 
 // コンポーネントがマウントされた時にデータを取得
 onMounted(fetchRequestDetails);
+
+// `props.id` が変わったときにデータを再取得
+watch(
+  () => props.id,
+  (newId, oldId) => {
+    if (newId !== oldId) {
+      fetchRequestDetails(); // 新しい ID に基づきデータ取得
+    }
+  }
+);
 
 // 進行度の状態（0～4）
 const currentProgress = 2; // 仮の進行度データ（0:未着手、4:完了）
