@@ -198,7 +198,7 @@ onMounted(() => {
       </div>
       <div>
         <label for="prefectures">都道府県:</label>
-        <select id="prefectures" v-model="user.address.prefectures">
+        <select id="prefectures" v-model="user.address.prefectures.pref_id">
           <option v-for="pref in prefecture" :key="pref.pref_id" :value="pref.pref_id">
             {{ pref.pref }}
           </option>

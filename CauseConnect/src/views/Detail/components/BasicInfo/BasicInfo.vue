@@ -3,35 +3,6 @@ import { ref } from 'vue';
 import Jikko from './Jikko.vue';
 import Syusshi from './Syusshi.vue';
 import Map from '@/components/Map.vue';
-<<<<<<< HEAD:CauseConnect/src/views/Detail/components/BasicInfo/BasicInfo.vue
-
-// モックデータ
-const request = {
-  requestName: '地域美化活動',
-  activityDate: '2024-12-01',
-  startTime: '9',
-  endTime: '15',
-  prefecture: '東京都',
-  address1: '渋谷区',
-  address2: '代々木公園',
-  equipmentNeeded: '無',
-  basicInfo: '地域の公園を掃除して、美化を促進します。',
-  requestDetails: '参加者全員で代々木公園のゴミ拾いを行います。手袋は各自持参してください。',
-};
-
-// 現在表示中のポップアップタイプ
-const activePopup = ref(null); // 'syusshi' または 'jikko'
-
-// ポップアップを開く
-const openPopup = (type) => {
-  activePopup.value = type;
-};
-
-// ポップアップを閉じる
-const closePopup = () => {
-  activePopup.value = null;
-};
-=======
 import Home from '@/views/home/home.vue';
 
 // 親コンポーネントから受け取る `request` プロパティを定義
@@ -48,7 +19,6 @@ const props = defineProps({
 // データ構造に対応する変数
 const requestData = props.request[0]; // データが `0` のキーに入っている場合
 console.log('BasicInfo:', requestData);
->>>>>>> teamTA:CauseConnect/src/views/Detail/components/BasicInfo.vue
 </script>
 
 <template>
@@ -66,27 +36,6 @@ console.log('BasicInfo:', requestData);
 
     <!-- requestData を表示 -->
     <div class="info">
-<<<<<<< HEAD:CauseConnect/src/views/Detail/components/BasicInfo/BasicInfo.vue
-      <p><strong>依頼名：</strong>{{ request.requestName }}</p>
-      <p><strong>活動日：</strong>{{ request.activityDate }}</p>
-      <p>
-        <strong>活動時間：</strong>{{ request.startTime }}時～{{ request.endTime }}時
-      </p>
-      <p>
-        <strong>場所：</strong>{{ request.prefecture }} {{ request.address1 }} {{ request.address2 }}
-      </p>
-      <p><strong>必要備品：</strong>{{ request.equipmentNeeded }}</p>
-      <p><strong>活動目的：</strong>{{ request.basicInfo }}</p>
-      <p><strong>依頼詳細：</strong>{{ request.requestDetails }}</p>
-    </div>
-
-    <!-- 地図表示 -->
-    <Map />
-
-    <!-- ボタン -->
-    <div class="button-container">
-      <button class="syusshi" @click="openPopup('syusshi')">出資者で参加</button>
-=======
       <p><strong>依頼名：</strong>{{ requestData.case_name || 'データなし' }}</p>
       <p><strong>活動日：</strong>{{ requestData.case_date  || 'データなし' }}</p>
       <p><strong>活動時間：</strong>{{ requestData.start_activty || '不明' }}時～{{ requestData.end_activty || '不明' }}時</p>
@@ -107,17 +56,9 @@ console.log('BasicInfo:', requestData);
       <RouterLink to="/">
         <button class="syusshi">出資者で参加</button>
       </RouterLink>
->>>>>>> teamTA:CauseConnect/src/views/Detail/components/BasicInfo.vue
       <p>どちらで参加しますか？</p>
       <button class="jikko" @click="openPopup('jikko')">実行者で参加</button>
     </div>
-<<<<<<< HEAD:CauseConnect/src/views/Detail/components/BasicInfo/BasicInfo.vue
-
-    <!-- ポップアップ -->
-    <Syusshi v-if="activePopup === 'syusshi'" @close="closePopup" />
-    <Jikko v-if="activePopup === 'jikko'" @close="closePopup" />
-=======
->>>>>>> teamTA:CauseConnect/src/views/Detail/components/BasicInfo.vue
   </div>
 </template>
 

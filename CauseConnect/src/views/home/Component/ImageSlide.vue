@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-
-<script>
-=======
 <!-- <script>
->>>>>>> teamTA
 import p1Img from '@/assets/img/basyo.png';
 import p2Img from '@/assets/img/kawa.jpg';
 import p3Img from '@/assets/img/HomeImg.jpg';
@@ -124,21 +119,6 @@ const navigateToPage = (slide) => {
 
 <template>
   <div class="slider-container" @mouseenter="pauseSlide" @mouseleave="resumeSlide">
-<<<<<<< HEAD
-    <!-- 無限スクロール用スライド -->
-    <div class="slides-wrapper">
-      <div
-        v-for="(slide, index) in slides"
-        :key="index"
-        class="slide"
-        @click="navigateToPage(slide)"
-      >
-        <div class="slide-content">
-          <img :src="slide.image" alt="slide image" class="slide-image" />
-          <h2>{{ slide.title }}</h2>
-          <p>{{ slide.description }}</p>
-          <p>現在の総額ポイント：８００P</p>
-=======
     <div class="slides-wrapper">
       <!-- スライドデータを表示 -->
       <div v-for="(slide, index) in slides.items" :key="index" class="slide" @click="navigateToPage(slide)">
@@ -151,16 +131,11 @@ const navigateToPage = (slide) => {
           <p>{{ slide.description || '内容がありません' }}</p>
           <!-- 投稿の補助ポイント (sup_point) -->
           <p>補助ポイント: {{ slide.point || '不明' }} </p>
->>>>>>> teamTA
         </div>
       </div>
     </div>
   </div>
 </template>
-<<<<<<< HEAD
-
-=======
->>>>>>> teamTA
 
 <style scoped>
 .slider-container {
