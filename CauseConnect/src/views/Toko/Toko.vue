@@ -21,7 +21,7 @@ const request = reactive({
   participation: '', //依頼者参加
   equipmentNeeded: '無', // 必要備品
   caseId: null, // 投稿後にセットされる依頼ID
-  googleMap: '', 
+  googleMap: '',
 });
 // アップロードされた写真を格納
 const uploadedPhotos = reactive({});
