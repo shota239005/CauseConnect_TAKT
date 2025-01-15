@@ -193,7 +193,7 @@ export default {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 15rem;
+  font-size: 3rem;
 }
 
 .upload-btn:hover {

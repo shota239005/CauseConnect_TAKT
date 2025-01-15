@@ -24,7 +24,6 @@ const routes = [
     component: Detail,
     props: true, // URL パラメータを props として渡す
   },
-  // { path: '/details/:id', name: 'Detail', component: Detail, props: true },
   { path: '/Favo', name: 'Favo', component: Favo },//お気に入り一覧
 ]
 

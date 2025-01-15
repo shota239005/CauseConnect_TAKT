@@ -6,23 +6,25 @@ import PhotoUploaderGroup from './components/PhotoUploaderGroup.vue'; // パス�
 
 // 初期状態の依頼データを格納するreactiveオブジェクト
 const request = reactive({
-  requestPoints: '', // 出資ポイント
-  basicInfo: '', // 基本情報（フリー入力欄）
-  requestName: '', // 依頼名
-  requestCondition: '', // 依頼達成条件
-  minPeople: 1, // 下限人数
-  maxPeople: 20, // 上限人数
-  activityDate: '', // 活動日
-  startTime: 1, // 開始時刻（デフォルト0時）
-  endTime: 24, // 終了時刻（デフォルト23時）
-  prefecture: '', // 都道府県ID（pref_id）
-  address1: '', // 住所1
-  address2: '', // 住所2
-  participation: '', //依頼者参加
-  equipmentNeeded: '無', // 必要備品
-  caseId: null, // 投稿後にセットされる依頼ID
-  googleMap: '',
-});
+  requestPoints: '100',
+  basicInfo: '河川敷の清掃を通じて地域の環境美化と地域コミュニティの交流を促進し、誰もが気持ちよく利用できる場所づくりを目指します。',
+  areaDetails:'IVY川沿いの歩道（〇〇橋〜〇〇橋区間）および周辺のベンチ・水飲み場周辺のゴミ拾い、雑草の除去を中心に行います。',
+  requestDetails:'軍手・ゴミ袋・トング（※可能な範囲で持参してください）動きやすい服装・運動靴・帽子・飲み物。',
+  requestName: 'IVY河川敷清掃',
+  requestCondition: 'ゴミを「可燃ゴミ」「不燃ゴミ」「リサイクルゴミ」に分別し、指定の集積所へ運搬すること。',
+  minPeople: 2,
+  maxPeople: 5,
+  activityDate: '2025-01-20',
+  startTime: 13,
+  endTime: 17,
+  prefecture: '44',
+  address1: '大分市IVY町',
+  address2: 'IVY河川敷',
+  participation: true,
+  equipmentNeeded: '有',
+  caseId: null,
+  googleMap: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp',});
+
 // アップロードされた写真を格納
 const uploadedPhotos = reactive({});
 
@@ -36,10 +38,10 @@ const photoUploaders = ref([
 // 都道府県リストを格納するref変数
 const prefectures = ref([]);
 const activityAreas = ref([]); // 活動エリアのデータ
-const selectedAreas = ref([]); // 選択された活動エリア
+const selectedAreas = ref(['3']); // 選択された活動エリア
 const activityThemes = ref([]);  // 活動テーマデータを格納
 const selectedThemes = ref([]);  // 選択されたテーマIDを格納
-const recommendedAges = ref([]); // 推奨年齢データを格納
+const recommendedAges = ref([1]); // 推奨年齢データを格納
 const selectedAges = ref([]); // 選択された推奨年齢IDを格納
 const features = ref([]); // 特徴データを格納する変数
 const selectedFeatures = ref([]); // 選択された特徴IDを格納
@@ -283,7 +285,7 @@ onMounted(() => {
             <option v-for="num in 20" :key="'min-' + num" :value="num">{{ num }}</option>
           </select>
           ～
-          <select id="max-people" v-model="maxPeople">
+          <select id="max-people" v-model="request.maxPeople">
             <option v-for="num in 20" :key="'max-' + num" :value="num">{{ num }}</option>
           </select>
           人
@@ -304,8 +306,8 @@ onMounted(() => {
             <option v-for="hour in 24" :key="'start-' + hour" :value="hour">{{ hour }}時</option>
           </select>
           ～
-          <select id="end-time" v-model="endTime">
-            <option v-for="hour in hours" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
+          <select id="end-time" v-model="request.endTime">
+            <option v-for="hour in 24" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
           </select>
         </div>
       </div>
