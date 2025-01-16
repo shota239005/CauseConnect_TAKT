@@ -1,6 +1,18 @@
 <script setup>
-import { defineEmits, ref, onMounted } from 'vue';
-import axios from 'axios';
+import { defineEmits, defineProps, ref, onMounted } from 'vue';
+import apiClient from '@/axios';
+
+// 親コンポーネントから受け取る userId と caseId
+const props = defineProps({
+  userId: {
+    type: Number,
+    required: true
+  },
+  caseId: {
+    type: Number,
+    required: true
+  }
+});
 
 // 親コンポーネントへcloseイベントを送る
 const emit = defineEmits(['close']);
@@ -11,31 +23,57 @@ const points = ref('');
 // 保有ポイントを格納する変数
 const balancePoints = ref(0);
 
+// 二重送信防止用のフラグ
+const isSubmitting = ref(false);
+
 // 閉じるボタンのクリック処理
 const handleClose = () => {
   emit('close');
 };
 
 // 確定ボタンのクリック処理
-const handleConfirm = () => {
-  // 入力されたポイントが100以上かどうかをチェック
+const handleConfirm = async () => {
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
+
   if (parseInt(points.value) >= 100) {
-    alert('出資者として参加しました！チャットで挨拶のコメントをしてみましょう！'); // アラートメッセージを表示
-    emit('close'); // ポイントが有効な場合、ポップアップを閉じる
+    try {
+      console.log('%c[DEBUG] 出資送信 - user_id:', 'color: green; font-weight: bold;', props.userId);
+      console.log('%c[DEBUG] 出資送信 - case_id:', 'color: green; font-weight: bold;', props.caseId);
+      console.log('%c[DEBUG] 出資送信 - points:', 'color: green; font-weight: bold;', points.value);
+
+      // 出資登録のAPIリクエスト
+      const response = await apiClient.post('/api/sup', {
+        user_id: props.userId,
+        case_id: props.caseId,
+        sup_point: parseInt(points.value)
+      });
+
+      console.log('%c[DEBUG] サーバーからのレスポンス:', 'color: blue; font-weight: bold;', response.data);
+      alert('出資者として参加しました！チャットで挨拶のコメントをしてみましょう！');
+      emit('close');
+    } catch (error) {
+      console.error('%c[ERROR] 出資登録に失敗しました:', 'color: red; font-weight: bold;', error);
+      alert('出資登録に失敗しました。');
+    }
   } else {
     alert('100ポイント以上で参加できます。');
   }
+  isSubmitting.value = false;
 };
 
 // コンポーネントがマウントされたときに保有ポイントを取得
 onMounted(() => {
-  axios.get('/api/getBalancePoints') // APIのエンドポイントを指定
-    .then(response => {
-      balancePoints.value = response.data.balancePoints; // 取得した保有ポイントを格納
-    })
-    .catch(error => {
-      console.error('ポイントの取得に失敗しました:', error);
-    });
+  apiClient.get('/api/getBalancePoints', {
+    params: { user_id: props.userId }
+  })
+  .then(response => {
+    balancePoints.value = response.data.balancePoints;
+    console.log('%c[DEBUG] 保有ポイント:', 'color: purple; font-weight: bold;', balancePoints.value);
+  })
+  .catch(error => {
+    console.error('ポイントの取得に失敗しました:', error);
+  });
 });
 </script>
 
@@ -71,8 +109,8 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 半透明のグレー */
-  z-index: 999; /* ポップアップより背面になるが、ページの最前面に */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,43 +134,20 @@ h1 {
   margin-bottom: 20px;
 }
 
-p {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-form {
-  margin-bottom: 20px;
-}
-
-input[type="number"] {
-  width: 50%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 2px solid #ccc;
-  margin-top: 10px;
-  margin-right: 40px;
-}
-
 .button-container {
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
 }
 
-.close-button,
-.syusshi {
+.close-button, .syusshi {
   padding: 10px 20px;
   font-size: 16px;
-  border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .close-button {
-  margin-right: 20px;
   background-color: white;
   border: 2px solid #d32f2f;
   color: red;
@@ -142,10 +157,5 @@ input[type="number"] {
   background-color: #0f61ba;
   color: white;
   padding: 20px 40px;
-}
-
-.close-button:hover {
-  background-color: #d32f2f;
-  color: white;
 }
 </style>
