@@ -24,7 +24,7 @@ const request = reactive({
   equipmentNeeded: '有',
   caseId: null,
   googleMap: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp',});
-  
+
 // アップロードされた写真を格納
 const uploadedPhotos = reactive({});
 
@@ -148,6 +148,12 @@ const props = defineProps({
   url: String,
 });
 
+// 投稿ボタンのクリック時に呼び出す関数
+const handleSubmit = () => {
+  alert("投稿しました。");
+  window.location.href = '/'; // ログインページへリダイレクトしつつリロード
+};
+
 
 
 const submitRequest = async () => {
@@ -253,6 +259,8 @@ onMounted(() => {
   fetchRecommendedAges();
   fetchFeatures();
 });
+
+
 
 </script>
 
@@ -439,7 +447,8 @@ onMounted(() => {
 
 
       <!-- 送信ボタン -->
-      <button type="submit" class="btn1">投稿する</button>
+      <button type="submit" class="btn1" @click="handleSubmit">投稿する</button>
+
     </form>
   </div>
 </template>
