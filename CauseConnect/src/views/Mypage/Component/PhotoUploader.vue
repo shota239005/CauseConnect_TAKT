@@ -136,8 +136,8 @@ export default {
   align-items: center;
   justify-content: center;
   height: auto;
-  margin-top: 80px;
-  margin-bottom: 80px;
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
 .profile-icon {

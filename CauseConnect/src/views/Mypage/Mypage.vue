@@ -178,11 +178,11 @@ onMounted(() => {
           <label for="kana">カナ:</label>
           <input id="kana" v-model="user.kana" type="text" />
         </div>
-        <div>
+        <div class="birthday">
           <label for="birth">生年月日:</label>
           <input id="birth" v-model="user.birth" type="date" />
         </div>
-        <div>
+        <div class="sex">
           <label for="sex">性別:</label>
           <select id="sex" v-model="user.sex">
             <option v-for="option in sexes" :key="option" :value="option">
@@ -201,7 +201,7 @@ onMounted(() => {
           <label for="email">メールアドレス:</label>
           <input id="email" v-model="user.email" type="email" />
         </div>
-        <div>
+        <div class="town">
           <label for="prefectures">都道府県:</label>
           <select id="prefectures" v-model="user.address.prefectures.pref_id">
             <option v-for="pref in prefecture" :key="pref.pref_id" :value="pref.pref_id">
@@ -226,8 +226,9 @@ onMounted(() => {
           <textarea id="intro" v-model="user.intro"></textarea>
         </div>
 
-        <button type="button" @click="deleteAccount" class="btnNo">アカウント削除</button>
         <button type="submit" class="btn1">更新する</button>
+        <button type="button" @click="deleteAccount" class="btnNo">アカウント削除</button>
+
       </div>
     </form>
   </div>
@@ -244,7 +245,16 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+.birthday{
+  width: 30%;
+}
 
+.sex{
+  width: 35%;
+}
+.town{
+  width: 30%;
+}
 
 
 h1 {
@@ -257,21 +267,28 @@ h1 {
   margin: 5px 0;
 }
 
-button {
-  margin-top: 10px;
-  margin-right: 10px;
-  padding: 10px 20px;
-  background-color: #f7a400;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
+
+
+
+.btn1{
+  padding: 20px 100px;
+  margin-right: 30px;
 }
 
-button:hover {
-  background-color: #ff8c00;
+.btnNo{
+  color: #fff;
+  background-color: #ff6060;
+  box-shadow: 5px 5px 0 #db3f3f;
+
 }
+
+.btnNo:hover {
+    color: #fff;
+    background-color: #db3f3f;
+    box-shadow: 0 0 0;
+    transform: translate(5px, 5px);
+}
+
 
 form {
   display: flex; /* 横並びにする */
@@ -303,21 +320,29 @@ textarea {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 200px;
   margin-top: 0px;
   height: 100%;
 }
 
-.points-card, .actions {
+.points-card{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+.actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
 .points-card {
   background: #fff3cd;
-  padding: 20px;
+  padding: 50px;
   border-radius: 10px;
   width: 250px;
   height: 130px;
@@ -336,13 +361,13 @@ textarea {
   display: flex;
   flex-direction: column; /* 縦並びに変更 */
   align-items: center;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
 .points-info p {
-  font-size: 32px; /* ポイント数の数字を大きく */
+  font-size: 44px; /* ポイント数の数字を大きく */
   font-weight: bold;
   margin: 0;
 }
