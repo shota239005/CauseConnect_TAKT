@@ -1,52 +1,80 @@
 <script setup>
-import { ref } from 'vue';
+import { ref,  onMounted } from 'vue';
 import Chat from './Chat.vue';
 import Hokoku from './P1_Hokoku.vue';
 import Shonin from './P2_shonin.vue';
 import Review from './P3_Review.vue';
 
-// 進行度ごとのアコーディオンの開閉状態
+// ✅ 親から受け取るprops（userId追加）
+const props = defineProps({
+  request: {
+    type: [Object, Array],  // 配列対応
+    required: true,
+  },
+  userId: {
+    type: [Number, String],
+    required: true,
+  },
+});
+
+// ✅ requestオブジェクトが配列かオブジェクトかを判定
+const requestData = Array.isArray(props.request) ? props.request[0] : props.request;
+
+// ✅ データ受け取りの確認ログ
+onMounted(() => {
+  console.log("[ProgressStep] 受け取ったcaseId:", requestData.case_id);
+  console.log("[ProgressStep] 受け取ったuserId:", props.userId);
+  console.log("[ProgressStep] 受け取ったrequest:", requestData);
+});
+
+// ✅ アコーディオンの開閉状態
 const isProgress1Open = ref(false);
 const isProgress2Open = ref(false);
 const isProgress3Open = ref(false);
-const isProgress4Open = ref(false);
 </script>
 
 <template>
   <div class="participants-info">
-    <Chat /> <!-- Chatコンポーネントを表示 -->
+    <Chat />
 
+    <!-- 1: 実行報告内容 -->
+    <div class="progress-section">
+      <h2 @click="isProgress1Open = !isProgress1Open" class="accordion-header">
+        ステップ１：実行報告内容
+        <span>{{ isProgress1Open ? '閉じる' : '開く' }}</span>
+      </h2>
+      <div v-if="isProgress1Open" class="accordion-content">
+        <Hokoku 
+          :case-id="requestData.case_id" 
+          :user-id="props.userId" 
+          :request="requestData" 
+        />
+      </div>
+    </div>
 
-    <!-- 1: アコーディオン -->
+    <!-- 2: 報告内容の承認 -->
     <div class="progress-section">
       <h2 @click="isProgress2Open = !isProgress2Open" class="accordion-header">
-        ステップ１：実行報告内容
+        ステップ２：報告内容の承認
         <span>{{ isProgress2Open ? '閉じる' : '開く' }}</span>
       </h2>
       <div v-if="isProgress2Open" class="accordion-content">
-        <Hokoku /> <!-- 進行度2に関連するHokokuコンポーネントを表示 -->
+        <Shonin 
+          :case-id="requestData.case_id" 
+          :user-id="props.userId" 
+          :request="requestData" 
+          />
       </div>
     </div>
 
-    <!-- 2: アコーディオン -->
+    <!-- 3: 依頼参加者の評価 -->
     <div class="progress-section">
       <h2 @click="isProgress3Open = !isProgress3Open" class="accordion-header">
-        ステップ２：報告内容の承認
+        ステップ３：依頼参加者の評価
         <span>{{ isProgress3Open ? '閉じる' : '開く' }}</span>
       </h2>
       <div v-if="isProgress3Open" class="accordion-content">
-        <Shonin /> <!-- 進行度3に関連するShoninコンポーネントを表示 -->
-      </div>
-    </div>
-
-    <!-- 3: アコーディオン -->
-    <div class="progress-section">
-      <h2 @click="isProgress4Open = !isProgress4Open" class="accordion-header">
-        ステップ３：依頼参加者の評価
-        <span>{{ isProgress4Open ? '閉じる' : '開く' }}</span>
-      </h2>
-      <div v-if="isProgress4Open" class="accordion-content">
-        <Review /> <!-- 進行度4に関連するReviewコンポーネントを表示 -->
+        <Review />
       </div>
     </div>
   </div>

@@ -1,98 +1,127 @@
-<script>
-import { ref } from 'vue';
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import ParticipantsInfo from "./EditMenu/ParticipantsInfo.vue";
 import RequesterMenu from "./EditMenu/RequesterMenu.vue";
 import ContributorMenu from "./EditMenu/ContributorMenu.vue";
 import ExecutorMenu from "./EditMenu/ExecutorMenu.vue";
 
+// ✅ 親から受け取るprops
+const props = defineProps({
+  caseId: {
+    type: Number,
+    required: true,
+  },
+  userId: {
+    type: Number,
+    required: true,
+  },
+  request: {
+    type: Object,
+    required: true,
+  },
+});
 
-export default {
-  name: "EditMenu",
-  components: {
-    ParticipantsInfo,
-    RequesterMenu,
-    ContributorMenu,
-    ExecutorMenu,
-  },
-  data() {
-    return {
-      isParticipantsInfoVisible: true,
-      isRequesterMenuVisible: true,
-      isContributorMenuVisible: true,
-      isExecutorMenuVisible: true,
-      totalPoints: 0, // 総額を保持するデータ
-      executorsCount: 0, // 実行者人数を保持するデータ
-    };
-  },
-  computed: {
-    rewardPerPerson() {
-      // 実行者人数が0でない場合、報酬/人を計算
-      return this.executorsCount > 0 ? (this.totalPoints / this.executorsCount).toFixed(0) : 0;
-    },
-  },
-  methods: {
-    toggleSection(section) {
-      this[section] = !this[section];
-    },
-    updateTotalPoints(newTotalPoints) {
-      this.totalPoints = newTotalPoints; // 親コンポーネントでポイント更新
-    },
-    updateExecutors(newExecutorsCount) {
-      this.executorsCount = newExecutorsCount; // 実行者人数を更新
-    },
-  },
+// ✅ requestオブジェクトが配列の場合に対応
+const requestData = Array.isArray(props.request) ? props.request[0] : props.request;
+
+// ✅ データの状態管理
+const isParticipantsInfoVisible = ref(true);
+const isRequesterMenuVisible = ref(true);
+const isContributorMenuVisible = ref(true);
+const isExecutorMenuVisible = ref(true);
+const totalPoints = ref(0);
+const executorsCount = ref(0);
+
+// ✅ 計算プロパティ
+const rewardPerPerson = computed(() => {
+  return executorsCount.value > 0 ? (totalPoints.value / executorsCount.value).toFixed(0) : 0;
+});
+
+// ✅ セクション表示切替（型チェック強化）
+const toggleSection = (section) => {
+  if (typeof section === 'boolean') {
+    console.error('toggleSectionエラー: booleanが渡されています。refを渡してください。');
+    return;
+  }
+  if (section && typeof section.value === 'boolean') {
+    section.value = !section.value;
+  } else {
+    console.error('toggleSectionエラー: 引数がrefではありません', section);
+  }
 };
+
+// ✅ ポイント・実行者人数の更新
+const updateTotalPoints = (newTotalPoints) => {
+  totalPoints.value = newTotalPoints;
+};
+
+const updateExecutors = (newExecutorsCount) => {
+  executorsCount.value = newExecutorsCount;
+};
+
+// ✅ マウント時にデータ確認
+onMounted(() => {
+  console.log(`[Edit]取得したcaseId: ${requestData.case_id}`);
+  console.log(`[Edit]取得したuserId: ${props.userId}`);
+  console.log(`[Edit]取得したrequestオブジェクト:`, props.request);
+});
 </script>
 
 <template>
   <div class="edit-menu">
-    <!-- 現在積立ポイント -->
     <div class="points-section">
       <h3>現在積立ポイント</h3>
       <div class="points-container">
         <div class="point-item total">
           <p>総額</p>
-          <p>{{ totalPoints }}P</p> <!-- 総額を表示 -->
+          <p>{{ totalPoints }}P</p>
         </div>
-        <div class="point-item per-person" :style="{ backgroundColor: rewardColor }">
+        <div class="point-item per-person">
           <p>報酬/人</p>
-          <p>{{ rewardPerPerson }}P</p> <!-- 切り捨てられた報酬/人 -->
+          <p>{{ rewardPerPerson }}P</p>
         </div>
       </div>
     </div>
 
-    <!-- 参加者一覧 -->
     <div class="section">
-      <button class="toggle-button" @click="toggleSection('isParticipantsInfoVisible')">
+      <button class="toggle-button" @click="toggleSection(isParticipantsInfoVisible)">
         参加者一覧 {{ isParticipantsInfoVisible ? '▲' : '▼' }}
       </button>
       <ParticipantsInfo
-        v-if="isParticipantsInfoVisible"
+        v-show="isParticipantsInfoVisible"
+        :caseId="requestData.case_id"
+        :userId="props.userId"
         @updatePoints="updateTotalPoints"
-        @updateExecutors="updateExecutors" /> <!-- 参加者情報の更新を受け取る -->
+        @updateExecutors="updateExecutors"
+      />
     </div>
 
-    <!-- メニュー -->
     <div class="menu-section">
       <div class="section">
-        <button class="toggle-button" @click="toggleSection('isRequesterMenuVisible')">
+        <button class="toggle-button" @click="toggleSection(isRequesterMenuVisible)">
           依頼者メニュー {{ isRequesterMenuVisible ? '▲' : '▼' }}
         </button>
-        <RequesterMenu v-if="isRequesterMenuVisible" />
+        <div v-show="isRequesterMenuVisible" class="menu-content">
+          <RequesterMenu />
+        </div>
       </div>
 
       <div class="section">
-        <button class="toggle-button" @click="toggleSection('isContributorMenuVisible')">
+        <button class="toggle-button" @click="toggleSection(isContributorMenuVisible)">
           出資者メニュー {{ isContributorMenuVisible ? '▲' : '▼' }}
         </button>
-        <ContributorMenu v-if="isContributorMenuVisible" />
+        <div v-show="isContributorMenuVisible" class="menu-content">
+          <ContributorMenu />
+        </div>
       </div>
 
       <div class="section">
-        <button class="toggle-button" @click="toggleSection('isExecutorMenuVisible')">
+        <button class="toggle-button" @click="toggleSection(isExecutorMenuVisible)">
           実行者メニュー {{ isExecutorMenuVisible ? '▲' : '▼' }}
         </button>
-        <ExecutorMenu v-if="isExecutorMenuVisible" />
+        <div v-show="isExecutorMenuVisible" class="menu-content">
+          <ExecutorMenu />
+        </div>
       </div>
     </div>
   </div>
@@ -110,12 +139,6 @@ export default {
 
 .points-section {
   margin-bottom: 20px;
-}
-
-.points-section h3 {
-  font-size: 1.2em;
-  color: #333;
-  margin-bottom: 10px;
 }
 
 .points-container {
@@ -140,10 +163,6 @@ export default {
   background-color: #7ed957;
 }
 
-.menu-section {
-  margin-top: 20px;
-}
-
 .toggle-button {
   display: block;
   width: 100%;
@@ -153,16 +172,10 @@ export default {
   padding: 10px;
   font-size: 1.2em;
   cursor: pointer;
-  color: #333;
-  background-color: #f7a400
-  ;
+  background-color: #f7a400;
 }
 
 .toggle-button:hover {
   background-color: #ff8c00;
-}
-
-.section {
-  margin-bottom: 20px;
 }
 </style>

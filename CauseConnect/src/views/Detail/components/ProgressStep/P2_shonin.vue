@@ -1,37 +1,45 @@
-<script>
+<script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-export default {
-  setup() {
-    const reportData = ref(null); // コメントデータ
-    const photos = ref([]); // 写真データ
-    const error = ref(null); // エラーメッセージ
-
-    const fetchReportData = async (caseId) => {
-      try {
-        // APIからデータを取得
-        const response = await axios.get(`http://172.16.3.135:8000/api/request-report/${caseId}`);
-        reportData.value = response.data.report;
-        photos.value = response.data.photos;
-      } catch (err) {
-        // エラー処理
-        error.value = 'データの取得に失敗しました';
-        console.error(err);
-      }
-    };
-
-    onMounted(() => {
-      fetchReportData(35); // 固定された case_id = 35 を使用
-    });
-
-    return {
-      reportData,
-      photos,
-      error,
-    };
+// ✅ 親から受け取るprops（caseIdを動的に受け取る）
+const props = defineProps({
+  caseId: {
+    type: [Number, String],
+    required: true,
   },
+});
+// ✅ 受け取ったcaseIdをログに表示
+onMounted(() => {
+  console.log("[P2] 受け取ったcase_id:", props.caseId);
+});
+
+const reportData = ref(null); // コメントデータ
+const photos = ref([]);       // 写真データ
+const error = ref(null);      // エラーメッセージ
+
+// ✅ データ取得関数
+const fetchReportData = async () => {
+  if (!props.caseId) {
+    console.error("[ProgressStep3] caseIdが未定義です");
+    error.value = '依頼IDが不正です。';
+    return;
+  }
+  try {
+    console.log("[ProgressStep3] 受け取ったcase_id:", props.caseId); // ✅ 受け取ったcase_idをログ出力
+    const response = await axios.get(`http://172.16.3.135:8000/api/request-report/${props.caseId}`);
+    reportData.value = response.data.report;
+    photos.value = response.data.photos;
+  } catch (err) {
+    error.value = 'データの取得に失敗しました';
+    console.error(err);
+  }
 };
+
+// ✅ コンポーネントのマウント時にデータ取得
+onMounted(() => {
+  fetchReportData();
+});
 </script>
 
 <template>
