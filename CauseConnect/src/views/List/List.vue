@@ -133,8 +133,8 @@ const resetFilters = () => {
 <style scoped>
 .search-container {
   width: 50%;
-  margin-right: 190px;
-  margin-top: 10px;
+  margin-right: 220px;
+  margin-top: 2%;
   margin-bottom: 0%;
   padding: 0%;
 }

@@ -149,8 +149,11 @@ const currentProgress = 2;
   gap: 10px;
 }
 
-.search-container{
-  margin: auto;
-  margin-right: 0px;
+.search-container {
+  width: 50%;
+  margin-right: 220px;
+  margin-top: 2%;
+  margin-bottom: 0%;
+  padding: 0%;
 }
 </style>
