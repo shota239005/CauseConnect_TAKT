@@ -47,7 +47,7 @@ const fetchImage = async () => {
     // ピクチャータイプ1の画像取得
     const responseType1 = await apiClient.get(`/images/${requestData.case_id}/1`);
     if (responseType1.data && responseType1.data.picture) {
-      imageUrlType1.value = `${baseURL}/storage/${responseType1.data.picture}`;
+      imageUrlType1.value = `${baseURL}${responseType1.data.picture}`;
       console.log('[DEBUG] ピクチャータイプ1の画像取得成功:', imageUrlType1.value);
     } else {
       console.warn('[WARN] ピクチャータイプ1の画像が存在しません');
@@ -57,7 +57,7 @@ const fetchImage = async () => {
     // ピクチャータイプ2の画像取得
     const responseType2 = await apiClient.get(`/images/${requestData.case_id}/2`);
     if (responseType2.data && responseType2.data.picture) {
-      imageUrlType2.value = `${baseURL}/storage/${responseType2.data.picture}`;
+      imageUrlType2.value = `${baseURL}${responseType2.data.picture}`;
       console.log('[DEBUG] ピクチャータイプ2の画像取得成功:', imageUrlType2.value);
     } else {
       console.warn('[WARN] ピクチャータイプ2の画像が存在しません');
