@@ -1,28 +1,3 @@
-<template>
-  <div class="progress-step3">
-    <div v-if="reportData && photos.length">
-      <div class="data-section">
-        <h3>依頼報告と写真</h3>
-        <div v-for="(photo, index) in photos" :key="photo.picture_type" class="report-item">
-          <p v-if="index === 0"><strong>参加者コメント:</strong> {{ reportData.comment1 }}</p>
-          <p v-if="index === 1"><strong>依頼場所コメント:</strong> {{ reportData.comment2 }}</p>
-          <p v-if="index === 2"><strong>実行前コメント:</strong> {{ reportData.comment3 }}</p>
-          <p v-if="index === 3"><strong>実行後コメント:</strong> {{ reportData.comment4 }}</p>
-          <img :src="`http://172.16.3.135:8000/storage/${photo.picture}`" :alt="`写真タイプ${photo.picture_type}`" />
-        </div>
-      </div>
-    </div>
-    <p v-else-if="error" class="error-message">{{ error }}</p>
-    <p v-else class="loading">読み込み中...</p>
-
-    <div class="approval-buttons">
-      <h2>※承認を押すとポイントが付与されます</h2>
-      <button class="btn-no">非承認</button>
-      <button class="btn-yes">承認</button>
-    </div>
-  </div>
-</template>
-
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -59,6 +34,32 @@ export default {
 };
 </script>
 
+<template>
+  <div class="progress-step3">
+    <div v-if="reportData && photos.length">
+      <div class="data-section">
+        <h3>依頼報告と写真</h3>
+        <div v-for="(photo, index) in photos" :key="photo.picture_type" class="report-item">
+          <p v-if="index === 0"><strong>参加者コメント:</strong> {{ reportData.comment1 }}</p>
+          <p v-if="index === 1"><strong>依頼場所コメント:</strong> {{ reportData.comment2 }}</p>
+          <p v-if="index === 2"><strong>実行前コメント:</strong> {{ reportData.comment3 }}</p>
+          <p v-if="index === 3"><strong>実行後コメント:</strong> {{ reportData.comment4 }}</p>
+          <img :src="`http://172.16.3.135:8000/storage/${photo.picture}`" :alt="`写真タイプ${photo.picture_type}`" />
+        </div>
+      </div>
+    </div>
+    <p v-else-if="error" class="error-message">{{ error }}</p>
+    <p v-else class="loading">読み込み中...</p>
+
+    <div class="approval-buttons">
+      <h2>※承認を押すとポイントが付与されます</h2>
+      <button class="btn1">承認</button>
+      <button class="btnNo">非承認</button>
+    </div>
+  </div>
+</template>
+
+
 <style scoped>
 .progress-step3 {
   padding: 20px;
@@ -92,7 +93,7 @@ export default {
 
 .report-item img {
   max-width: 100%;
-  border: 1px solid #ddd;
+  border: 2px solid #f7a400;
   border-radius: 4px;
   margin-top: 10px;
 }
@@ -107,30 +108,6 @@ export default {
   margin-bottom: 10px;
 }
 
-.approval-buttons button {
-  margin-right: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.btn-no {
-  background-color: #ff6666;
-  color: #fff;
-}
-
-.btn-yes {
-  background-color: #66cc66;
-  color: #fff;
-}
-
-.btn-no:hover, .btn-yes:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
 .error-message {
   color: #d9534f;
@@ -143,4 +120,35 @@ export default {
   font-size: 16px;
   margin-top: 20px;
 }
+
+.btnNo {
+  margin-left: 20px;
+  padding: 20px 40px;
+  color: #333;
+  font-size: 30px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn1{
+  padding: 20px 60px;
+  color: #333;
+  font-size: 30px;
+  font-weight: 500;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+
+.btn1:hover, .btn1.selected {
+  color: #333;
+  background-color: #ff8c00;
+  box-shadow: 0 0 0;
+  transform: translate(5px, 5px);
+}
+
+.btnNo:hover, .btnNo.selected {
+  background-color: #4b2ddd;
+  color: #fff;
+  box-shadow: 0 0 0;
+  transform: translate(5px, 5px);
+}
+
 </style>

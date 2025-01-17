@@ -53,7 +53,7 @@ const confirmReviews = () => {
         @click="confirmReviews"
         :disabled="isConfirmed"
       >
-        確定
+        評価
       </button>
     </div>
 
@@ -93,7 +93,7 @@ const confirmReviews = () => {
 }
 
 .btn1{
-  width: 190px;
+  width: 200px;
   font-size: 30px;
   color: #333;
 }

@@ -16,10 +16,10 @@ const photos = ref([]); // { pictureType, file } を配列で保持
 
 // コメントデータ
 const comments = ref({
-  comment1: "これは参加者コメントのテストです", // 参加者コメント
-  comment2: "これは依頼場所コメントのテストです", // 依頼場所コメント
-  comment3: "これは実行前コメントのテストです", // 実行前コメント
-  comment4: "これは実行後コメントのテストです", // 実行後コメント
+  comment1: "予定通りに実行者が集まりました。", // 参加者コメント
+  comment2: "依頼場所に関しては、にわかりにくい場所ではなかったです。", // 依頼場所コメント
+  comment3: "周辺には様々なゴミが落ちていました。", // 実行前コメント
+  comment4: "皆で楽しくゴミ拾いができ、ソフトパーク周辺のゴミは一掃できたと思います。", // 実行後コメント
 });
 
 // 画像が更新されたら呼ばれる
@@ -78,7 +78,7 @@ const handleSubmit = async () => {
       <textarea v-model="comments.comment4"></textarea>
     </div>
 
-    <button @click="handleSubmit">保存</button>
+    <button  class="btn1" @click="handleSubmit">報告する</button>
   </div>
 </template>
 
@@ -110,20 +110,27 @@ input[type="file"] {
   margin-bottom: 10px;
 }
 
+
 .uploaded-photo {
   max-width: 100%;
   max-height: 300px;
   margin-top: 10px;
 }
 
+.photo-uploader-group{
+  margin-bottom: 20px;
+}
+
+
 textarea {
   width: 100%;
   padding: 10px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 4px;
   resize: vertical;
   min-height: 100px;
+  margin-bottom: 20px;
 }
 
 .section-btn{
@@ -131,10 +138,14 @@ textarea {
 }
 
 .btn1{
+  display: block;
+  margin-left: auto;
   padding: 20px 70px;
+  margin-top: 10px;
   color: #333;
   font-size: 30px;
   font-weight: 500;
   transition: transform 0.3s, box-shadow 0.3s;
 }
+
 </style>
