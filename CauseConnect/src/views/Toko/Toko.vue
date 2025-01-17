@@ -413,7 +413,7 @@ onMounted(() => {
         </div>
 
         <!-- 依頼達成条件 -->
-        <div class="form-group">
+        <div class="form-group-1">
           <label for="request-condition">依頼達成条件</label>
           <textarea id="request-condition" v-model="request.requestCondition" placeholder="依頼を達成するための条件を記入してください"
             rows="4"></textarea>
@@ -461,7 +461,9 @@ onMounted(() => {
 .toko{
   background-color: #f4f4f4;
 }
-h1{
+
+#address2{
+  margin-left: 10px;
 
 }
 
@@ -485,6 +487,20 @@ font-weight: bold;
     display: flex;
   }
 }
+
+.form-group-1 {
+  margin-bottom: 20px;
+
+  #request-condition {
+    width: 80%;
+    display: flex;
+  }
+}
+
+.form-group-todo{
+  margin-right: 20px;
+}
+
 
 #request-points {
   width: 50px;
@@ -538,6 +554,6 @@ select {
 
 .btn1 {
   margin-top: 20px;
-  width: 200px;
+  width: 80%;
 }
 </style>
