@@ -1,55 +1,23 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { defineEmits, defineProps, ref, onMounted } from 'vue';
 import apiClient from '@/axios';
 import Jikko from './Jikko.vue';
 import Syusshi from './Syusshi.vue';
 import Map from '@/components/Map.vue';
 
-// ユーザー情報の管理
-const user = reactive({
-  id: null,
-  nickname: '',
-  email: '',
-});
-const message = ref('');
-
-// ユーザー情報の取得
-const fetchUserData = async () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    console.warn('トークンが見つかりません');
-    return;
-  }
-
-  try {
-    const response = await apiClient.get('/user/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    // user_id を正しく反映
-    user.value = response.data;
-    user.value.id = response.data.user_id || response.data.id;
-
-    console.log('[DEBUG] 取得したuser_id:', user.value.id);
-  } catch (error) {
-    console.error('ユーザー情報の取得に失敗しました:', error);
-  }
-};
-
-// 初期化
-onMounted(() => {
-  fetchUserData();
-});
-
-// 親コンポーネントから受け取る `request` プロパティを定義
+// ✅ 親コンポーネントから受け取る userId と request
 const props = defineProps({
+  userId: {
+    type: Number,
+    required: true,
+  },
   request: {
     type: Object,
     required: true,
   },
 });
 
-// ポップアップ
+// ポップアップ管理
 const isPopupVisible = ref(false);
 const popupType = ref('');
 
@@ -64,7 +32,7 @@ const closePopup = () => {
   isPopupVisible.value = false;
 };
 
-// データ構造に対応する変数
+// 依頼情報に対応する変数
 const requestData = props.request[0];
 
 // 画像データ用の変数（タイプ1とタイプ2）
@@ -90,11 +58,15 @@ const fetchImage = async () => {
   } catch (error) {
     console.error('画像の取得に失敗しました:', error);
   }
-
 };
 
 // コンポーネントがマウントされたときに画像を取得
 onMounted(() => {
+  if (!props.userId) {
+    console.warn('[BasicInfo] userIdがまだ取得されていません。');
+  } else {
+    console.log('[BasicInfo] 受け取った userId:', props.userId,'caseId:',requestData.case_id);
+  }
   fetchImage();
 });
 </script>
@@ -102,10 +74,6 @@ onMounted(() => {
 <template>
   <div class="basic-info">
     <h2>基本情報</h2>
-
-    <!-- デバッグ用 -->
-    <!-- <pre>{{ request }}</pre>
-    <pre>{{ requestData }}</pre> -->
 
     <!-- ピクチャータイプ1の画像表示 -->
     <div class="image-container">
@@ -145,12 +113,13 @@ onMounted(() => {
       <p>どちらで参加しますか？</p>
       <button class="jikko" @click="openPopup('jikko')">実行者で参加</button>
     </div>
+
     <!-- ポップアップ表示 -->
-    <Syusshi v-if="isPopupVisible && popupType === 'syusshi'" :userId="user.value.id" :caseId="requestData.case_id" @close="closePopup" />
-    <Jikko v-if="isPopupVisible && popupType === 'jikko'" :userId="user.value.id" :caseId="requestData.case_id" @close="closePopup" />
-    
+    <Syusshi v-if="isPopupVisible && popupType === 'syusshi'" :userId="props.userId" :caseId="requestData.case_id" @close="closePopup" />
+    <Jikko v-if="isPopupVisible && popupType === 'jikko'" :userId="props.userId" :caseId="requestData.case_id" @close="closePopup" />
   </div>
 </template>
+
 
 <style scoped>
 .basic-info {

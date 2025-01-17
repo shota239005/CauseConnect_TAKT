@@ -5,9 +5,9 @@ import ProgressStep from './components/ProgressStep/ProgressStep.vue';
 import search from '@/components/search.vue';
 
 import { ref, onMounted, watch } from 'vue';
-import apiClient from '@/axios'; // Axios クライアントをインポート
+import apiClient from '@/axios';
 
-// URL パラメータの 'id' を props として受け取る
+// ✅ URL パラメータの 'id' を props として受け取る
 const props = defineProps({
   id: {
     type: String,
@@ -15,44 +15,68 @@ const props = defineProps({
   },
 });
 
-// 取得したデータを格納する変数
+// ✅ 取得した詳細データとユーザーデータ
 const requestDetails = ref(null);
+const userInfo = ref(null);  // ✅ ユーザー情報を格納
 
-// ローディング中のフラグ
+// ✅ ローディング中のフラグ
 const loading = ref(true);
 
-// 詳細データを取得する関数
+// ✅ ユーザー情報を取得する関数
+const fetchUserInfo = async () => {
+  try {
+    const token = localStorage.getItem('token');  // ✅ トークンを取得
+
+    if (!token) {
+      console.error('[Detail]トークンが見つかりません');
+      return;
+    }
+
+    const response = await apiClient.get('/user/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    userInfo.value = response.data;  // ✅ ユーザー情報を格納
+    console.log('%c[Detail] ユーザー情報:', 'color: green; font-weight: bold;', userInfo.value);
+
+  } catch (error) {
+    console.error('[Detail]ユーザー情報の取得に失敗:', error);
+  }
+};
+
+// ✅ 詳細データを取得する関数
 const fetchRequestDetails = async () => {
   try {
-    const response = await apiClient.get(`/search-posts/${props.id}`); // URLが正しいか確認
+    const response = await apiClient.get(`/search-posts/${props.id}`);
     requestDetails.value = response.data;
 
-    // データ取得後にローディングを終了
+    console.log('%c[Detail] 依頼情報:', 'color: blue; font-weight: bold;', requestDetails.value);
     loading.value = false;
 
-    // データ取得後にログを表示
-    console.log("Detail.vue:", requestDetails.value);
   } catch (error) {
-    console.error("データ取得に失敗しました:", error);
+    console.error('[Detail]データ取得に失敗しました:', error);
     loading.value = false;
   }
 };
 
-// コンポーネントがマウントされた時にデータを取得
-onMounted(fetchRequestDetails);
+// ✅ コンポーネントがマウントされた時にデータ取得
+onMounted(() => {
+  fetchUserInfo();         // ✅ ユーザー情報の取得
+  fetchRequestDetails();   // ✅ 詳細データの取得
+});
 
-// `props.id` が変わったときにデータを再取得
+// ✅ props.id が変わったときにデータを再取得
 watch(
   () => props.id,
   (newId, oldId) => {
     if (newId !== oldId) {
-      fetchRequestDetails(); // 新しい ID に基づきデータ取得
+      fetchRequestDetails();
     }
   }
 );
 
-// 進行度の状態（0～4）
-const currentProgress = 2; // 仮の進行度データ（0:未着手、4:完了）
+// ✅ 進行度の状態（0～4）
+const currentProgress = 2;
 </script>
 
 <template>
@@ -66,56 +90,46 @@ const currentProgress = 2; // 仮の進行度データ（0:未着手、4:完了�
       <!-- 上部：基本情報＆参加者情報 -->
       <div class="upper-section">
         <div class="left-section">
-          <!-- BasicInfo にデータを渡す -->
-          <BasicInfo :request="requestDetails"/>
+          <!-- ✅ BasicInfo に request と user 情報を渡す -->
+          <BasicInfo v-if="userInfo && userInfo.user_id" :request="requestDetails" :userId="userInfo.user_id" />
         </div>
         <div class="right-section">
-          <!-- Editmenu にデータを渡す -->
-          <Editmenu :request="requestDetails.value"/>
+          <!-- ✅ Editmenu に request と user 情報を渡す -->
+          <Editmenu :request="requestDetails" :user="userInfo" />
         </div>
       </div>
 
-      <!-- 下部：進行度1～4 -->
+      <!-- 下部：進行度 -->
       <div class="progress-section">
-        <!-- ProgressStep にデータと進行度を渡す -->
-        <ProgressStep :request="requestDetails.value" :current-progress="currentProgress" />
+        <ProgressStep :request="requestDetails" :current-progress="currentProgress" />
       </div>
     </div>
   </div>
 </template>
 
-
 <style scoped>
 .detail-page {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .upper-section {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .left-section,
 .right-section {
-    flex: 1;
+  flex: 1;
 }
 
 .progress-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.search-container{
-  width: 50%;
-  margin-right: 190px;
-  margin-top: 10px;
-  margin-bottom: 0%;
-  padding: 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 </style>

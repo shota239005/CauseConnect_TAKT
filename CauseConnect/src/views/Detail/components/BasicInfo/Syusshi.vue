@@ -17,11 +17,11 @@ const props = defineProps({
 // 親コンポーネントへcloseイベントを送る
 const emit = defineEmits(['close']);
 
-// 入力されたポイントを格納する変数
-const points = ref('');
+// 入力されたポイントを格納する変数（初期値100）
+const points = ref('100');
 
-// 保有ポイントを格納する変数
-const balancePoints = ref(0);
+// 現在の保有ポイント（合計値を表示）
+const currentPoints = ref(0);
 
 // 二重送信防止用のフラグ
 const isSubmitting = ref(false);
@@ -42,15 +42,15 @@ const handleConfirm = async () => {
       console.log('%c[DEBUG] 出資送信 - case_id:', 'color: green; font-weight: bold;', props.caseId);
       console.log('%c[DEBUG] 出資送信 - points:', 'color: green; font-weight: bold;', points.value);
 
-      // 出資登録のAPIリクエスト
-      const response = await apiClient.post('/api/sup', {
+      // 出資登録のAPIリクエスト（存在する場合は更新、なければ新規作成）
+      const response = await apiClient.post('/sup/update-or-create', {  // ✅ /apiは含めない
         user_id: props.userId,
         case_id: props.caseId,
         sup_point: parseInt(points.value)
       });
 
       console.log('%c[DEBUG] サーバーからのレスポンス:', 'color: blue; font-weight: bold;', response.data);
-      alert('出資者として参加しました！チャットで挨拶のコメントをしてみましょう！');
+      alert(response.data.message);
       emit('close');
     } catch (error) {
       console.error('%c[ERROR] 出資登録に失敗しました:', 'color: red; font-weight: bold;', error);
@@ -64,12 +64,12 @@ const handleConfirm = async () => {
 
 // コンポーネントがマウントされたときに保有ポイントを取得
 onMounted(() => {
-  apiClient.get('/api/getBalancePoints', {
+  apiClient.get('/points/history', {  // ✅ /apiは含めない
     params: { user_id: props.userId }
   })
   .then(response => {
-    balancePoints.value = response.data.balancePoints;
-    console.log('%c[DEBUG] 保有ポイント:', 'color: purple; font-weight: bold;', balancePoints.value);
+    currentPoints.value = response.data.current_points;
+    console.log('%c[DEBUG] 保有ポイント:', 'color: purple; font-weight: bold;', currentPoints.value);
   })
   .catch(error => {
     console.error('ポイントの取得に失敗しました:', error);
@@ -85,7 +85,7 @@ onMounted(() => {
       <h1>"出資者で参加する"には、１００ポイント以上から参加できます。</h1>
 
       <!-- 保有ポイントの表示 -->
-      <p>保有ポイント：{{ balancePoints }}ポイント</p>
+      <p>保有ポイント：{{ currentPoints }}ポイント</p>
 
       <!-- ポイント入力フォーム -->
       <form>
