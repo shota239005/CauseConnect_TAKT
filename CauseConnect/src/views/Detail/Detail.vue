@@ -90,18 +90,34 @@ const currentProgress = 2;
       <!-- 上部：基本情報＆参加者情報 -->
       <div class="upper-section">
         <div class="left-section">
-          <!-- ✅ BasicInfo に request と user 情報を渡す -->
-          <BasicInfo v-if="userInfo && userInfo.user_id" :request="requestDetails" :userId="userInfo.user_id" />
+          <!-- ✅ BasicInfo に request と userId、caseId を渡す -->
+          <BasicInfo 
+            v-if="userInfo && userInfo.user_id" 
+            :request="requestDetails" 
+            :userId="userInfo.user_id" 
+            :caseId="requestDetails?.case_id" 
+          />
         </div>
         <div class="right-section">
-          <!-- ✅ Editmenu に request と user 情報を渡す -->
-          <Editmenu :request="requestDetails" :user="userInfo" />
+          <!-- ✅ Editmenu にも条件付きで userId と caseId を渡す -->
+          <Editmenu 
+            v-if="userInfo && userInfo.user_id" 
+            :request="requestDetails" 
+            :userId="userInfo.user_id" 
+            :caseId="requestDetails?.case_id" 
+          />
         </div>
       </div>
 
       <!-- 下部：進行度 -->
       <div class="progress-section">
-        <ProgressStep :request="requestDetails" :current-progress="currentProgress" />
+        <!-- ✅ ProgressStep にも userId と caseId を渡す -->
+        <ProgressStep 
+          :request="requestDetails" 
+          :current-progress="currentProgress" 
+          :userId="userInfo.user_id" 
+          :caseId="requestDetails?.case_id" 
+        />
       </div>
     </div>
   </div>
