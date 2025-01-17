@@ -264,7 +264,7 @@ h1 {
 }
 
 .form-group-b {
-width: 40%;
+width: 30%;
   margin-bottom: 15px;
 }
 
@@ -279,7 +279,7 @@ width: 30%;
 }
 
 .form-group-post {
-width: 20%;
+width: 25%;
   margin-bottom: 15px;
 }
 
