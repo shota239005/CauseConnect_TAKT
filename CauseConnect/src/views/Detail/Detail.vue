@@ -91,20 +91,20 @@ const currentProgress = 2;
       <div class="upper-section">
         <div class="left-section">
           <!-- ✅ BasicInfo に request と userId、caseId を渡す -->
-          <BasicInfo 
-            v-if="userInfo && userInfo.user_id" 
-            :request="requestDetails" 
-            :userId="userInfo.user_id" 
-            :caseId="requestDetails?.case_id" 
+          <BasicInfo
+            v-if="userInfo && userInfo.user_id"
+            :request="requestDetails"
+            :userId="userInfo.user_id"
+            :caseId="requestDetails?.case_id"
           />
         </div>
         <div class="right-section">
           <!-- ✅ Editmenu にも条件付きで userId と caseId を渡す -->
-          <Editmenu 
-            v-if="userInfo && userInfo.user_id" 
-            :request="requestDetails" 
-            :userId="userInfo.user_id" 
-            :caseId="requestDetails?.case_id" 
+          <Editmenu
+            v-if="userInfo && userInfo.user_id"
+            :request="requestDetails"
+            :userId="userInfo.user_id"
+            :caseId="requestDetails?.case_id"
           />
         </div>
       </div>
@@ -112,11 +112,11 @@ const currentProgress = 2;
       <!-- 下部：進行度 -->
       <div class="progress-section">
         <!-- ✅ ProgressStep にも userId と caseId を渡す -->
-        <ProgressStep 
-          :request="requestDetails" 
-          :current-progress="currentProgress" 
-          :userId="userInfo.user_id" 
-          :caseId="requestDetails?.case_id" 
+        <ProgressStep
+          :request="requestDetails"
+          :current-progress="currentProgress"
+          :userId="userInfo.user_id"
+          :caseId="requestDetails?.case_id"
         />
       </div>
     </div>
@@ -147,5 +147,10 @@ const currentProgress = 2;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.search-container{
+  margin: auto;
+  margin-right: 0px;
 }
 </style>
