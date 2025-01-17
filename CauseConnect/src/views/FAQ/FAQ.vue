@@ -63,9 +63,6 @@ function formatAnswer(text) {
       </div>
     </div>
 
-    <!-- テスト用のボタン -->
-    <button @click="openModal" class="test-button">画像を表示</button>
-
     <!-- モーダル -->
     <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal-content">

@@ -66,8 +66,9 @@ export default {
       </form>
 
       <div class="button-container">
-        <button class="cancel-button" @click="cancel">キャンセル</button>
         <button class="confirm-button" @click="addPoints">追加</button>
+
+        <button class="cancel-button" @click="cancel">キャンセル</button>
       </div>
     </div>
   </div>
@@ -105,7 +106,7 @@ export default {
 
 .iraiPoint-popup {
   background-color: white;
-  border: 2px solid #0f61ba;
+  border: 2px solid #f7a400;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -146,10 +147,11 @@ form {
 }
 
 .confirm-button {
-  padding: 10px 20px;
+  padding: 10px 40px;
   font-size: 16px;
-  background-color: #0f61ba;
+  background-color: #f7a400;
   color: white;
+  border: 2px solid #ff8c00;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -160,6 +162,6 @@ form {
 }
 
 .confirm-button:hover {
-  background-color: #6cc84b;
+  background-color: #e47e00;
 }
 </style>
