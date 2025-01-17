@@ -18,6 +18,10 @@ const filters = ref({
 
 // 受け取った検索結果を保持する
 const searchResults = ref([]);
+// ルート情報を取得
+const route = useRoute();
+const prefId = Number(route.query.pref_id);
+console.log(prefId); // 数値として出力される
 
 // 初期データを取得する関数
 const fetchInitialData = async () => {
@@ -35,14 +39,35 @@ const fetchInitialData = async () => {
   }
 };
 
-// ルート情報を取得
-const route = useRoute();
+// `pref_id` を使用してデータを取得する関数
+const fetchDataByPrefId = async () => {
+  if (!prefId) {
+    console.log("`pref_id` が指定されていません。");
+    return;
+  }
+
+  loading.value = true;
+  try {
+    const response = await apiClient.get("/search-posts", {
+      params: { pref_id: prefId }, // `pref_id` をパラメータとして送信
+    });
+    searchResults.value = response.data; // 結果を設定
+    console.log("`pref_id` に基づく検索結果:", searchResults.value);
+  } catch (error) {
+    console.error("`pref_id` によるデータ取得エラー:", error);
+  } finally {
+    loading.value = false;
+  }
+};
 
 // クエリパラメータから検索結果を取得して初期化
 onMounted(() => {
-  if (route.query.results) {
+  if (prefId) {
+    fetchDataByPrefId(); // `pref_id` に基づくデータを取得
+  } else if (route.query.results) {
     try {
       searchResults.value = JSON.parse(route.query.results); // クエリから受け取った結果をパース
+      console.log(searchResults.value);
     } catch (error) {
       console.error("検索結果のパースに失敗しました:", error);
       searchResults.value = []; // パース失敗時は空配列を設定
@@ -96,7 +121,6 @@ const resetFilters = () => {
       <div class="list-content">
         <h1>依頼一覧</h1>
         <RequestList :requests="searchResults" />
-
         <!-- ローディングスピナー -->
         <div v-if="loading" class="loading-spinner">
           <p>ロード中...</p>

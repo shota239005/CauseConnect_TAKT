@@ -46,7 +46,7 @@ const searchPosts = async () => {
     };
     // `selectedPrefecture` が null でない場合のみ
     if (selectedPrefecture.value) {
-      params.prefecture_id = selectedPrefecture.value;
+      params.pref_id = selectedPrefecture.value;
     }
     // `selectedArea` が null でない場合のみ
     if (selectedArea.value) {
