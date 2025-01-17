@@ -148,6 +148,12 @@ const props = defineProps({
   url: String,
 });
 
+// 投稿ボタンのクリック時に呼び出す関数
+const handleSubmit = () => {
+  alert("投稿しました。");
+  window.location.href = '/'; // ログインページへリダイレクトしつつリロード
+};
+
 
 
 const submitRequest = async () => {
@@ -254,208 +260,221 @@ onMounted(() => {
   fetchFeatures();
 });
 
+
+
 </script>
 
 
 
 
 <template>
-  <div class="toko-page">
-    <h1 class="page-title">依頼を投稿する</h1>
+  <div class="toko">
+    <div class="page-title">
+      <h1>依頼を投稿する</h1>
+    </div>
+    <div class="toko-page">
 
-    <!-- フォーム -->
-    <form @submit.prevent="submitRequest">
-      <!-- 依頼ポイント -->
-      <div class="form-group">
-        <label for="request-points">依頼ポイント</label>
-        <input id="request-points" v-model="request.requestPoints" placeholder="100" required />ポイント
-      </div>
-
-      <!-- 依頼名 -->
-      <div class="form-group">
-        <label for="request-name">依頼名</label>
-        <input type="text" id="request-name" v-model="request.requestName" placeholder="依頼の名前を入力してください" required />
-      </div>
-
-      <!-- 募集人数 -->
-      <div class="form-group">
-        <label for="min-people">募集人数</label>
-        <div class="flex">
-          <select id="min-people" v-model="request.minPeople">
-            <option v-for="num in 20" :key="'min-' + num" :value="num">{{ num }}</option>
-          </select>
-          ～
-          <select id="max-people" v-model="request.maxPeople">
-            <option v-for="num in 20" :key="'max-' + num" :value="num">{{ num }}</option>
-          </select>
-          人
+      <!-- フォーム -->
+      <form @submit.prevent="submitRequest">
+        <!-- 依頼ポイント -->
+        <div class="form-group">
+          <label for="request-points">依頼ポイント</label>
+          <input id="request-points" v-model="request.requestPoints" placeholder="100" required />ポイント
         </div>
-      </div>
 
-      <!-- 活動日 -->
-      <div class="form-group">
-        <label for="activity-date">活動日</label>
-        <input type="date" id="activity-date" v-model="request.activityDate" required />
-      </div>
-
-      <!-- 活動時間 -->
-      <div class="form-group">
-        <label for="activity-time">活動時間</label>
-        <div class="flex">
-          <select id="start-time" v-model="request.startTime">
-            <option v-for="hour in 24" :key="'start-' + hour" :value="hour">{{ hour }}時</option>
-          </select>
-          ～
-          <select id="end-time" v-model="request.endTime">
-            <option v-for="hour in 24" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
-          </select>
+        <!-- 依頼名 -->
+        <div class="form-group">
+          <label for="request-name">依頼名</label>
+          <input type="text" id="request-name" v-model="request.requestName" placeholder="依頼の名前を入力してください" required />
         </div>
-      </div>
 
-      <!-- 活動場所 -->
-      <div class="form-group">
-        <label for="activity-location">活動場所</label>
-        <div class="flex">
-          <!-- 都道府県 -->
-          <div class="form-group-todo">
-            <label for="prefecture"></label>
-            <select id="prefecture" v-model="request.prefecture" required>
-              <option value="" disabled>都道府県</option>
-              <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
-                {{ pref.pref }}
-              </option>
+        <!-- 募集人数 -->
+        <div class="form-group">
+          <label for="min-people">募集人数</label>
+          <div class="flex">
+            <select id="min-people" v-model="request.minPeople">
+              <option v-for="num in 20" :key="'min-' + num" :value="num">{{ num }}</option>
+            </select>
+            ～
+            <select id="max-people" v-model="request.maxPeople">
+              <option v-for="num in 20" :key="'max-' + num" :value="num">{{ num }}</option>
+            </select>
+            人
+          </div>
+        </div>
+
+        <!-- 活動日 -->
+        <div class="form-group">
+          <label for="activity-date">活動日</label>
+          <input type="date" id="activity-date" v-model="request.activityDate" required />
+        </div>
+
+        <!-- 活動時間 -->
+        <div class="form-group">
+          <label for="activity-time">活動時間</label>
+          <div class="flex">
+            <select id="start-time" v-model="request.startTime">
+              <option v-for="hour in 24" :key="'start-' + hour" :value="hour">{{ hour }}時</option>
+            </select>
+            ～
+            <select id="end-time" v-model="request.endTime">
+              <option v-for="hour in 24" :key="'end-' + hour" :value="hour">{{ hour }}時</option>
             </select>
           </div>
-
-          <!-- 住所1 -->
-          <input type="text" id="address1" v-model="request.address1" placeholder="市町村" required />
-
-          <!-- 住所2 -->
-          <input type="text" id="address2" v-model="request.address2" placeholder="住所2" />
         </div>
-      </div>
 
-      <!-- 依頼者参加 -->
-      <div class="form-group">
-        <label class="inline-label">依頼者が当日参加する</label>
-        <div>
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="request.participation" />当日参加します。
-          </label>
+        <!-- 活動場所 -->
+        <div class="form-group">
+          <label for="activity-location">活動場所</label>
+          <div class="flex">
+            <!-- 都道府県 -->
+            <div class="form-group-todo">
+              <label for="prefecture"></label>
+              <select id="prefecture" v-model="request.prefecture" required>
+                <option value="" disabled>都道府県</option>
+                <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
+                  {{ pref.pref }}
+                </option>
+              </select>
+            </div>
+
+            <!-- 住所1 -->
+            <input type="text" id="address1" v-model="request.address1" placeholder="市町村" required />
+
+            <!-- 住所2 -->
+            <input type="text" id="address2" v-model="request.address2" placeholder="住所2" />
+          </div>
         </div>
-      </div>
 
-      <!-- 必要備品 -->
-      <div class="form-group">
-        <label class="inline-label">必要備品</label>
-        <div class="radio-group">
-          <label class="radio-label">
-            <input type="radio" value="有" v-model="request.equipmentNeeded" />有
-          </label>
-          <label class="radio-label">
-            <input type="radio" value="無" v-model="request.equipmentNeeded" />無
-          </label>
+        <!-- 依頼者参加 -->
+        <div class="form-group">
+          <label class="inline-label">依頼者が当日参加する</label>
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="request.participation" />当日参加します。
+            </label>
+          </div>
         </div>
-      </div>
 
-      <!-- 活動エリア -->
-      <div class="form-group">
-        <label>活動エリア</label>
-        <div class="checkbox-group">
-          <label class="checkbox-label" v-for="area in activityAreas" :key="area.area_id">
-            <input type="checkbox" :value="area.area_id" v-model="selectedAreas" /> {{ area.area }}
-          </label>
+        <!-- 必要備品 -->
+        <div class="form-group">
+          <label class="inline-label">必要備品</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" value="有" v-model="request.equipmentNeeded" />有
+            </label>
+            <label class="radio-label">
+              <input type="radio" value="無" v-model="request.equipmentNeeded" />無
+            </label>
+          </div>
         </div>
-      </div>
 
-      <!-- 活動テーマ -->
-      <div class="form-group">
-        <label>活動テーマ</label><br>
-        <div class="checkbox-group">
-          <label v-for="theme in activityThemes" :key="theme.theme_id" class="checkbox-label">
-            <input type="checkbox" :value="theme.theme_id" v-model="selectedThemes" />
-            {{ theme.theme }}
-          </label>
+        <!-- 活動エリア -->
+        <div class="form-group">
+          <label>活動エリア</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label" v-for="area in activityAreas" :key="area.area_id">
+              <input type="checkbox" :value="area.area_id" v-model="selectedAreas" /> {{ area.area }}
+            </label>
+          </div>
         </div>
-      </div>
 
-      <!-- 推奨年齢 -->
-      <div class="form-group">
-        <label>推奨年齢</label>
-        <div class="checkbox-group">
-          <label v-for="age in recommendedAges" :key="age.rec_age_id" class="checkbox-label">
-            <input type="checkbox" :value="age.rec_age_id" v-model="selectedAges" />
-            {{ age.rec_age }}
-          </label>
+        <!-- 活動テーマ -->
+        <div class="form-group">
+          <label>活動テーマ</label><br>
+          <div class="checkbox-group">
+            <label v-for="theme in activityThemes" :key="theme.theme_id" class="checkbox-label">
+              <input type="checkbox" :value="theme.theme_id" v-model="selectedThemes" />
+              {{ theme.theme }}
+            </label>
+          </div>
         </div>
-      </div>
 
-      <!-- 特徴 -->
-      <div class="form-group">
-        <label>特徴</label>
-        <div class="checkbox-group">
-          <label v-for="feature in features" :key="feature.feature_id" class="checkbox-label">
-            <input type="checkbox" :value="feature.feature_id" v-model="selectedFeatures" />
-            {{ feature.feature }}
-          </label>
+        <!-- 推奨年齢 -->
+        <div class="form-group">
+          <label>推奨年齢</label>
+          <div class="checkbox-group">
+            <label v-for="age in recommendedAges" :key="age.rec_age_id" class="checkbox-label">
+              <input type="checkbox" :value="age.rec_age_id" v-model="selectedAges" />
+              {{ age.rec_age }}
+            </label>
+          </div>
         </div>
-      </div>
 
-      <!-- 依頼達成条件 -->
-      <div class="form-group">
-        <label for="request-condition">依頼達成条件</label>
-        <textarea id="request-condition" v-model="request.requestCondition" placeholder="依頼を達成するための条件を記入してください"
-          rows="4"></textarea>
-      </div>
+        <!-- 特徴 -->
+        <div class="form-group">
+          <label>特徴</label>
+          <div class="checkbox-group">
+            <label v-for="feature in features" :key="feature.feature_id" class="checkbox-label">
+              <input type="checkbox" :value="feature.feature_id" v-model="selectedFeatures" />
+              {{ feature.feature }}
+            </label>
+          </div>
+        </div>
 
-      <!-- エリア詳細（フリー入力） -->
-      <div class="form-group">
-        <label for="area-details">エリア詳細</label>
-        <textarea id="area-details" v-model="request.areaDetails" placeholder="エリアに関する詳細情報を記入してください"
-          rows="4"></textarea>
-      </div>
+        <!-- 依頼達成条件 -->
+        <div class="form-group">
+          <label for="request-condition">依頼達成条件</label>
+          <textarea id="request-condition" v-model="request.requestCondition" placeholder="依頼を達成するための条件を記入してください"
+            rows="4"></textarea>
+        </div>
 
-      <!-- 基本情報（フリー入力） -->
-      <div class="form-group">
-        <label for="basic-info">基本情報</label>
-        <textarea id="basic-info" v-model="request.basicInfo" placeholder="依頼の背景や基本情報を記入してください（例：活動目的や概要など）" rows="6"
-          required></textarea>
-      </div>
+        <!-- エリア詳細（フリー入力） -->
+        <div class="form-group">
+          <label for="area-details">エリア詳細</label>
+          <textarea id="area-details" v-model="request.areaDetails" placeholder="エリアに関する詳細情報を記入してください"
+            rows="4"></textarea>
+        </div>
 
-      <!-- 写真アップロード1 -->
-      <PhotoUploaderGroup :uploaders="[photoUploaders[0]]" @photosUpdated="handlePhotosUpdated" />
-      <!-- 依頼詳細（フリー入力） -->
-      <div class="form-group">
-        <label for="request-details">依頼詳細</label>
-        <textarea id="request-details" v-model="request.requestDetails" placeholder="依頼内容の詳細を記入してください"
-          rows="4"></textarea>
-      </div>
+        <!-- 基本情報（フリー入力） -->
+        <div class="form-group">
+          <label for="basic-info">基本情報</label>
+          <textarea id="basic-info" v-model="request.basicInfo" placeholder="依頼の背景や基本情報を記入してください（例：活動目的や概要など）" rows="6"
+            required></textarea>
+        </div>
 
-      <!-- 写真アップロード2 -->
-      <PhotoUploaderGroup :uploaders="[photoUploaders[1]]" @photosUpdated="handlePhotosUpdated" />
+        <!-- 写真アップロード1 -->
+        <PhotoUploaderGroup :uploaders="[photoUploaders[0]]" @photosUpdated="handlePhotosUpdated" />
+        <!-- 依頼詳細（フリー入力） -->
+        <div class="form-group">
+          <label for="request-details">依頼詳細</label>
+          <textarea id="request-details" v-model="request.requestDetails" placeholder="依頼内容の詳細を記入してください"
+            rows="4"></textarea>
+        </div>
 
-      <!-- MapURLコンポーネントを使用 -->
-      <MapURL v-model="request.googleMap" />
+        <!-- 写真アップロード2 -->
+        <PhotoUploaderGroup :uploaders="[photoUploaders[1]]" @photosUpdated="handlePhotosUpdated" />
+
+        <!-- MapURLコンポーネントを使用 -->
+        <MapURL v-model="request.googleMap" />
 
 
-      <!-- 送信ボタン -->
-      <button type="submit" class="btn1">投稿する</button>
-    </form>
+        <!-- 送信ボタン -->
+        <button type="submit" class="btn1" @click="handleSubmit">投稿する</button>
+
+      </form>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.toko-page {
+.toko{
   background-color: #f4f4f4;
+}
+h1{
+
+}
+
+.toko-page {
+  margin-left: 150px;
   max-width: auto;
-  margin: 0 auto;
   padding: 20px;
   font-family: "Zen Maru Gothic", serif;
 }
 
 .page-title {
-  font-size: 24px;
-  font-weight: bold;
+text-align: center;
+font-weight: bold;
 }
 
 .form-group {
@@ -497,7 +516,7 @@ select {
   padding: 10px;
   font-size: 16px;
   margin-top: 5px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 5px;
 }
 

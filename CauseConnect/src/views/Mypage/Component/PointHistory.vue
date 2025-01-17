@@ -169,27 +169,30 @@ onMounted(fetchPointHistory);
 
 /* ボタン */
 .show-history-button {
-  background-color: #f7a400;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-family: "Zen Maru Gothic", serif;
+    background-color: #f7a400;
+    color: white;
+    border: none;
+    padding: 10px 100px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 32px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
 
 .show-history-button::before {
   content: "📜";
-  font-size: 20px;
+  font-size: 32px;
 }
 
 .show-history-button:hover {
   background-color: #ffca5f;
+
   transform: scale(1.05);
 }
 </style>

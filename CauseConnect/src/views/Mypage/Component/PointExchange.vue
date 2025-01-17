@@ -31,7 +31,7 @@ const purchasePoints = async () => {
     <div>
         <!-- ポップアップ表示ボタン -->
         <button @click="togglePopup" class="purchase-button">
-            ポイント購入
+            ポイント交換
         </button>
 
         <!-- ポップアップ -->
@@ -119,24 +119,25 @@ const purchasePoints = async () => {
     gap: 8px;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
-.cancel-button
-{
-    background-color: #808080;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    margin-left: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+
+.cancel-button{
+  font-family: "Zen Maru Gothic", serif;
+  background-color: #808080;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 24px;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .purchase-button::before {
-    content: "💰";
+    content: "🔄";
     font-size: 32px;
 }
 
