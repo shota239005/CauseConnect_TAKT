@@ -151,7 +151,6 @@ const props = defineProps({
 // 投稿ボタンのクリック時に呼び出す関数
 const handleSubmit = () => {
   alert("投稿しました。");
-  window.location.href = '/'; // ログインページへリダイレクトしつつリロード
 };
 
 
@@ -233,6 +232,8 @@ const submitRequest = async () => {
     message.value = "依頼が投稿されました！";
     console.log("送信成功:", response.data);
     console.log("送信するFormData:");
+    window.location.href = '/'; // ログインページへリダイレクトしつつリロード
+
     for (let pair of formData.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
