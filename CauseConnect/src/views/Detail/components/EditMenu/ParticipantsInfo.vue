@@ -10,38 +10,88 @@ const props = defineProps({
   },
 });
 
-// ✅ 実行者のuser_idリストの状態管理
-const participants = ref([]);
+// ✅ 各参加者の状態管理
+const requester = ref(null);
+const contributors = ref([]);
+const executors = ref([]);
+const requesterSupPoint = ref(null); // ✅ 依頼者の出資ポイント
 
-// ✅ 実行者ID（user_id）を取得する関数
-const fetchParticipants = async () => {
+// ✅ 依頼者の取得
+const fetchRequester = async () => {
   try {
-    // ✅ エンドポイント: /cases/{case_id}/executors からuser_id一覧を取得
-    const response = await apiClient.get(`/cases/${props.caseId}/executors`);
-    participants.value = response.data;  // user_idの配列
-
-    console.log('[ParticipantsInfo] 実行者ID取得:', participants.value);
+    const response = await apiClient.get(`/cases/${props.caseId}/requester`);
+    requester.value = response.data;
+    console.log('[Par] 依頼者取得:', requester.value);
   } catch (error) {
-    console.error('[ParticipantsInfo] 実行者IDの取得に失敗:', error);
+    console.error('[ParticipantsInfo] 依頼者の取得に失敗:', error);
   }
 };
 
-// ✅ コンポーネントがマウントされたときに実行
+// ✅ 出資者の取得
+const fetchContributors = async () => {
+  try {
+    const response = await apiClient.get(`/cases/${props.caseId}/contributors`);
+    contributors.value = response.data;
+    console.log('[Par] 出資者取得:', contributors.value);
+
+    // ✅ 依頼者の出資ポイントを取得
+    const requesterContributor = contributors.value.find(contributor => contributor.user_id === requester.value?.user_id);
+    requesterSupPoint.value = requesterContributor ? requesterContributor.sup_point : null;
+
+  } catch (error) {
+    console.error('[Par] 出資者の取得に失敗:', error);
+  }
+};
+
+// ✅ 実行者の取得
+const fetchExecutors = async () => {
+  try {
+    const response = await apiClient.get(`/cases/${props.caseId}/executors`);
+    executors.value = response.data;
+    console.log('[Par] 実行者取得:', executors.value);
+  } catch (error) {
+    console.error('[Par] 実行者の取得に失敗:', error);
+  }
+};
+
+// ✅ コンポーネントがマウントされたときに全データ取得
 onMounted(() => {
-  console.log(`[ParticipantsInfo] 受け取ったcaseId: ${props.caseId}`);
-  fetchParticipants();
+  console.log(`[Par] 受け取ったcaseId: ${props.caseId}`);
+  fetchRequester().then(fetchContributors);
+  fetchExecutors();
 });
 </script>
 
 <template>
   <div class="participants-info">
-    <h3>実行者ID一覧</h3>
-    <ul>
-      <!-- ✅ user_idのリストを表示 -->
-      <!-- <li v-for="id in participants" :key="id">
-        実行者ID: {{ id }}
-      </li> -->
-    </ul>
+    <h3>参加メンバー情報</h3>
+
+    <!-- ✅ 依頼者の表示 -->
+    <section v-if="requester">
+      <h4>依頼者</h4>
+      <p>ID: {{ requester.user_id }} / ニックネーム: {{ requester.nickname }}
+      <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span></p>
+    </section>
+
+    <!-- ✅ 出資者の表示 -->
+    <section>
+      <h4>出資者</h4>
+      <ul>
+        <li v-for="contributor in contributors" :key="contributor.user_id">
+          ID: {{ contributor.user_id }} / ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
+        </li>
+      </ul>
+    </section>
+
+    <!-- ✅ 実行者の表示 -->
+    <section>
+      <h4>実行者</h4>
+      <ul>
+        <li v-for="executor in executors" :key="executor.user_id">
+          ID: {{ executor.user_id }} / ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 
@@ -56,6 +106,10 @@ onMounted(() => {
 .participants-info h3 {
   margin-bottom: 10px;
   font-size: 18px;
+}
+
+.participants-info section {
+  margin-bottom: 15px;
 }
 
 .participants-info ul {

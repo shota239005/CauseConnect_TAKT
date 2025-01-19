@@ -13,7 +13,7 @@ const props = defineProps({
 
 // ✅ 受け取ったcaseIdをログに表示
 onMounted(() => {
-  console.log("[P1] 受け取ったcase_id:", props.caseId);
+  // console.log("[P1] 受け取ったcase_id:", props.caseId);
 });
 
 // 初期データ
@@ -45,9 +45,21 @@ const handlePhotosUpdated = ({ pictureType, file }) => {
   }
 };
 
+// ✅ state_idを2に更新する関数
+const updateStateToSubmitted = async () => {
+  try {
+    const response = await apiClient.put(`/case/${props.caseId}/update-state`, {
+      state_id: 2
+    });
+    console.log("[P1] state_id更新成功:", response.data);
+  } catch (error) {
+    console.error("[P1] state_id更新エラー:", error);
+  }
+};
+
 // 保存処理
 const handleSubmit = async () => {
-  console.log("[P1] 送信するcase_id:", props.caseId); // ✅ 送信前にcase_idをログ出力
+  console.log("[P1] 送信するcase_id:", props.caseId);
   const formData = new FormData();
   formData.append("case_id", props.caseId);
 
@@ -67,6 +79,7 @@ const handleSubmit = async () => {
     });
     console.log("保存成功:", response.data);
     alert("保存が成功しました！");
+    await updateStateToSubmitted(); // ✅ state_idを2に更新
   } catch (error) {
     console.error("保存エラー:", error);
     alert("保存に失敗しました。");
@@ -95,6 +108,7 @@ const handleSubmit = async () => {
     <button class="btn1" @click="handleSubmit">報告する</button>
   </div>
 </template>
+
 
 <style scoped>
 .progress-step-container {

@@ -87,13 +87,10 @@ onMounted(() => {
       <button class="toggle-button" @click="toggleSection(isParticipantsInfoVisible)">
         参加者一覧 {{ isParticipantsInfoVisible ? '▲' : '▼' }}
       </button>
-      <ParticipantsInfo
-        v-show="isParticipantsInfoVisible"
-        :caseId="requestData.case_id"
-        :userId="props.userId"
-        @updatePoints="updateTotalPoints"
-        @updateExecutors="updateExecutors"
-      />
+      <ParticipantsInfo v-show="isParticipantsInfoVisible"
+       :caseId="requestData.case_id" 
+       :userId="props.userId"
+        @updatePoints="updateTotalPoints" @updateExecutors="updateExecutors" />
     </div>
 
     <div class="menu-section">
@@ -102,7 +99,7 @@ onMounted(() => {
           依頼者メニュー {{ isRequesterMenuVisible ? '▲' : '▼' }}
         </button>
         <div v-show="isRequesterMenuVisible" class="menu-content">
-          <RequesterMenu />
+          <RequesterMenu :caseId="requestData.case_id" :userId="props.userId" />
         </div>
       </div>
 
@@ -111,7 +108,7 @@ onMounted(() => {
           出資者メニュー {{ isContributorMenuVisible ? '▲' : '▼' }}
         </button>
         <div v-show="isContributorMenuVisible" class="menu-content">
-          <ContributorMenu />
+          <ContributorMenu :caseId="requestData.case_id" :userId="props.userId" />
         </div>
       </div>
 
@@ -120,7 +117,7 @@ onMounted(() => {
           実行者メニュー {{ isExecutorMenuVisible ? '▲' : '▼' }}
         </button>
         <div v-show="isExecutorMenuVisible" class="menu-content">
-          <ExecutorMenu />
+          <ExecutorMenu :caseId="requestData.case_id" :userId="props.userId" />
         </div>
       </div>
     </div>
