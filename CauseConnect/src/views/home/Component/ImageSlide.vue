@@ -1,6 +1,10 @@
 <script setup>
 import {ref, reactive, onMounted } from 'vue';
 import apiClient from '@/axios'; // axiosのインポート
+import { useRouter } from 'vue-router'; // ルーターを使用
+
+// ルーターのインスタンスを取得
+const router = useRouter(); 
 
 // スライドデータを格納するための reactive オブジェクト
 const slides = reactive({
@@ -104,8 +108,8 @@ const resumeSlide = () => {
 };
 
 // スライドクリック時のリンク遷移メソッド
-const navigateToPage = (slide) => {
-  this.$router.push(slide.link || '/default-link');
+const navigateToPage = (caseId) => {
+  router.push(`/details/${caseId}`); // ルーターで遷移
 };
 </script>
 
@@ -113,7 +117,12 @@ const navigateToPage = (slide) => {
   <div class="slider-container" @mouseenter="pauseSlide" @mouseleave="resumeSlide">
     <div class="slides-wrapper">
       <!-- スライドデータを表示 -->
-      <div v-for="(slide, index) in slides.items" :key="index" class="slide" @click="navigateToPage(slide)">
+      <div
+        v-for="(slide, index) in slides.items"
+        :key="index"
+        class="slide"
+        @click="navigateToPage(slide.case_id)">
+
         <div class="slide-content">
           <!-- 投稿の画像 -->
           <img :src="slide.picture || 'src/assets/img/HomeImg.jpg'" alt="slide image" class="slide-image" />
