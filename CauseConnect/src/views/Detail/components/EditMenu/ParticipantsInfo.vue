@@ -10,55 +10,44 @@ const props = defineProps({
   },
 });
 
-// ✅ 各参加者の状態管理
+// ✅ 各状態の管理
 const requester = ref(null);
+const requesterSupPoint = ref(null); // 依頼ポイント
 const contributors = ref([]);
 const executors = ref([]);
-const requesterSupPoint = ref(null); // ✅ 依頼者の出資ポイント
 
-// ✅ 依頼者の取得
-const fetchRequester = async () => {
+// ✅ データ取得関数
+const fetchParticipants = async () => {
   try {
-    const response = await apiClient.get(`/cases/${props.caseId}/requester`);
-    requester.value = response.data;
-    console.log('[Par] 依頼者取得:', requester.value);
-  } catch (error) {
-    console.error('[ParticipantsInfo] 依頼者の取得に失敗:', error);
-  }
-};
+    // ✅ 依頼者のデータを取得
+    const requesterResponse = await apiClient.get(`/cases/${props.caseId}/requester`);
+    requester.value = requesterResponse.data;
 
-// ✅ 出資者の取得
-const fetchContributors = async () => {
-  try {
-    const response = await apiClient.get(`/cases/${props.caseId}/contributors`);
-    contributors.value = response.data;
-    console.log('[Par] 出資者取得:', contributors.value);
+    // ✅ 出資者リストを取得
+    const contributorsResponse = await apiClient.get(`/cases/${props.caseId}/contributors`);
+    contributors.value = contributorsResponse.data.filter(
+      (contributor) => contributor.user_id !== requester.value.user_id // 依頼者を除外
+    );
 
     // ✅ 依頼者の出資ポイントを取得
-    const requesterContributor = contributors.value.find(contributor => contributor.user_id === requester.value?.user_id);
+    const requesterContributor = contributorsResponse.data.find(
+      (contributor) => contributor.user_id === requester.value.user_id
+    );
     requesterSupPoint.value = requesterContributor ? requesterContributor.sup_point : null;
 
+    // ✅ 実行者リストを取得
+    const executorsResponse = await apiClient.get(`/cases/${props.caseId}/executors`);
+    executors.value = executorsResponse.data.filter(
+      (executor) => executor.user_id !== requester.value.user_id // 依頼者を除外
+    );
   } catch (error) {
-    console.error('[Par] 出資者の取得に失敗:', error);
+    console.error('[ParticipantsInfo] データ取得に失敗:', error);
   }
 };
 
-// ✅ 実行者の取得
-const fetchExecutors = async () => {
-  try {
-    const response = await apiClient.get(`/cases/${props.caseId}/executors`);
-    executors.value = response.data;
-    console.log('[Par] 実行者取得:', executors.value);
-  } catch (error) {
-    console.error('[Par] 実行者の取得に失敗:', error);
-  }
-};
-
-// ✅ コンポーネントがマウントされたときに全データ取得
+// ✅ マウント時にデータを取得
 onMounted(() => {
-  console.log(`[Par] 受け取ったcaseId: ${props.caseId}`);
-  fetchRequester().then(fetchContributors);
-  fetchExecutors();
+  fetchParticipants();
 });
 </script>
 
@@ -66,31 +55,34 @@ onMounted(() => {
   <div class="participants-info">
     <h3>参加メンバー情報</h3>
 
-    <!-- ✅ 依頼者の表示 -->
+    <!-- ✅ 依頼者情報 -->
     <section v-if="requester">
       <h4>依頼者</h4>
-      <p>ID: {{ requester.user_id }} / ニックネーム: {{ requester.nickname }}
-      <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span></p>
+      <p> ニックネーム: {{ requester.nickname }}
+        <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span>
+      </p>
     </section>
 
-    <!-- ✅ 出資者の表示 -->
+    <!-- ✅ 出資者情報 -->
     <section>
       <h4>出資者</h4>
-      <ul>
+      <ul v-if="contributors.length > 0">
         <li v-for="contributor in contributors" :key="contributor.user_id">
-          ID: {{ contributor.user_id }} / ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
+           ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
         </li>
       </ul>
+      <p v-else>なし</p>
     </section>
 
-    <!-- ✅ 実行者の表示 -->
+    <!-- ✅ 実行者情報 -->
     <section>
       <h4>実行者</h4>
-      <ul>
+      <ul v-if="executors.length > 0">
         <li v-for="executor in executors" :key="executor.user_id">
-          ID: {{ executor.user_id }} / ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
+           ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
         </li>
       </ul>
+      <p v-else>なし</p>
     </section>
   </div>
 </template>
