@@ -183,9 +183,6 @@ export default {
   align-items: center;
 }
 
-.auth-buttons button {
-  margin-left: 10px; /* もしくは適切な値に調整 */
-}
 .nav-links button {
   font-family: "Zen Maru Gothic", serif;
   background: none;

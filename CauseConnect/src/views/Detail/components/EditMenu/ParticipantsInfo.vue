@@ -58,7 +58,7 @@ onMounted(() => {
     <!-- ✅ 依頼者情報 -->
     <section v-if="requester">
       <h4>依頼者</h4>
-      <p> ニックネーム: {{ requester.nickname }}
+      <p>ID: {{ requester.user_id }} / ニックネーム: {{ requester.nickname }}
         <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span>
       </p>
     </section>
@@ -68,7 +68,7 @@ onMounted(() => {
       <h4>出資者</h4>
       <ul v-if="contributors.length > 0">
         <li v-for="contributor in contributors" :key="contributor.user_id">
-           ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
+          ID: {{ contributor.user_id }} / ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
         </li>
       </ul>
       <p v-else>なし</p>
@@ -79,7 +79,7 @@ onMounted(() => {
       <h4>実行者</h4>
       <ul v-if="executors.length > 0">
         <li v-for="executor in executors" :key="executor.user_id">
-           ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
+          ID: {{ executor.user_id }} / ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
         </li>
       </ul>
       <p v-else>なし</p>

@@ -99,7 +99,7 @@ onMounted(() => {
     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
     <p v-else class="loading">読み込み中...</p>
 
-    <div class="approval-buttons">
+    <div class="approval-buttons container-right">
       <h2>※承認を押すと進捗状況が更新されます</h2>
       <button class="btn1" @click="approveRequest">承認</button>
       <button class="btnNo">非承認</button>
@@ -126,6 +126,14 @@ onMounted(() => {
   margin-top: 20px;
 }
 
+.approval-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 20px;
+  align-items: flex-end;
+}
+
 .btn1 {
   padding: 20px 60px;
   color: #fff;
@@ -140,7 +148,6 @@ onMounted(() => {
 }
 
 .btnNo {
-  margin-left: 20px;
   padding: 20px 40px;
   color: #fff;
   background-color: #dc3545;
