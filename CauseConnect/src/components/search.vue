@@ -1,89 +1,77 @@
 <script setup>
 import { ref, onMounted, defineEmits } from "vue";
-import apiClient from "@/axios"; // Axios設定をインポート
-import { useRouter } from "vue-router"; // vue-router をインポート
+import apiClient from "@/axios";
+import { useRouter } from "vue-router";
 
-// `defineEmits`を使って親にイベントを送信する準備
 const emit = defineEmits(["update-results"]);
-
-// ルーターを使ってページ遷移を行う
 const router = useRouter();
 
 const selectedPrefecture = ref("");
 const selectedArea = ref("");
 const selectedStatus = ref("");
 
-const prefectures = ref([]); // 都道府県データ
-const areas = ref([]); // 活動エリアデータ
-const searchResults = ref([]); // 検索結果
+const prefectures = ref([]);
+const areas = ref([]);
+const searchResults = ref([]);
 
 // 都道府県データを取得
 const fetchPrefectures = async () => {
+  const cachedPrefectures = localStorage.getItem("prefectures");
+  if (cachedPrefectures) {
+    prefectures.value = JSON.parse(cachedPrefectures);
+    return;
+  }
+
   try {
     const response = await apiClient.get("/prefectures");
     prefectures.value = response.data;
+    localStorage.setItem("prefectures", JSON.stringify(prefectures.value)); // キャッシュに保存
   } catch (error) {
     console.error("都道府県データの取得に失敗しました:", error);
   }
 };
+
 // 活動エリアデータを取得
 const fetchAreas = async () => {
+  const cachedAreas = localStorage.getItem("areas");
+  if (cachedAreas) {
+    areas.value = JSON.parse(cachedAreas);
+    return;
+  }
+
   try {
     const response = await apiClient.get("/places");
     areas.value = response.data;
+    localStorage.setItem("areas", JSON.stringify(areas.value)); // キャッシュに保存
   } catch (error) {
-    console.error("データ取得失敗:", error);
+    console.error("活動エリアデータの取得に失敗しました:", error);
   }
 };
+
 // 検索処理
 const searchPosts = async () => {
   try {
-     // 検索結果をリセット
-     searchResults.value = [];
-     emit("update-results", []); // 親コンポーネントにも空の配列を通知
-    // 送信するパラメータのオブジェクトを作成
-    const params = {
-    };
-    // `selectedPrefecture` が null でない場合のみ
-    if (selectedPrefecture.value) {
-      params.pref_id = selectedPrefecture.value;
-    }
-    // `selectedArea` が null でない場合のみ
-    if (selectedArea.value) {
-      params.area_id = selectedArea.value;
-    }
-    // `selectedStatus` が null でない場合のみ
-    if (selectedStatus.value) {
-      params.status = selectedStatus.value;
-    }
-    // API へリクエストを送信
+    searchResults.value = [];
+    emit("update-results", []);
+
+    const params = {};
+    if (selectedPrefecture.value) params.pref_id = selectedPrefecture.value;
+    if (selectedArea.value) params.area_id = selectedArea.value;
+    if (selectedStatus.value) params.status = selectedStatus.value;
+
     const response = await apiClient.get("/search-posts", { params });
-
-    // 検索結果を更新し、親コンポーネントに送信
     searchResults.value = response.data;
-    console.log("search:", searchResults.value);
-
-    // 検索結果が配列か確認
-    if (Array.isArray(response.data)) {
-      // console.log("検索結果は配列です。", response.data);
-    } else {
-      // console.error("検索結果が配列ではありません。", response.data);
-    }
-
-    // 親コンポーネントに検索結果を渡す
     emit("update-results", searchResults.value);
 
-    // 検索結果をクエリパラメータに含めて `list` ページへ遷移
     router.push({
       path: "/list",
-      query: {
-        results: JSON.stringify(searchResults.value), // 結果を文字列化して渡す
-      },
+      query: { results: JSON.stringify(searchResults.value) },
     });
   } catch (error) {
     console.error("検索処理中にエラーが発生しました:", error);
   }
 };
+
 // コンポーネントがマウントされた時にデータを取得
 onMounted(() => {
   fetchPrefectures();
