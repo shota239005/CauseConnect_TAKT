@@ -176,9 +176,10 @@ export default {
   .map-container {
     position: relative;
     width: 100%;
-    max-width: 1000px;
-    margin-left: 100px;
+    max-width: 90%;
+    margin-left: 50px;
     margin-top: 20px;
+    margin-bottom: 40px;
     text-align: left;
   }
 

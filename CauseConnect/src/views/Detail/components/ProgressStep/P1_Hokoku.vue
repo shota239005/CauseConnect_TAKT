@@ -1,7 +1,20 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import PhotoUploaderGroup from "@/views/Toko/components/PhotoUploaderGroup.vue";
 import apiClient from '@/axios'; // axios設定をインポート
+
+// ✅ 親から受け取るprops（caseId追加）
+const props = defineProps({
+  caseId: {
+    type: [Number, String],
+    required: true,
+  },
+});
+
+// ✅ 受け取ったcaseIdをログに表示
+onMounted(() => {
+  // console.log("[P1] 受け取ったcase_id:", props.caseId);
+});
 
 // 初期データ
 const uploaders = [
@@ -32,14 +45,27 @@ const handlePhotosUpdated = ({ pictureType, file }) => {
   }
 };
 
+// ✅ state_idを2に更新する関数
+const updateStateToSubmitted = async () => {
+  try {
+    const response = await apiClient.put(`/case/${props.caseId}/update-state`, {
+      state_id: 2
+    });
+    console.log("[P1] state_id更新成功:", response.data);
+  } catch (error) {
+    console.error("[P1] state_id更新エラー:", error);
+  }
+};
+
 // 保存処理
 const handleSubmit = async () => {
+  console.log("[P1] 送信するcase_id:", props.caseId);
   const formData = new FormData();
-  formData.append("case_id", 35); // テスト用の依頼ID
+  formData.append("case_id", props.caseId);
 
   // 写真をフォームに追加
   photos.value.forEach(({ pictureType, file }) => {
-    formData.append(`photos[${pictureType}]`, file); // バックエンド側で処理
+    formData.append(`photos[${pictureType}]`, file);
   });
 
   // コメントをフォームに追加
@@ -53,6 +79,7 @@ const handleSubmit = async () => {
     });
     console.log("保存成功:", response.data);
     alert("保存が成功しました！");
+    await updateStateToSubmitted(); // ✅ state_idを2に更新
   } catch (error) {
     console.error("保存エラー:", error);
     alert("保存に失敗しました。");
@@ -78,9 +105,10 @@ const handleSubmit = async () => {
       <textarea v-model="comments.comment4"></textarea>
     </div>
 
-    <button  class="btn1" @click="handleSubmit">報告する</button>
+    <button class="btn1" @click="handleSubmit">報告する</button>
   </div>
 </template>
+
 
 <style scoped>
 .progress-step-container {
@@ -110,17 +138,15 @@ input[type="file"] {
   margin-bottom: 10px;
 }
 
-
 .uploaded-photo {
   max-width: 100%;
   max-height: 300px;
   margin-top: 10px;
 }
 
-.photo-uploader-group{
+.photo-uploader-group {
   margin-bottom: 20px;
 }
-
 
 textarea {
   width: 100%;
@@ -133,11 +159,11 @@ textarea {
   margin-bottom: 20px;
 }
 
-.section-btn{
+.section-btn {
   text-align: right;
 }
 
-.btn1{
+.btn1 {
   display: block;
   margin-left: auto;
   padding: 20px 70px;
@@ -147,5 +173,4 @@ textarea {
   font-weight: 500;
   transition: transform 0.3s, box-shadow 0.3s;
 }
-
 </style>

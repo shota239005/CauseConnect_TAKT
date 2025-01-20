@@ -1,101 +1,124 @@
-<!--ゴールとして、それぞれの参加者をクリックすると、
-その参加者のプロフィールを閲覧できたらいいね-->
-
 <script setup>
-import { defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
+import apiClient from '@/axios';
 
-const emit = defineEmits(['updatePoints', 'updateExecutors']); // 親コンポーネントにデータを渡すイベント
+// ✅ 親から受け取るprops
+const props = defineProps({
+  caseId: {
+    type: Number,
+    required: true,
+  },
+});
 
-const master = 'タロー'; // 依頼者名
+// ✅ 各参加者の状態管理
+const requester = ref(null);
+const contributors = ref([]);
+const executors = ref([]);
+const requesterSupPoint = ref(null); // ✅ 依頼者の出資ポイント
 
-const participants = {
-  requester: { name: '★' + master, points: 400 }, // 依頼者にポイントを追加
-  supporters: [
-    { name: 'さっちゃん', points: 100 },
-    { name: 'がまかつ', points: 300 },
-  ],
-  executors: ['★' + master, 'ガープ', 'ヒナ'], // 実行者リスト
+// ✅ 依頼者の取得
+const fetchRequester = async () => {
+  try {
+    const response = await apiClient.get(`/cases/${props.caseId}/requester`);
+    requester.value = response.data;
+    console.log('[Par] 依頼者取得:', requester.value);
+  } catch (error) {
+    console.error('[ParticipantsInfo] 依頼者の取得に失敗:', error);
+  }
 };
 
-// 依頼者と出資者のポイントの合計を計算
-const totalPoints = participants.requester.points + participants.supporters.reduce((total, supporter) => total + supporter.points, 0);
+// ✅ 出資者の取得
+const fetchContributors = async () => {
+  try {
+    const response = await apiClient.get(`/cases/${props.caseId}/contributors`);
+    contributors.value = response.data;
+    console.log('[Par] 出資者取得:', contributors.value);
 
-// 実行者人数をカウント
-const executorsCount = participants.executors.length;
+    // ✅ 依頼者の出資ポイントを取得
+    const requesterContributor = contributors.value.find(contributor => contributor.user_id === requester.value?.user_id);
+    requesterSupPoint.value = requesterContributor ? requesterContributor.sup_point : null;
 
-// 親コンポーネントに総ポイントと実行者人数を送信
-emit('updatePoints', totalPoints);
-emit('updateExecutors', executorsCount);
+  } catch (error) {
+    console.error('[Par] 出資者の取得に失敗:', error);
+  }
+};
+
+// ✅ 実行者の取得
+const fetchExecutors = async () => {
+  try {
+    const response = await apiClient.get(`/cases/${props.caseId}/executors`);
+    executors.value = response.data;
+    console.log('[Par] 実行者取得:', executors.value);
+  } catch (error) {
+    console.error('[Par] 実行者の取得に失敗:', error);
+  }
+};
+
+// ✅ コンポーネントがマウントされたときに全データ取得
+onMounted(() => {
+  console.log(`[Par] 受け取ったcaseId: ${props.caseId}`);
+  fetchRequester().then(fetchContributors);
+  fetchExecutors();
+});
 </script>
 
 <template>
   <div class="participants-info">
-    <!-- 依頼者 -->
-    <p class="requester">
-      <strong>依頼者：</strong>{{ participants.requester.name }} ({{ participants.requester.points }}P)
-    </p>
+    <h3>参加メンバー情報</h3>
 
-    <!-- 出資者 -->
-    <div v-if="participants.supporters.length">
-      <p
-        v-for="(supporter, index) in participants.supporters"
-        :key="'supporter-' + index"
-        class="supporter"
-      >
-        <strong>出資者：</strong>{{ supporter.name }} ({{ supporter.points }}P)
-      </p>
-    </div>
+    <!-- ✅ 依頼者の表示 -->
+    <section v-if="requester">
+      <h4>依頼者</h4>
+      <p>ID: {{ requester.user_id }} / ニックネーム: {{ requester.nickname }}
+      <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span></p>
+    </section>
 
-    <!-- 実行者 -->
-    <div v-if="participants.executors.length">
-      <p
-        v-for="(executor, index) in participants.executors"
-        :key="'executor-' + index"
-        class="executor"
-      >
-        <strong>実行者：</strong>{{ executor }}
-      </p>
-    </div>
+    <!-- ✅ 出資者の表示 -->
+    <section>
+      <h4>出資者</h4>
+      <ul>
+        <li v-for="contributor in contributors" :key="contributor.user_id">
+          ID: {{ contributor.user_id }} / ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
+        </li>
+      </ul>
+    </section>
+
+    <!-- ✅ 実行者の表示 -->
+    <section>
+      <h4>実行者</h4>
+      <ul>
+        <li v-for="executor in executors" :key="executor.user_id">
+          ID: {{ executor.user_id }} / ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 
-
 <style scoped>
 .participants-info {
-  border-radius: 8px;
-  background-color: #fff;
-  width: 100%;
-  max-width: 600px; /* 最大幅を設定 */
-  margin: 20px auto; /* 中央寄せ */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
-h2 {
-  font-size: 24px;
+.participants-info h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.participants-info section {
   margin-bottom: 15px;
 }
 
-/* 共通スタイル */
-p {
-  font-size: 16px;
-  margin: 5px 0;
+.participants-info ul {
+  list-style: none;
+  padding: 0;
 }
 
-strong {
-  font-weight: bold;
-}
-
-/* 依頼者のスタイル */
-.requester {
-  color: #dc3545;
-}
-
-/* 出資者のスタイル */
-.supporter {
-  color: #007bff;
-}
-
-/* 実行者のスタイル */
-.executor {
-  color: #28a745;
+.participants-info li {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
 }
 </style>

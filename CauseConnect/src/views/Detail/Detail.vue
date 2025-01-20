@@ -25,10 +25,10 @@ const loading = ref(true);
 // ✅ ユーザー情報を取得する関数
 const fetchUserInfo = async () => {
   try {
-    const token = localStorage.getItem('token');  // ✅ トークンを取得
+    const token = localStorage.getItem('token');
 
     if (!token) {
-      console.error('[Detail]トークンが見つかりません');
+      console.error('[Detail] トークンが見つかりません');
       return;
     }
 
@@ -36,17 +36,20 @@ const fetchUserInfo = async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    userInfo.value = response.data;  // ✅ ユーザー情報を格納
-    console.log('%c[Detail] ユーザー情報:', 'color: green; font-weight: bold;', userInfo.value);
+    userInfo.value = response.data;
+
+    console.log('[Detail] 取得したユーザー情報:', userInfo.value);
 
   } catch (error) {
-    console.error('[Detail]ユーザー情報の取得に失敗:', error);
+    console.error('[Detail] ユーザー情報の取得に失敗:', error);
   }
 };
 
 // ✅ 詳細データを取得する関数
 const fetchRequestDetails = async () => {
   try {
+    console.log(`[Detail] APIエンドポイント: /search-posts/${props.id}`);  // ✅ 追加
+
     const response = await apiClient.get(`/search-posts/${props.id}`);
     requestDetails.value = response.data;
 
@@ -54,7 +57,7 @@ const fetchRequestDetails = async () => {
     loading.value = false;
 
   } catch (error) {
-    console.error('[Detail]データ取得に失敗しました:', error);
+    console.error('[Detail] データ取得に失敗しました:', error);
     loading.value = false;
   }
 };
@@ -101,7 +104,7 @@ const currentProgress = 2;
         <div class="right-section">
           <!-- ✅ Editmenu にも条件付きで userId と caseId を渡す -->
           <Editmenu
-            v-if="userInfo && userInfo.user_id"
+            v-if="userInfo && userInfo.user_id && requestDetails"
             :request="requestDetails"
             :userId="userInfo.user_id"
             :caseId="requestDetails?.case_id"
