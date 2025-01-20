@@ -42,7 +42,7 @@ const fetchSlides = async () => {
        // case_id 昇順で並び替え
        slides.items.sort((a, b) => a.case_id - b.case_id);
 
-      console.log('[DEBUG] スライドデータ:', slides.items);
+      console.log('[DEBUG] スライドデータ２下:', slides.items);
     } else {
       console.error("APIのレスポンスは配列ではありません", response.data.posts);
     }
