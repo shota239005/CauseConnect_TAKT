@@ -39,8 +39,8 @@ const fetchSlides = async () => {
         })
       );
 
-      // point 昇順で並び替え
-      slides.items.sort((a, b) => b.point - a.point);
+       // case_id 昇順で並び替え
+       slides.items.sort((a, b) => a.case_id - b.case_id);
 
       console.log('[DEBUG] スライドデータ:', slides.items);
     } else {

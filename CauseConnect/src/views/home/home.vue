@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';  // vue-routerをインポート
 import Search from '@/components/search.vue';
 import Japan from '@/components/japan.vue';
 import ImageSlide from './Component/ImageSlide.vue';
+import ImageSlide2 from './Component/ImageSlide.vue';
 import Info from '../Info/Info.vue';
 
 // 検索クエリを保持するためのref
@@ -29,7 +30,7 @@ const searchRequests = () => {
     </div>
     <ImageSlide/>
     <Japan/>
-    <ImageSlide/>
+    <ImageSlide2/>
     <Info/>
   </div>
 </template>
