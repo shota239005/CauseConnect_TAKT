@@ -477,11 +477,13 @@ onMounted(() => {
 
 .page-title {
 text-align: center;
-font-weight: bold;
+font-size: 30px;
+font-weight: 100;
 }
 
 .form-group {
   margin-bottom: 20px;
+  font-size: 40px;
 
   .flex1 {
     width: 200px;
@@ -491,6 +493,7 @@ font-weight: bold;
 
 .form-group-1 {
   margin-bottom: 20px;
+  font-size: 40px;
 
   #request-condition {
     width: 80%;
@@ -504,7 +507,7 @@ font-weight: bold;
 
 
 #request-points {
-  width: 50px;
+  width: 70px;
 }
 
 #area-details {
@@ -531,7 +534,7 @@ input,
 select {
   font-family: "Zen Maru Gothic", serif;
   padding: 10px;
-  font-size: 16px;
+  font-size: 32px;
   margin-top: 5px;
   border: 2px solid #f7a400;
   border-radius: 5px;
@@ -546,9 +549,10 @@ select {
 
 .radio-label,
 .checkbox-label {
-  font-size: 14px;
+  font-size: 30px;
+  font-weight: 100;
   display: flex;
-  width: 100px;
+  width: 290px;
   align-items: center;
 
 }

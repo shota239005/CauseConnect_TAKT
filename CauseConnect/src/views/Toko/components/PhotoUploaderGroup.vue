@@ -80,6 +80,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  font-size: 34px;
 }
 
 .uploader-controls {
@@ -96,6 +97,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
+  margin-bottom: 40px;
 }
 
 .select-photo-btn:hover {
