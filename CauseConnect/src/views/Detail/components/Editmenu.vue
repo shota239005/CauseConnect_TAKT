@@ -7,9 +7,18 @@ import ExecutorMenu from "./EditMenu/ExecutorMenu.vue";
 
 // ✅ 親から受け取るprops
 const props = defineProps({
-  caseId: { type: Number, required: true },
-  userId: { type: Number, required: true },
-  request: { type: Object, required: true },
+  caseId: {
+    type: Number,
+    required: true,
+  },
+  userId: {
+    type: Number,
+    required: true,
+  },
+  request: {
+    type: Object,
+    required: true,
+  },
 });
 
 // ✅ requestオブジェクトが配列の場合に対応
@@ -28,12 +37,17 @@ const rewardPerPerson = computed(() => {
   return executorsCount.value > 0 ? (totalPoints.value / executorsCount.value).toFixed(0) : 0;
 });
 
-// ✅ セクション表示切替
-const toggleSection = (key) => {
-  if (key === 'participants') isParticipantsInfoVisible.value = !isParticipantsInfoVisible.value;
-  else if (key === 'requester') isRequesterMenuVisible.value = !isRequesterMenuVisible.value;
-  else if (key === 'contributor') isContributorMenuVisible.value = !isContributorMenuVisible.value;
-  else if (key === 'executor') isExecutorMenuVisible.value = !isExecutorMenuVisible.value;
+// ✅ セクション表示切替（型チェック強化）
+const toggleSection = (section) => {
+  if (typeof section === 'boolean') {
+    console.error('toggleSectionエラー: booleanが渡されています。refを渡してください。');
+    return;
+  }
+  if (section && typeof section.value === 'boolean') {
+    section.value = !section.value;
+  } else {
+    console.error('toggleSectionエラー: 引数がrefではありません', section);
+  }
 };
 
 // ✅ ポイント・実行者人数の更新
@@ -70,38 +84,41 @@ onMounted(() => {
     </div>
 
     <div class="section">
-      <button class="toggle-button" @click="toggleSection('participants')">
+      <button class="toggle-button" @click="toggleSection(isParticipantsInfoVisible)">
         参加者一覧 {{ isParticipantsInfoVisible ? '▲' : '▼' }}
       </button>
-      <ParticipantsInfo
-        v-if="isParticipantsInfoVisible"
-        :caseId="requestData.case_id"
-        :userId="props.userId"
-        @updatePoints="updateTotalPoints"
-        @updateExecutors="updateExecutors"
-      />
+      <ParticipantsInfo v-show="isParticipantsInfoVisible"
+       :caseId="requestData.case_id" 
+       :userId="props.userId"
+        @updatePoints="updateTotalPoints" @updateExecutors="updateExecutors" />
     </div>
 
     <div class="menu-section">
       <div class="section">
-        <button class="toggle-button" @click="toggleSection('requester')">
+        <button class="toggle-button" @click="toggleSection(isRequesterMenuVisible)">
           依頼者メニュー {{ isRequesterMenuVisible ? '▲' : '▼' }}
         </button>
-        <RequesterMenu v-if="isRequesterMenuVisible" :caseId="requestData.case_id" :userId="props.userId" />
+        <div v-show="isRequesterMenuVisible" class="menu-content">
+          <RequesterMenu :caseId="requestData.case_id" :userId="props.userId" />
+        </div>
       </div>
 
       <div class="section">
-        <button class="toggle-button" @click="toggleSection('contributor')">
+        <button class="toggle-button" @click="toggleSection(isContributorMenuVisible)">
           出資者メニュー {{ isContributorMenuVisible ? '▲' : '▼' }}
         </button>
-        <ContributorMenu v-if="isContributorMenuVisible" :caseId="requestData.case_id" :userId="props.userId" />
+        <div v-show="isContributorMenuVisible" class="menu-content">
+          <ContributorMenu :caseId="requestData.case_id" :userId="props.userId" />
+        </div>
       </div>
 
       <div class="section">
-        <button class="toggle-button" @click="toggleSection('executor')">
+        <button class="toggle-button" @click="toggleSection(isExecutorMenuVisible)">
           実行者メニュー {{ isExecutorMenuVisible ? '▲' : '▼' }}
         </button>
-        <ExecutorMenu v-if="isExecutorMenuVisible" :caseId="requestData.case_id" :userId="props.userId" />
+        <div v-show="isExecutorMenuVisible" class="menu-content">
+          <ExecutorMenu :caseId="requestData.case_id" :userId="props.userId" />
+        </div>
       </div>
     </div>
   </div>
