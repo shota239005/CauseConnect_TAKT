@@ -482,6 +482,7 @@ font-weight: bold;
 
 .form-group {
   margin-bottom: 20px;
+  font-size: 40px;
 
   .flex1 {
     width: 200px;
@@ -491,6 +492,8 @@ font-weight: bold;
 
 .form-group-1 {
   margin-bottom: 20px;
+  font-size: 34px;
+
 
   #request-condition {
     width: 80%;
@@ -531,7 +534,7 @@ input,
 select {
   font-family: "Zen Maru Gothic", serif;
   padding: 10px;
-  font-size: 16px;
+  font-size: 32px;
   margin-top: 5px;
   border: 2px solid #f7a400;
   border-radius: 5px;
@@ -546,9 +549,9 @@ select {
 
 .radio-label,
 .checkbox-label {
-  font-size: 14px;
+  font-size: 32px;
   display: flex;
-  width: 100px;
+  width: 310px;
   align-items: center;
 
 }
