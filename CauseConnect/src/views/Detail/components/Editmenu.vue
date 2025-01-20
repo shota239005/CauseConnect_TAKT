@@ -4,6 +4,7 @@ import ParticipantsInfo from "./EditMenu/ParticipantsInfo.vue";
 import RequesterMenu from "./EditMenu/RequesterMenu.vue";
 import ContributorMenu from "./EditMenu/ContributorMenu.vue";
 import ExecutorMenu from "./EditMenu/ExecutorMenu.vue";
+import apiClient from '@/axios'; // axiosのインポート
 
 // ✅ 親から受け取るprops
 const props = defineProps({
@@ -50,20 +51,36 @@ const toggleSection = (section) => {
   }
 };
 
-// ✅ ポイント・実行者人数の更新
-const updateTotalPoints = (newTotalPoints) => {
-  totalPoints.value = newTotalPoints;
+// ✅ トータルポイント取得処理
+const fetchTotalPoints = async () => {
+  console.log(`送信するcase_id: ${requestData.case_id}`);
+  try {
+    const response = await apiClient.get(`/cases/${requestData.case_id}/total-points`);
+    console.log("APIレスポンス:", response.data); // デバッグ用
+    if (response.data.success) {
+      totalPoints.value = response.data.total_points;
+      console.log(`トータルポイント取得成功: ${totalPoints.value}`);
+    } else {
+      console.error(`トータルポイント取得失敗: ${response.data.message}`);
+    }
+  } catch (error) {
+    console.error("トータルポイント取得エラー:", error);
+  }
 };
 
+// ✅ 実行者人数の更新
 const updateExecutors = (newExecutorsCount) => {
   executorsCount.value = newExecutorsCount;
 };
 
-// ✅ マウント時にデータ確認
+// ✅ 初期化処理
 onMounted(() => {
   console.log(`[Edit]取得したcaseId: ${requestData.case_id}`);
   console.log(`[Edit]取得したuserId: ${props.userId}`);
   console.log(`[Edit]取得したrequestオブジェクト:`, props.request);
+
+  // トータルポイント取得
+  fetchTotalPoints();
 });
 </script>
 
@@ -78,7 +95,7 @@ onMounted(() => {
         </div>
         <div class="point-item per-person">
           <p>報酬/人</p>
-          <p>{{ rewardPerPerson }}P</p>
+          <p>{{ totalPoints }}P</p>
         </div>
       </div>
     </div>
