@@ -549,16 +549,10 @@ select {
 
 .radio-label,
 .checkbox-label {
-<<<<<<< HEAD
   font-size: 30px;
   font-weight: 100;
   display: flex;
   width: 290px;
-=======
-  font-size: 32px;
-  display: flex;
-  width: 310px;
->>>>>>> 6a7940f6dd12c7b4c299e0d1335d257a987452f6
   align-items: center;
 
 }
