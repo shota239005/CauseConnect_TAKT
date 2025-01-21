@@ -45,7 +45,7 @@ export default {
 <template>
   <div>
     <div class="title">
-      <h1>ログインフォーム</h1>
+      <h1>ログイン</h1>
     </div>
 
     <div class="formBox">
@@ -57,6 +57,14 @@ export default {
           <input type="password" id="password" v-model="password" placeholder="パスワードを入力" required />
         </div>
         <button class="btn1" type="submit">ログイン</button>
+        <div class="comment">
+          <p>パスワードを忘れた場合は<a href="http://localhost:5174/login">こちら</a></p>
+        </div>
+        <!-- 画像を表示 -->
+        <div class="image-container">
+          <img src="@/assets/img/login.png" alt="ログイン画像" />
+        </div>
+
       </form>
       <p v-if="error" class="error-message">{{ error }}</p>
     </div>
@@ -71,7 +79,8 @@ export default {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
-  text-align: center; /* コンテンツを中央揃え */
+  text-align: center;
+  /* コンテンツを中央揃え */
 }
 
 h1 {
@@ -79,11 +88,11 @@ h1 {
   margin-bottom: 20px;
 }
 
-.formBox{
+.formBox {
   text-align: center;
 }
 
-.email{
+.email {
   padding: 20px 100px;
 }
 
@@ -105,7 +114,7 @@ input {
   margin-bottom: 10px;
 }
 
-.btn1{
+.btn1 {
   margin-top: 10px;
   padding: 8px 30px;
   margin-right: 13px;
@@ -118,5 +127,10 @@ input {
   font-size: 14px;
   text-align: center;
   margin-top: 10px;
+}
+.image-container img {
+  max-width: 40%;
+  height: auto;
+  border-radius: 8px;
 }
 </style>
