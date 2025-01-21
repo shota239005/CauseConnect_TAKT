@@ -49,7 +49,7 @@ onMounted(async () => {
 <template>
   <div class="request-item">
     <!-- お気に入りアイコンを右上に配置 -->
-    <FavoriteIcon class="favorite-icon" />
+    <FavoriteIcon :request="request" class="favorite-icon" />
 
     <!-- 左側に画像の仮枠を表示 -->
     <div class="request-image">
