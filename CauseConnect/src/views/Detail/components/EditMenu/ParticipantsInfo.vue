@@ -33,9 +33,12 @@ const fetchParticipants = async () => {
     requesterSupPoint.value = requesterContributor ? requesterContributor.sup_point : null;
 
     const executorsResponse = await apiClient.get(`/cases/${props.caseId}/executors`);
-    executors.value = executorsResponse.data.filter(
-      (executor) => executor.user_id !== requester.value.user_id
-    );
+    executors.value = executorsResponse.data; // 依頼者を除外しない
+    //依頼者を除外
+    // executors.value = executorsResponse.data.filter(
+    //   (executor) => executor.user_id !== requester.value.user_id 
+
+    // );
   } catch (error) {
     console.error('[ParticipantsInfo] データ取得に失敗:', error);
   }
@@ -72,7 +75,7 @@ onMounted(() => {
     </section>
 
     <!-- ✅ 実行者情報 -->
-    <section class="section executors-section">
+    <!-- <section class="section executors-section">
       <h4 class="section-title">実行者</h4>
       <ul v-if="executors.length > 0" class="list">
         <li v-for="executor in executors" :key="executor.user_id" class="list-item">
@@ -81,7 +84,18 @@ onMounted(() => {
         </li>
       </ul>
       <p v-else class="empty">なし</p>
+    </section> -->
+    <section class="section executors-section">
+      <h4 class="section-title">実行者</h4>
+      <ul v-if="executors.length > 0" class="list">
+        <li v-for="executor in executors" :key="executor.user_id" class="list-item">
+          <span class="nickname">{{ executor.nickname }}</span>
+          <span v-if="executor.user_id === requester.user_id" class="details">（依頼者）</span>
+        </li>
+      </ul>
+      <p v-else class="empty">なし</p>
     </section>
+
   </div>
 </template>
 
@@ -120,7 +134,8 @@ onMounted(() => {
   margin-bottom: 10px;
 }
 
-.info, .list-item {
+.info,
+.list-item {
   font-size: 16px;
   color: #333;
   margin-bottom: 10px;
