@@ -90,13 +90,13 @@ export default {
 }
 
 .select-photo-btn {
-  padding: 10px 15px;
+  padding: 20px 60px;
   background-color: #ff8c00;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 24px;
   margin-bottom: 40px;
 }
 
