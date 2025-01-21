@@ -111,10 +111,10 @@ export default {
         <button class="btn1">依頼一覧</button>
       </router-link>
 
-      <button class="btn1" @click="openFavoModal">お気に入り一覧</button>
+      <!-- <button class="btn1" @click="openFavoModal">お気に入り一覧</button> -->
 
       <router-link to="/FAQ">
-        <button class="btn1">FAQ</button>
+        <button class="btn1">F A Q </button>
       </router-link>
 
       <!-- ログイン状態に応じて表示切り替え -->
@@ -275,6 +275,7 @@ div button:hover {
     display: flex;
   }
 }
+
 
 /* PC版ではハンバーガーメニューを非表示 */
 @media (min-width: 845px) {

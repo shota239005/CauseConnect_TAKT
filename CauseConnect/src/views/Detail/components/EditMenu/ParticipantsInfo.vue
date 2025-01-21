@@ -19,33 +19,28 @@ const executors = ref([]);
 // ✅ データ取得関数
 const fetchParticipants = async () => {
   try {
-    // ✅ 依頼者のデータを取得
     const requesterResponse = await apiClient.get(`/cases/${props.caseId}/requester`);
     requester.value = requesterResponse.data;
 
-    // ✅ 出資者リストを取得
     const contributorsResponse = await apiClient.get(`/cases/${props.caseId}/contributors`);
     contributors.value = contributorsResponse.data.filter(
-      (contributor) => contributor.user_id !== requester.value.user_id // 依頼者を除外
+      (contributor) => contributor.user_id !== requester.value.user_id
     );
 
-    // ✅ 依頼者の出資ポイントを取得
     const requesterContributor = contributorsResponse.data.find(
       (contributor) => contributor.user_id === requester.value.user_id
     );
     requesterSupPoint.value = requesterContributor ? requesterContributor.sup_point : null;
 
-    // ✅ 実行者リストを取得
     const executorsResponse = await apiClient.get(`/cases/${props.caseId}/executors`);
     executors.value = executorsResponse.data.filter(
-      (executor) => executor.user_id !== requester.value.user_id // 依頼者を除外
+      (executor) => executor.user_id !== requester.value.user_id
     );
   } catch (error) {
     console.error('[ParticipantsInfo] データ取得に失敗:', error);
   }
 };
 
-// ✅ マウント時にデータを取得
 onMounted(() => {
   fetchParticipants();
 });
@@ -53,64 +48,111 @@ onMounted(() => {
 
 <template>
   <div class="participants-info">
-    <h3>参加メンバー情報</h3>
+    <h3 class="title">参加メンバー情報</h3>
 
     <!-- ✅ 依頼者情報 -->
-    <section v-if="requester">
-      <h4>依頼者</h4>
-      <p>ID: {{ requester.user_id }} / ニックネーム: {{ requester.nickname }}
-        <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span>
+    <section v-if="requester" class="section requester-section">
+      <h4 class="section-title">依頼者</h4>
+      <p class="info">
+        <span class="nickname">{{ requester.nickname }}</span>
+        <span v-if="requesterSupPoint" class="details"> / 依頼ポイント: {{ requesterSupPoint }}</span>
       </p>
     </section>
 
     <!-- ✅ 出資者情報 -->
-    <section>
-      <h4>出資者</h4>
-      <ul v-if="contributors.length > 0">
-        <li v-for="contributor in contributors" :key="contributor.user_id">
-          ID: {{ contributor.user_id }} / ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
+    <section class="section contributors-section">
+      <h4 class="section-title">出資者</h4>
+      <ul v-if="contributors.length > 0" class="list">
+        <li v-for="contributor in contributors" :key="contributor.user_id" class="list-item">
+          <span class="nickname">{{ contributor.nickname }}</span>
+          <span class="details"> / 出資ポイント: {{ contributor.sup_point }}</span>
         </li>
       </ul>
-      <p v-else>なし</p>
+      <p v-else class="empty">なし</p>
     </section>
 
     <!-- ✅ 実行者情報 -->
-    <section>
-      <h4>実行者</h4>
-      <ul v-if="executors.length > 0">
-        <li v-for="executor in executors" :key="executor.user_id">
-          ID: {{ executor.user_id }} / ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
+    <section class="section executors-section">
+      <h4 class="section-title">実行者</h4>
+      <ul v-if="executors.length > 0" class="list">
+        <li v-for="executor in executors" :key="executor.user_id" class="list-item">
+          <span class="nickname">{{ executor.nickname }}</span>
+          <span class="details"> / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}</span>
         </li>
       </ul>
-      <p v-else>なし</p>
+      <p v-else class="empty">なし</p>
     </section>
   </div>
 </template>
 
 <style scoped>
 .participants-info {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  padding: 20px;
+  border: 2px solid #f7a400;
+  border-radius: 10px;
+  background-color: #fff3cd;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.participants-info h3 {
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff8c00;
   margin-bottom: 10px;
-  font-size: 18px;
 }
 
-.participants-info section {
-  margin-bottom: 15px;
+.info, .list-item {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
-.participants-info ul {
+.nickname {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.details {
+  font-size: 14px;
+  color: #555;
+}
+
+.list {
   list-style: none;
   padding: 0;
 }
 
-.participants-info li {
+.list-item {
   padding: 5px 0;
   border-bottom: 1px solid #ddd;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.empty {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
 }
 </style>
