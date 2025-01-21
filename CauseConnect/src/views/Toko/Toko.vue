@@ -477,7 +477,8 @@ onMounted(() => {
 
 .page-title {
 text-align: center;
-font-weight: bold;
+font-size: 30px;
+font-weight: 100;
 }
 
 .form-group {
@@ -492,8 +493,7 @@ font-weight: bold;
 
 .form-group-1 {
   margin-bottom: 20px;
-  font-size: 34px;
-
+  font-size: 40px;
 
   #request-condition {
     width: 80%;
@@ -507,7 +507,7 @@ font-weight: bold;
 
 
 #request-points {
-  width: 50px;
+  width: 70px;
 }
 
 #area-details {
@@ -549,9 +549,16 @@ select {
 
 .radio-label,
 .checkbox-label {
+<<<<<<< HEAD
+  font-size: 30px;
+  font-weight: 100;
+  display: flex;
+  width: 290px;
+=======
   font-size: 32px;
   display: flex;
   width: 310px;
+>>>>>>> 6a7940f6dd12c7b4c299e0d1335d257a987452f6
   align-items: center;
 
 }
