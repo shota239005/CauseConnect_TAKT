@@ -1,6 +1,5 @@
 <script>
 import apiClient from '@/axios'; // axiosインスタンスのインポート
-import UserProfile from './components/UserProfile.vue';
 
 export default {
   data() {
@@ -22,8 +21,9 @@ export default {
         // トークンをローカルストレージに保存
         localStorage.setItem('token', response.data.token);
 
-        // ログイン成功後、ダッシュボードへリダイレクト
-        this.$router.push('/');
+        // ページをリダイレクト（ページ全体をリロードして遷移）
+        window.location.href = '/'; // ホームページ（または任意のURL）にリダイレクト
+
       } catch (err) {
         // エラーハンドリング強化：レスポンスがない場合やリクエストが失敗した場合の対処
         if (err.response) {
@@ -44,19 +44,22 @@ export default {
 
 <template>
   <div>
-    <h1>ログインフォーム</h1>
-    <form @submit.prevent="login">
-      <div>
-        <label for="email">メールアドレス</label>
-        <input type="email" id="email" v-model="email" required />
-      </div>
-      <div>
-        <label for="password">パスワード</label>
-        <input type="password" id="password" v-model="password" required />
-      </div>
-      <button type="submit">ログイン</button>
-    </form>
-    <p v-if="error">{{ error }}</p>
+    <div class="title">
+      <h1>ログインフォーム</h1>
+    </div>
+
+    <div class="formBox">
+      <form @submit.prevent="login">
+        <div>
+          <input type="email" id="email" v-model="email" placeholder="メールアドレスを入力" required />
+        </div>
+        <div>
+          <input type="password" id="password" v-model="password" placeholder="パスワードを入力" required />
+        </div>
+        <button class="btn1" type="submit">ログイン</button>
+      </form>
+      <p v-if="error" class="error-message">{{ error }}</p>
+    </div>
   </div>
 </template>
 
@@ -68,11 +71,20 @@ export default {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
+  text-align: center; /* コンテンツを中央揃え */
 }
 
 h1 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.formBox{
+  text-align: center;
+}
+
+.email{
+  padding: 20px 100px;
 }
 
 .form-group {
@@ -86,24 +98,19 @@ label {
 }
 
 input {
-  width: 100%;
+  width: 35%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 4px;
+  margin-bottom: 10px;
 }
 
-button.login-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #f7a400;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button.login-button:hover {
-  background-color: #ff8c00;
+.btn1{
+  margin-top: 10px;
+  padding: 8px 30px;
+  margin-right: 13px;
+  color: #333;
+  font-size: 20px;
 }
 
 .error-message {

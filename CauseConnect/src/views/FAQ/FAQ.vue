@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import DOMPurify from 'dompurify';
+import Picture from '@/components/Picture.vue'; // Picture.vue をインポート（ファイル名修正に注意）
 
 // FAQデータのリスト
 const faqList = [
@@ -20,6 +21,19 @@ const faqList = [
 
 // アコーディオンの開閉状態を管理
 const activeIndex = ref(null);
+
+// モーダルの開閉状態を管理
+const isModalOpen = ref(false);
+
+// モーダルを開く関数
+function openModal() {
+  isModalOpen.value = true;
+}
+
+// モーダルを閉じる関数
+function closeModal() {
+  isModalOpen.value = false;
+}
 
 // 質問のクリック時に答えの表示を切り替える関数
 function toggleAnswer(index) {
@@ -49,13 +63,27 @@ function formatAnswer(text) {
         <p v-html="formatAnswer(item.answer)"></p>
       </div>
     </div>
+
+    <!-- モーダル -->
+    <div v-if="isModalOpen" class="modal-overlay">
+      <div class="modal-content">
+        <button @click="closeModal" class="modal-close">×</button>
+        <Picture /> <!-- モーダル内で Picture.vue を表示 -->
+      </div>
+    </div>
+
+    <!-- お問い合わせリンク -->
+    <div class="contact-section">
+      <p>上記以外のお問い合わせは下記のフォームから</p>
+      <a href="/contact" class="contact-link">お問い合わせフォームへ</a>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .faq-container {
   padding: 20px;
-  max-width: 800px;
+  max-width: auto;
   margin: 0 auto;
   background-color: #f4f4f4;
 }
@@ -67,6 +95,7 @@ function formatAnswer(text) {
 }
 
 .faq-item {
+  padding: 20px 100px;
   border-bottom: 1px solid #ddd;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
@@ -94,7 +123,7 @@ function formatAnswer(text) {
 }
 
 .arrow.open {
-  transform: rotate(180deg); /* 矢印を180度回転させる */
+  transform: rotate(180deg);
 }
 
 .faq-answer {
@@ -102,5 +131,72 @@ function formatAnswer(text) {
   background-color: #ffca5f;
   border-radius: 5px;
   margin-top: 10px;
+}
+
+.test-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ff8c00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.test-button:hover {
+  background-color: #ffca5f;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: darkred;
+}
+
+.contact-section {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.contact-link {
+  color: #ff8c00;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
 }
 </style>

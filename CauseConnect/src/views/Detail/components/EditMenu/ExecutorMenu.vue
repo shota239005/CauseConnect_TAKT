@@ -1,14 +1,24 @@
 <script>
 export default {
   name: "ExecutorMenu",
-};
+  methods: {
+    cancelParticipation() {
+      if (confirm("本当に依頼参加をキャンセルしますか？")) {
+        alert("依頼参加をキャンセルしました");
+        this.$router.push("/"); // ホームページへリダイレクト
+      }
+    },
+  },
+}
 </script>
 
 <template>
   <div class="menu-category">
     <h4>実行者</h4>
     <ul>
-      <li>・依頼参加キャンセル</li>
+      <li>
+        ・<button @click="cancelParticipation" class="cancel">依頼参加キャンセル</button>
+      </li>
     </ul>
   </div>
 </template>
@@ -36,4 +46,16 @@ export default {
   color: #333;
   font-size: 0.9em;
 }
+.cancel{
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.cancel:hover {
+  text-decoration: underline;
+}
+
 </style>

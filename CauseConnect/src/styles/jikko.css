@@ -1,14 +1,14 @@
 .jikko {
     font-family: "Zen Maru Gothic", serif;
-    background-color: #57eb5c;
-    color: #333;
+    background-color: #42b045;
+    color: #fff;
     border: none;
     padding: 20px 20px;
-    font-size: 16px;
+    font-size: 24px;
     cursor: pointer;
     border-radius: 5px;
     transition: 0.3s ease-in-out;
-    box-shadow: 5px 5px 0 #42b045;
+    box-shadow: 5px 5px 0 #328534;
 }
   
 .jikko::before {
@@ -25,7 +25,7 @@
 
 .jikko:hover {
     color: #fff;
-    background-color: #42b045;
+    background-color: #328534;
     box-shadow: 0 0 0;
     transform: translate(5px, 5px);
 }

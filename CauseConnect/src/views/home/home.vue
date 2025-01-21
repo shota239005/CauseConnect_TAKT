@@ -3,9 +3,10 @@ import { ref } from 'vue';  // refをインポート
 import { useRouter } from 'vue-router';  // vue-routerをインポート
 import Search from '@/components/search.vue';
 import Japan from '@/components/japan.vue';
-import ImageSlide from '@/views/Home/Component/ImageSlide.vue';
-import Juggler from '@/components/Juggler.vue';
-import BowlingGame from '@/components/BowlingGame.vue';
+import ImageSlide from './Component/ImageSlide.vue';
+import ImageSlideTow from './Component/ImageSlideTow.vue';
+import Info from '../Info/Info.vue';
+
 // 検索クエリを保持するためのref
 const searchQuery = ref('');
 const router = useRouter();
@@ -21,6 +22,7 @@ const searchRequests = () => {
 <template>
   <div>
     <div class="background-container">
+    <h1 style="text-align: center; margin-top: 50px; color: #333;">  何かを学ぶのに、自分自身で経験する以上に良い方法はない。<br>～アルベルト・アインシュタイン～</h1>
       <!-- Searchコンポーネントの使用 -->
       <div class="search">
         <Search v-model:searchQuery="searchQuery" @search="searchRequests" />
@@ -28,13 +30,8 @@ const searchRequests = () => {
     </div>
     <ImageSlide/>
     <Japan/>
-    <ImageSlide/>
-    <div>
-      <h1>おまけコーナー</h1>
-      <p>ここにはマル秘コンテンツが表示されています。</p>
-    </div>
-    <Juggler/>
-    <BowlingGame/>
+    <ImageSlideTow/>
+    <Info/>
   </div>
 </template>
 
@@ -43,7 +40,7 @@ const searchRequests = () => {
 .background-container {
   position: relative; /* 擬似要素を背景として配置するために必要 */
   width: 100%;
-  height: 300px; /* 背景の高さ */
+  height: 400px; /* 背景の高さ */
   overflow: hidden; /* 擬似要素がはみ出さないようにする */
 }
 /* 背景画像を半透明にする */
@@ -63,6 +60,7 @@ const searchRequests = () => {
 
 /* Searchコンポーネントのスタイル（必要なら調整可能） */
 .search{
+  margin-top: -50px;
   position: relative; /* 背景擬似要素に影響されないようにする */
   z-index: 1; /* 背景より前面に配置 */
 

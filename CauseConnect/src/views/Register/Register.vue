@@ -4,7 +4,8 @@ import { reactive, ref, onMounted } from 'vue'
 // axiosインスタンスをインポート
 // import apiClient from './axios'
 import apiClient from '@/axios'; // axios設定をインポート
-
+import { useRouter } from 'vue-router';  // vue-routerをインポート
+const router = useRouter();
 // 画像アップローダーコンポーネントをインポート（画像アップロードのため）
 // import PhotoUploader from '@/PhotoUploader.vue'
 
@@ -39,14 +40,14 @@ const resetUser = () => {
     nickname: 'テスト用ニックネーム', // ニックネーム
     name: 'テスト用名前', // 名前
     kana: 'テスト用カナ', // カナ
-    birth: '', // 生年月日
-    sex: '', // 性別
+    birth: '2000-01-01', // 生年月日（YYYY-MM-DD形式）
+    sex: '男性', // 性別
     tel: '09012345678', // 電話番号
     email: 'test@ivy.co.jp', // メールアドレス
     address1: 'テスト用住所１', // 住所1（市町村）
     address2: 'テスト用住所２', // 住所2（番地や建物名）
     post_code: '1234567', // 郵便番号
-    prefecture: '', // 都道府県ID
+    prefecture: '1', // 都道府県ID（テスト用として1を設定）
     intro: 'テスト用自己紹介', // 自己紹介
   })
 }
@@ -92,7 +93,12 @@ const submitForm = async () => {
 
     // 送信が成功した場合、メッセージを設定
     message.value = response.data.message || '登録が成功しました！'
-    resetUser() // 登録後、フォームの内容をリセット
+    resetUser(); // フォームリセット
+
+    // ホームページへ遷移
+    router.push({ name: "Home" });
+
+    // 送信成功後に Home ページに遷移
   } catch (error) {
     // 送信中にエラーが発生した場合
     console.error('登録処理中にエラーが発生しました:', error)
@@ -113,102 +119,106 @@ onMounted(() => {
 
   <div class="mypage-container">
     <h1>新規登録</h1>
-
     <form @submit.prevent="submitForm" autocomplete="off">
-      <!-- メールアドレス -->
-      <div class="form-group">
-        <label for="email">メールアドレス</label>
-        <input type="email" id="email" v-model="user.email" placeholder="メールアドレスを入力してください" required />
+      <div class="left-container">
+        <!-- メールアドレス -->
+        <div class="form-group">
+          <label for="email">メールアドレス</label>
+          <input type="email" id="email" v-model="user.email" placeholder="メールアドレスを入力してください" required />
+        </div>
+
+        <!-- パスワード -->
+        <div class="form-group">
+          <label for="password">パスワード</label>
+          <input type="password" id="password" v-model="user.password" placeholder="パスワードを入力" required />
+        </div>
+
+        <!-- 確認用パスワード -->
+        <div class="form-group">
+          <label for="confirm-password">パスワード確認</label>
+          <input type="password" id="confirm-password" v-model="user.confirmPassword" placeholder="確認用パスワードを入力"
+            required />
+        </div>
+
+        <!-- ニックネーム -->
+        <div class="form-group">
+          <label for="nickname">ニックネーム</label>
+          <input type="text" id="nickname" v-model="user.nickname" placeholder="ニックネームを入力" required />
+        </div>
+
+        <!-- 名前 -->
+        <div class="form-group">
+          <label for="name">名前</label>
+          <input type="text" id="name" v-model="user.name" placeholder="名前を入力してください" required />
+        </div>
+
+        <!-- カナ -->
+        <div class="form-group">
+          <label for="kana">カナ</label>
+          <input type="text" id="kana" v-model="user.kana" placeholder="カナを入力してください" required />
+        </div>
+
+        <!-- 生年月日 -->
+        <div class="form-group-b">
+          <label for="birth">生年月日</label>
+          <input type="date" id="birth" v-model="user.birth" required />
+        </div>
+
+        <!-- 性別 -->
+        <div class="form-group-sex">
+          <label for="sex">性別</label>
+          <select id="sex" v-model="user.sex" required>
+            <option value="" disabled>性別</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
       </div>
 
-      <!-- パスワード -->
-      <div class="form-group">
-        <label for="password">パスワード</label>
-        <input type="password" id="password" v-model="user.password" placeholder="パスワードを入力してください" required />
-      </div>
+      <div class="right-container">
 
-      <!-- 確認用パスワード -->
-      <div class="form-group">
-        <label for="confirm-password">パスワード確認</label>
-        <input type="password" id="confirm-password" v-model="user.confirmPassword" placeholder="確認用パスワードを入力してください"
-          required />
-      </div>
+        <!-- 電話番号 -->
+        <div class="form-group">
+          <label for="tel">電話番号</label>
+          <input type="tel" id="tel" v-model="user.tel" placeholder="電話番号を入力してください" required />
+        </div>
 
-      <!-- ニックネーム -->
-      <div class="form-group">
-        <label for="nickname">ニックネーム</label>
-        <input type="text" id="nickname" v-model="user.nickname" placeholder="ニックネームを入力してください" required />
-      </div>
+        <!-- 住所 -->
+        <div class="form-group-todo">
+          <label for="prefecture">都道府県</label>
+          <select id="prefecture" v-model="user.prefecture" required>
+            <option value="" disabled>都道府県</option>
+            <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
+              {{ pref.pref }}
+            </option>
+          </select>
+        </div>
 
-      <!-- 名前 -->
-      <div class="form-group">
-        <label for="name">名前</label>
-        <input type="text" id="name" v-model="user.name" placeholder="名前を入力してください" required />
-      </div>
+        <div class="form-group-post">
+          <label for="post-code">郵便番号</label>
+          <input type="text" id="post-code" v-model="user.post_code" placeholder="郵便番号を入力してください" required />
+        </div>
 
-      <!-- カナ -->
-      <div class="form-group">
-        <label for="kana">カナ</label>
-        <input type="text" id="kana" v-model="user.kana" placeholder="カナを入力してください" required />
-      </div>
+        <div class="form-group">
+          <label for="address1">住所1（市町村）</label>
+          <input type="text" id="address1" v-model="user.address1" placeholder="市町村を入力してください" required />
+        </div>
 
-      <!-- 生年月日 -->
-      <div class="form-group">
-        <label for="birth">生年月日</label>
-        <input type="date" id="birth" v-model="user.birth" required />
-      </div>
+        <div class="form-group">
+          <label for="address2">住所2（番地・建物名）</label>
+          <input type="text" id="address2" v-model="user.address2" placeholder="番地や建物名を入力してください" />
+        </div>
 
-      <!-- 性別 -->
-      <div class="form-group">
-        <label for="sex">性別</label>
-        <select id="sex" v-model="user.sex" required>
-          <option value="" disabled>性別を選択してください</option>
-          <option value="男性">男性</option>
-          <option value="女性">女性</option>
-          <option value="その他">その他</option>
-        </select>
-      </div>
-
-      <!-- 電話番号 -->
-      <div class="form-group">
-        <label for="tel">電話番号</label>
-        <input type="tel" id="tel" v-model="user.tel" placeholder="電話番号を入力してください" required />
-      </div>
-
-      <!-- 住所 -->
-      <div class="form-group">
-        <label for="prefecture">都道府県</label>
-        <select id="prefecture" v-model="user.prefecture" required>
-          <option value="" disabled>都道府県を選択してください</option>
-          <option v-for="pref in prefectures" :key="pref.pref_id" :value="pref.pref_id">
-            {{ pref.pref }}
-          </option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="post-code">郵便番号</label>
-        <input type="text" id="post-code" v-model="user.post_code" placeholder="郵便番号を入力してください" required />
-      </div>
-
-      <div class="form-group">
-        <label for="address1">住所1（市町村）</label>
-        <input type="text" id="address1" v-model="user.address1" placeholder="市町村を入力してください" required />
-      </div>
-
-      <div class="form-group">
-        <label for="address2">住所2（番地・建物名）</label>
-        <input type="text" id="address2" v-model="user.address2" placeholder="番地や建物名を入力してください" />
-      </div>
-
-      <!-- 自己紹介 -->
-      <div class="form-group">
-        <label for="intro">自己紹介</label>
-        <textarea id="intro" v-model="user.intro" placeholder="自己紹介を記入してください" rows="5"></textarea>
+        <!-- 自己紹介 -->
+        <div class="form-group">
+          <label for="intro">自己紹介</label>
+          <textarea id="intro" v-model="user.intro" placeholder="自己紹介を記入してください" rows="5"></textarea>
+        </div>
+        <button class="btn1"  type="submit">登録する</button>
       </div>
 
       <!-- 送信ボタン -->
-      <button type="submit">登録する</button>
     </form>
 
     <p v-if="message" class="message">{{ message }}</p>
@@ -225,17 +235,51 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+form {
+  display: flex; /* 横並びを指定 */
+  justify-content: space-between; /* 子要素間のスペースを調整 */
+  flex-wrap: nowrap; /* 折り返しを防止 */
+  gap: 2%; /* 左右の間隔を調整 */
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.left-container,
+.right-container {
+  width: 48%; /* 両要素を横並びで収める */
+  box-sizing: border-box; /* パディングを含めた幅計算 */
+}
+
+
+
 h1 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-}
 
 .form-group {
+  margin-bottom: 15px;
+}
+
+.form-group-b {
+width: 30%;
+  margin-bottom: 15px;
+}
+
+.form-group-sex {
+width: 35%;
+  margin-bottom: 15px;
+}
+
+.form-group-todo {
+width: 30%;
+  margin-bottom: 15px;
+}
+
+.form-group-post {
+width: 25%;
   margin-bottom: 15px;
 }
 
@@ -249,30 +293,33 @@ input,
 select,
 textarea {
   font-family: 'Zen Maru Gothic', serif;
-  width: 100%;
+  width: 100%; /* 各フォーム要素が親要素にフィット */
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #f7a400;
   border-radius: 4px;
-}
-
-button {
-  font-family: 'Zen Maru Gothic', serif;
-  background-color: #f7a400;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #ff8c00;
 }
 
 .message {
   margin-top: 15px;
   color: green;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  form {
+    flex-direction: column; /* モバイルで縦並びに変更 */
+  }
+
+  .left-container,
+  .right-container {
+    width: 100%; /* モバイルで全幅を使う */
+  }
+}
+
+.btn1{
+  width: 102%;
+  color: #333;
+  font-size: 30px;
+  font-weight: 600;
 }
 </style>

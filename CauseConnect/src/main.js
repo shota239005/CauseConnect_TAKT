@@ -9,6 +9,8 @@ import './styles/jikko.css'; // グローバルに読み込む
 import RealTimeClock from './components/RealTimeClock.vue';
 import './assets/globalFont.css'//グローバルフォント統一;
 import Juggler from './components/Juggler.vue';//おまけ
+import CopyLight from '@/components/CopyLight.vue';
+import Detail from './views/Detail/Detail.vue';
 
 
 createApp(App)

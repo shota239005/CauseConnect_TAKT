@@ -1,130 +1,209 @@
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
-import RequestItem from "./ImageSlideItem.vue"; // RequestItemコンポーネントをインポート
+import {ref, reactive, onMounted } from 'vue';
+import apiClient from '@/axios'; // axiosのインポート
+import { useRouter } from 'vue-router'; // ルーターを使用
 
-// サンプル依頼データ
-const requests = reactive([
-  { id: 1, name: "地域美化活動", description: "地域の公園を掃除する活動です。", date: "2024-12-01", location: "東京都渋谷区" },
-  { id: 2, name: "川の清掃", description: "河川敷のゴミ拾い活動を行います。", date: "2024-12-15", location: "神奈川県横浜市" },
-  { id: 3, name: "山のトレイル整備", description: "登山道の整備活動です。", date: "2024-12-20", location: "長野県松本市" },
-  { id: 4, name: "森林保護活動", description: "森林の保護を目的とした活動です。", date: "2024-12-25", location: "北海道札幌市" },
-  { id: 5, name: "海岸清掃", description: "海岸のゴミ拾い活動です。", date: "2025-01-01", location: "沖縄県那覇市" },
-  { id: 6, name: "空港周辺清掃", description: "空港周辺の清掃活動を行います。", date: "2025-01-10", location: "大阪府大阪市" },
-]);
+// ルーターのインスタンスを取得
+const router = useRouter(); 
 
-// スライド管理用データ
-const currentSlide = ref(0); // 現在のスライド位置
-const slideWidth = ref(300); // 1つのスライドの幅（300pxに調整）
-const gap = 20; // スライド間の余白
-const slideWidthWithGap = ref(slideWidth.value + gap); // 幅 + 余白
-const visibleSlides = 3; // 表示するスライド数を3に設定
+// スライドデータを格納するための reactive オブジェクト
+const slides = reactive({
+  items: [], // 実際に表示するスライドのデータ
+});
+const caseIds = ref([]); // case_id を格納するための変数
+// サーバーからデータを取得するメソッド
+const fetchSlides = async () => {
+  try {
+    const response = await apiClient.get("/posts");
 
-// スライドスタイル計算
-const imageWrapperStyle = reactive({
-  transform: `translateX(-${currentSlide.value * slideWidthWithGap.value}px)`,
-  transition: "transform 0.5s ease-in-out",
+    // APIから取得したデータが配列であることを確認
+    if (Array.isArray(response.data)) {
+      slides.items = await Promise.all(
+        response.data.map(async (item) => {
+          // 個別の画像を取得
+          let picture = 'src/assets/img/HomeImg.jpg'; // デフォルト画像
+          try {
+            const imageResponse = await apiClient.get(`/images/${item.case_id}/1`);
+            if (imageResponse.data && imageResponse.data.picture) {
+              const baseURL = (apiClient.defaults.baseURL || "").replace(/\/api$/, "");
+              picture = `${baseURL}${imageResponse.data.picture}`;
+            }
+          } catch {
+            console.warn(`[WARN] 画像を取得できませんでした (case_id: ${item.case_id})`);
+          }
+
+          return {
+            case_id: item.case_id,
+            case_name: item.case_name,
+            content: item.content,
+            point: item.sup_point,
+            picture_type: item.picture_type,
+            picture, // 取得した画像 URL を格納
+          };
+        })
+      );
+
+      // point 昇順で並び替え
+      slides.items.sort((a, b) => b.point - a.point);
+
+      console.log('[DEBUG] スライドデータ１上:', slides.items);
+    } else {
+      console.error("APIのレスポンスは配列ではありません", response.data.posts);
+    }
+  } catch (error) {
+    console.error("APIの取得中にエラーが発生しました:", error);
+  }
+};
+// 画像データ用の変数（タイプ1）
+const imageUrlType1 = ref('');
+
+
+// APIから画像データを取得する関数（特定のスライドの case_id を指定）
+const fetchImage = async (caseId) => {
+  console.log(caseId);
+  try {
+    const baseURL = (apiClient.defaults.baseURL || "").replace(/\/api$/, "");
+
+    // ピクチャータイプ1の画像取得
+    const responseType = await apiClient.get(`/images/${caseId}/1`);
+    if (responseType.data && responseType.data.picture) {
+      imageUrlType1.value = `${baseURL}${responseType.data.picture}`;
+      console.log('[DEBUG] ピクチャータイプ1の画像取得成功:', imageUrlType1.value);
+    } else {
+      console.warn('[WARN] ピクチャータイプ1の画像が存在しません');
+      imageUrlType1.value = "/default-avatar.png"; // デフォルト画像
+    }
+  } catch (error) {
+    console.error('[ERROR] 画像の取得に失敗しました:', error);
+
+    // 404エラーの場合にのみデフォルト画像を設定
+    if (error.response && error.response.status === 404) {
+      console.warn('[WARN] 画像が見つかりません (404 Not Found)');
+    }
+
+    // どんなエラーでもデフォルト画像を設定
+    imageUrlType1.value = "/default-avatar.png";
+  }
+};
+// コンポーネントがマウントされた後にデータを取得
+onMounted(async () => { // async を追加
+  await fetchSlides(); // データ取得を待つ
+
+  // データ取得後に slides.items を確認して最初のスライドの画像を取得
+  if (slides.items.length > 0) {
+    const firstCaseId = slides.items[0].case_id;
+    await fetchImage(firstCaseId); // 最初のスライドの画像を取得
+  }
 });
 
-// スライド操作
-const prevSlide = () => {
-  // 3回のスライドごとに最初に戻るように変更
-  currentSlide.value =
-    (currentSlide.value - 1 + visibleSlides) % visibleSlides;
-  updateSlideStyle();
+// スライドのアニメーション制御メソッド
+const pauseSlide = () => {
+  const slidesWrapper = document.querySelector(".slides-wrapper");
+  slidesWrapper.style.animationPlayState = "paused";
 };
 
-const nextSlide = () => {
-  // 3回のスライドごとに最初に戻るように変更
-  currentSlide.value = (currentSlide.value + 1) % visibleSlides;
-  updateSlideStyle();
+const resumeSlide = () => {
+  const slidesWrapper = document.querySelector(".slides-wrapper");
+  slidesWrapper.style.animationPlayState = "running";
 };
 
-// スライド幅の更新
-const setSlideWidth = () => {
-  const availableWidth = window.innerWidth;
-  const maxSlideWidth = Math.min(availableWidth / visibleSlides - gap, 500); // 幅を広げるために最大を500pxに設定
-  slideWidth.value = maxSlideWidth; // 各スライドの幅を調整
-  slideWidthWithGap.value = slideWidth.value + gap;
-  updateSlideStyle();
+// スライドクリック時のリンク遷移メソッド
+const navigateToPage = (caseId) => {
+  router.push(`/details/${caseId}`); // ルーターで遷移
 };
-
-// スライドスタイルの更新
-const updateSlideStyle = () => {
-  imageWrapperStyle.transform = `translateX(-${
-    currentSlide.value * slideWidthWithGap.value
-  }px)`;
-};
-
-// マウント時のイベントリスナー設定
-onMounted(() => {
-  setSlideWidth(); // 初期設定
-  window.addEventListener("resize", setSlideWidth); // リサイズイベントでスライド幅更新
-});
-
-// アンマウント時のクリーンアップ
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", setSlideWidth); // イベントリスナー削除
-});
 </script>
 
 <template>
-  <div class="carousel-container">
-    <!-- スライド表示のためのラッパー -->
-    <div class="carousel-wrapper" :style="imageWrapperStyle">
-      <!-- 各依頼データをRequestItemコンポーネントとして表示 -->
-      <RequestItem
-        v-for="(request, index) in requests"
+  <div class="slider-container" @mouseenter="pauseSlide" @mouseleave="resumeSlide">
+    <div class="slides-wrapper">
+      <!-- スライドデータを表示 -->
+      <div
+        v-for="(slide, index) in slides.items"
         :key="index"
-        :request="request"
-        :style="{ width: slideWidth + 'px', marginRight: gap + 'px' }"
-      />
-    </div>
+        class="slide"
+        @click="navigateToPage(slide.case_id)">
 
-    <!-- 左右スクロールボタン -->
-    <button class="prev" @click="prevSlide" aria-label="Previous Slide">←</button>
-    <button class="next" @click="nextSlide" aria-label="Next Slide">→</button>
+        <div class="slide-content">
+          <!-- 投稿の画像 -->
+          <img :src="slide.picture || 'src/assets/img/HomeImg.jpg'" alt="slide image" class="slide-image" />
+          <!-- 投稿のタイトル (case_name) -->
+          <h2>{{ slide.case_name || 'タイトルがありません' }}</h2>
+          <!-- 投稿の内容 (content) -->
+          <p>{{ slide.content || '内容がありません' }}</p>
+          <!-- 投稿の補助ポイント (sup_point) -->
+          <p>補助ポイント: {{ slide.point || '不明' }} </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.carousel-container {
+.slider-container {
   position: relative;
+  padding-top: 3%;
   width: 100%;
-  margin: 0 auto;
-  overflow: hidden;
+  height: 470px;
+  margin-top: -20px;
+  margin-bottom: 10px;
+  overflow: hidden; /* 画面外のスライドを非表示にする */
 }
 
-.carousel-wrapper {
+.slides-wrapper {
   display: flex;
-  transition: transform 0.5s ease-in-out;
+  animation: slide 20s linear infinite;
+  animation-play-state: running;
+  /* 初期状態ではアニメーションを実行 */
 }
 
-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  font-size: 24px;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 2;
+.slide {
+  width: 50%;
+  height: 100%;
+  flex-shrink: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border: 3px solid #f7a400;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px #ff8c00;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
 }
 
-button:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+.slide:hover {
+  transform: scale(1.1);
+  /* マウスオーバー時に拡大 */
+  background-color: #ffefde;
 }
 
-.prev {
-  left: 10px;
+.slide-content {
+  text-align: center;
+  color: #333;
+  height: 100%;
 }
 
-.next {
-  right: 10px;
+.slide-image {
+  width: 500px;
+  /* 画像の横幅 */
+  height: 200px;
+  /* 画像の高さ */
+  border-radius: 8px;
+  margin-bottom: 10px;
+  object-fit: cover;
+  object-position: center;
 }
-.carousel-wrapper {
-  width: 2000px !important; /* 6つ表示で画面サイズ100%のときしか対応できていない */
-  margin: 20px;
+
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 </style>

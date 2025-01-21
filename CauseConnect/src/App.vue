@@ -1,6 +1,6 @@
 <script setup>
 import Navi from './components/Nav.vue'; // ナビゲーションバーコンポーネントをインポート
-import YouTube from './components/YouTube.vue';
+import CopyLight from '@/components/CopyLight.vue';
 </script>
 
 <template>
@@ -8,12 +8,11 @@ import YouTube from './components/YouTube.vue';
     <div id="app">
       <!-- ナビゲーションバー（常に表示） -->
       <Navi />
-      <div class="yt">
-      </div>
       <!-- ここにページ遷移によって切り替わるコンテンツを表示 -->
       <router-view/> <!-- 遷移先のコンテンツが表示されます -->
 
     </div>
+    <CopyLight/>
 
   </template>
 
@@ -27,9 +26,6 @@ html, body {
   height: 100%;
 }
 
-.yt{
-  display: flex;
-}
 
   /* 必要に応じてスタイルを追加 */
   </style>
