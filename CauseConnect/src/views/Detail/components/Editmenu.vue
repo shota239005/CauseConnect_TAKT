@@ -32,6 +32,7 @@ const isContributorMenuVisible = ref(true);
 const isExecutorMenuVisible = ref(true);
 const totalPoints = ref(0);
 const executorsCount = ref(0);
+const executorParticipantsCount = ref(0); // 実行者として参加している人数
 
 // ✅ 計算プロパティ
 const rewardPerPerson = computed(() => {
@@ -73,6 +74,17 @@ const updateExecutors = (newExecutorsCount) => {
   executorsCount.value = newExecutorsCount;
 };
 
+// ✅ 実行者として参加している人数を取得
+const fetchExecutorParticipants = async () => {
+  try {
+    const response = await apiClient.get(`/cases/${requestData.case_id}/executors`);
+    executorParticipantsCount.value = response.data.length;
+    console.log(`実行者として参加している人数: ${executorParticipantsCount.value}`);
+  } catch (error) {
+    console.error("実行者人数の取得エラー:", error);
+  }
+};
+
 // ✅ 初期化処理
 onMounted(() => {
   console.log(`[Edit]取得したcaseId: ${requestData.case_id}`);
@@ -81,6 +93,9 @@ onMounted(() => {
 
   // トータルポイント取得
   fetchTotalPoints();
+
+  // 実行者として参加している人数を取得
+  fetchExecutorParticipants();
 });
 </script>
 
@@ -95,7 +110,8 @@ onMounted(() => {
         </div>
         <div class="point-item per-person">
           <p>報酬/人</p>
-          <p>{{ totalPoints }}P</p>
+          <!-- 実行者が0人の場合は0Pを表示 -->
+          <p>{{ executorParticipantsCount > 0 ? Math.floor(totalPoints / executorParticipantsCount) : 0 }}P</p>
         </div>
       </div>
     </div>
@@ -104,9 +120,7 @@ onMounted(() => {
       <button class="toggle-button" @click="toggleSection(isParticipantsInfoVisible)">
         参加者一覧 {{ isParticipantsInfoVisible ? '▲' : '▼' }}
       </button>
-      <ParticipantsInfo v-show="isParticipantsInfoVisible"
-       :caseId="requestData.case_id" 
-       :userId="props.userId"
+      <ParticipantsInfo v-show="isParticipantsInfoVisible" :caseId="requestData.case_id" :userId="props.userId"
         @updatePoints="updateTotalPoints" @updateExecutors="updateExecutors" />
     </div>
 
@@ -175,6 +189,10 @@ onMounted(() => {
 
 .point-item.per-person {
   background-color: #7ed957;
+}
+
+.point-item.executors {
+  background-color: #87ceeb;
 }
 
 .toggle-button {
