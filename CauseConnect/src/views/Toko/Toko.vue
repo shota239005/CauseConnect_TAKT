@@ -20,7 +20,7 @@ const request = reactive({
   prefecture: '44',
   address1: '大分市IVY町',
   address2: 'IVY河川敷',
-  participation: true,
+  participation: false,
   equipmentNeeded: '有',
   caseId: null,
   googleMap: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp',});
@@ -40,11 +40,11 @@ const prefectures = ref([]);
 const activityAreas = ref([]); // 活動エリアのデータ
 const selectedAreas = ref(['3']); // 選択された活動エリア
 const activityThemes = ref([]);  // 活動テーマデータを格納
-const selectedThemes = ref([]);  // 選択されたテーマIDを格納
+const selectedThemes = ref([1]);  // 選択されたテーマIDを格納
 const recommendedAges = ref([1]); // 推奨年齢データを格納
-const selectedAges = ref([]); // 選択された推奨年齢IDを格納
-const features = ref([]); // 特徴データを格納する変数
-const selectedFeatures = ref([]); // 選択された特徴IDを格納
+const selectedAges = ref([1]); // 選択された推奨年齢IDを格納
+const features = ref([0]); // 特徴データを格納する変数
+const selectedFeatures = ref([1]); // 選択された特徴IDを格納
 const mapUrl = ref(
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp'
 );
