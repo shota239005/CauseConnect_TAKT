@@ -2,7 +2,7 @@
 import RequestList from "./components/RequestList.vue"; // RequestListコンポーネントをインポート
 import Refine from "./components/Refine.vue"; // フィルターコンポーネントをインポート
 import search from "@/components/search.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, resolveComponent } from "vue";
 import { useRoute } from "vue-router";
 import apiClient from "@/axios";
 
@@ -28,6 +28,7 @@ const fetchInitialData = async () => {
   loading.value = true;
   try {
     const response = await apiClient.get("/search-posts"); // APIエンドポイントに合わせて修正
+    console.log(response);
     //case_date の降順でソート
     searchResults.value = response.data.sort((a, b) => {
       return new Date(b.case_date) - new Date(a.case_date);

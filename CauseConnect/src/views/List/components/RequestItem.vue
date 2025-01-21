@@ -36,7 +36,7 @@ onMounted(async () => {
     request.pref_name = await fetchPrefectureName(request.pref_id);
   }
 });
-
+console.log(request.picture);
 </script>
 
 <template>
@@ -47,7 +47,7 @@ onMounted(async () => {
     <!-- 左側に画像の仮枠を表示 -->
     <div class="request-image">
       <!-- 仮の枠（画像がない場合） -->
-      <div class="image-placeholder">画像なし</div>
+      <img :src="request.picture || 'src/assets/img/HomeImg.jpg'" alt="slide image" class="slide-image" />
     </div>
 
     <!-- 右側に依頼情報を表示 -->
