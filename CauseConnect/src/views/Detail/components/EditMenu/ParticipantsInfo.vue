@@ -10,115 +10,164 @@ const props = defineProps({
   },
 });
 
-// ✅ 各参加者の状態管理
+// ✅ 各状態の管理
 const requester = ref(null);
+const requesterSupPoint = ref(null); // 依頼ポイント
 const contributors = ref([]);
 const executors = ref([]);
-const requesterSupPoint = ref(null); // ✅ 依頼者の出資ポイント
 
-// ✅ 依頼者の取得
-const fetchRequester = async () => {
+// ✅ データ取得関数
+const fetchParticipants = async () => {
   try {
-    const response = await apiClient.get(`/cases/${props.caseId}/requester`);
-    requester.value = response.data;
-    console.log('[Par] 依頼者取得:', requester.value);
-  } catch (error) {
-    console.error('[ParticipantsInfo] 依頼者の取得に失敗:', error);
-  }
-};
+    const requesterResponse = await apiClient.get(`/cases/${props.caseId}/requester`);
+    requester.value = requesterResponse.data;
 
-// ✅ 出資者の取得
-const fetchContributors = async () => {
-  try {
-    const response = await apiClient.get(`/cases/${props.caseId}/contributors`);
-    contributors.value = response.data;
-    console.log('[Par] 出資者取得:', contributors.value);
+    const contributorsResponse = await apiClient.get(`/cases/${props.caseId}/contributors`);
+    contributors.value = contributorsResponse.data.filter(
+      (contributor) => contributor.user_id !== requester.value.user_id
+    );
 
-    // ✅ 依頼者の出資ポイントを取得
-    const requesterContributor = contributors.value.find(contributor => contributor.user_id === requester.value?.user_id);
+    const requesterContributor = contributorsResponse.data.find(
+      (contributor) => contributor.user_id === requester.value.user_id
+    );
     requesterSupPoint.value = requesterContributor ? requesterContributor.sup_point : null;
 
+    const executorsResponse = await apiClient.get(`/cases/${props.caseId}/executors`);
+    executors.value = executorsResponse.data; // 依頼者を除外しない
+    //依頼者を除外
+    // executors.value = executorsResponse.data.filter(
+    //   (executor) => executor.user_id !== requester.value.user_id 
+
+    // );
   } catch (error) {
-    console.error('[Par] 出資者の取得に失敗:', error);
+    console.error('[ParticipantsInfo] データ取得に失敗:', error);
   }
 };
 
-// ✅ 実行者の取得
-const fetchExecutors = async () => {
-  try {
-    const response = await apiClient.get(`/cases/${props.caseId}/executors`);
-    executors.value = response.data;
-    console.log('[Par] 実行者取得:', executors.value);
-  } catch (error) {
-    console.error('[Par] 実行者の取得に失敗:', error);
-  }
-};
-
-// ✅ コンポーネントがマウントされたときに全データ取得
 onMounted(() => {
-  console.log(`[Par] 受け取ったcaseId: ${props.caseId}`);
-  fetchRequester().then(fetchContributors);
-  fetchExecutors();
+  fetchParticipants();
 });
 </script>
 
 <template>
   <div class="participants-info">
-    <h3>参加メンバー情報</h3>
+    <h3 class="title">参加メンバー情報</h3>
 
-    <!-- ✅ 依頼者の表示 -->
-    <section v-if="requester">
-      <h4>依頼者</h4>
-      <p>ID: {{ requester.user_id }} / ニックネーム: {{ requester.nickname }}
-      <span v-if="requesterSupPoint"> / 依頼ポイント: {{ requesterSupPoint }}</span></p>
+    <!-- ✅ 依頼者情報 -->
+    <section v-if="requester" class="section requester-section">
+      <h4 class="section-title">依頼者</h4>
+      <p class="info">
+        <span class="nickname">{{ requester.nickname }}</span>
+        <span v-if="requesterSupPoint" class="details"> / 依頼ポイント: {{ requesterSupPoint }}</span>
+      </p>
     </section>
 
-    <!-- ✅ 出資者の表示 -->
-    <section>
-      <h4>出資者</h4>
-      <ul>
-        <li v-for="contributor in contributors" :key="contributor.user_id">
-          ID: {{ contributor.user_id }} / ニックネーム: {{ contributor.nickname }} / 出資ポイント: {{ contributor.sup_point }}
+    <!-- ✅ 出資者情報 -->
+    <section class="section contributors-section">
+      <h4 class="section-title">出資者</h4>
+      <ul v-if="contributors.length > 0" class="list">
+        <li v-for="contributor in contributors" :key="contributor.user_id" class="list-item">
+          <span class="nickname">{{ contributor.nickname }}</span>
+          <span class="details"> / 出資ポイント: {{ contributor.sup_point }}</span>
         </li>
       </ul>
+      <p v-else class="empty">なし</p>
     </section>
 
-    <!-- ✅ 実行者の表示 -->
-    <section>
-      <h4>実行者</h4>
-      <ul>
-        <li v-for="executor in executors" :key="executor.user_id">
-          ID: {{ executor.user_id }} / ニックネーム: {{ executor.nickname }} / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}
+    <!-- ✅ 実行者情報 -->
+    <!-- <section class="section executors-section">
+      <h4 class="section-title">実行者</h4>
+      <ul v-if="executors.length > 0" class="list">
+        <li v-for="executor in executors" :key="executor.user_id" class="list-item">
+          <span class="nickname">{{ executor.nickname }}</span>
+          <span class="details"> / 役割: {{ executor.leader === 1 ? 'リーダー' : 'メンバー' }}</span>
         </li>
       </ul>
+      <p v-else class="empty">なし</p>
+    </section> -->
+    <section class="section executors-section">
+      <h4 class="section-title">実行者</h4>
+      <ul v-if="executors.length > 0" class="list">
+        <li v-for="executor in executors" :key="executor.user_id" class="list-item">
+          <span class="nickname">{{ executor.nickname }}</span>
+          <span v-if="executor.user_id === requester.user_id" class="details">（依頼者）</span>
+        </li>
+      </ul>
+      <p v-else class="empty">なし</p>
     </section>
+
   </div>
 </template>
 
 <style scoped>
 .participants-info {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  padding: 20px;
+  border: 2px solid #f7a400;
+  border-radius: 10px;
+  background-color: #fff3cd;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.participants-info h3 {
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff8c00;
   margin-bottom: 10px;
-  font-size: 18px;
 }
 
-.participants-info section {
-  margin-bottom: 15px;
+.info,
+.list-item {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
-.participants-info ul {
+.nickname {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.details {
+  font-size: 14px;
+  color: #555;
+}
+
+.list {
   list-style: none;
   padding: 0;
 }
 
-.participants-info li {
+.list-item {
   padding: 5px 0;
   border-bottom: 1px solid #ddd;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.empty {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
 }
 </style>

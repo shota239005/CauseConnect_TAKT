@@ -263,7 +263,7 @@ h1 {
 }
 
 .user-info p {
-  font-size: 16px;
+  font-size: 32px;
   margin: 5px 0;
 }
 
@@ -302,6 +302,8 @@ form {
 input,
 select,
 textarea {
+  font-family: "Zen Maru Gothic", serif;
+  font-size: 20px;
   width: 100%;
   padding: 10px;
   border: 3px solid #f7a400;
@@ -378,7 +380,8 @@ textarea {
 }
 
 label{
-  font-size: 30px;
+  font-size: 32px;
+  font-weight: 500;
 }
 
 .left-container,

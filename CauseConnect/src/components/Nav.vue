@@ -261,6 +261,11 @@ div button:hover {
   background-color: transparent;
 }
 
+.auth-buttons button {
+  margin-left: 10px; /* もしくは適切な値に調整 */
+}
+
+
 /* スマホサイズでの表示調整 */
 @media (max-width: 844px) {
   .nav-links,
@@ -275,6 +280,7 @@ div button:hover {
     display: flex;
   }
 }
+
 
 /* PC版ではハンバーガーメニューを非表示 */
 @media (min-width: 845px) {

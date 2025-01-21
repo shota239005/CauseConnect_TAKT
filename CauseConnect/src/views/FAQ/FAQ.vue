@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import DOMPurify from 'dompurify';
 import Picture from '@/components/Picture.vue'; // Picture.vue をインポート（ファイル名修正に注意）
+
 // FAQデータのリスト
 const faqList = [
   {
@@ -69,6 +70,12 @@ function formatAnswer(text) {
         <button @click="closeModal" class="modal-close">×</button>
         <Picture /> <!-- モーダル内で Picture.vue を表示 -->
       </div>
+    </div>
+
+    <!-- お問い合わせリンク -->
+    <div class="contact-section">
+      <p>上記以外のお問い合わせは下記のフォームから</p>
+      <a href="/contact" class="contact-link">お問い合わせフォームへ</a>
     </div>
   </div>
 </template>
@@ -176,5 +183,20 @@ function formatAnswer(text) {
 
 .modal-close:hover {
   background: darkred;
+}
+
+.contact-section {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.contact-link {
+  color: #ff8c00;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
 }
 </style>
