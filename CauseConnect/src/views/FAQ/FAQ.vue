@@ -75,7 +75,7 @@ function formatAnswer(text) {
     <!-- お問い合わせリンク -->
     <div class="contact-section">
       <p>上記以外のお問い合わせは下記のフォームから</p>
-      <a href="/contact" class="contact-link">お問い合わせフォームへ</a>
+      <a href="https://www.kurakon.jp/" class="contact-link">お問い合わせフォームへ</a>
     </div>
   </div>
 </template>
