@@ -1,6 +1,6 @@
 <script setup>
 import FavoriteIcon from "@/components/FavoriteIcon.vue"; // FavoriteIcon をインポート
-import { defineProps, onMounted, reactive } from "vue";
+import { defineProps, onMounted, reactive, ref } from "vue";
 import apiClient from "@/axios"; // APIクライアントをインポート
 
 // 親コンポーネントから受け取る `request` プロパティを定義
@@ -30,13 +30,20 @@ const fetchPrefectureName = async (prefId) => {
 // `request` を `reactive` にして変更を加える
 const request = reactive({ ...props.request });
 
-// 都道府県名を取得してリクエストデータに追加
+// 画像 URL を格納
+const imageUrl = ref(null);
+
+// 都道府県名を取得と画像 URL を設定
 onMounted(async () => {
   if (!request.pref_name) {
     request.pref_name = await fetchPrefectureName(request.pref_id);
   }
+
+  // Laravel の baseURL を取得して完全な URL を構築
+  const baseURL = 'http://172.16.3.136:8000';
+  imageUrl.value = request.picture ? `${baseURL}${request.picture}` : null;
 });
-console.log(request.picture);
+
 </script>
 
 <template>
@@ -47,7 +54,7 @@ console.log(request.picture);
     <!-- 左側に画像の仮枠を表示 -->
     <div class="request-image">
       <!-- 仮の枠（画像がない場合） -->
-      <img :src="request.picture || 'src/assets/img/HomeImg.jpg'" alt="slide image" class="slide-image" />
+      <img :src="imageUrl || 'default-avatar.png'" alt="slide image" class="request-image" />
     </div>
 
     <!-- 右側に依頼情報を表示 -->
