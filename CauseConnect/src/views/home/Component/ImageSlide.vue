@@ -4,7 +4,7 @@ import apiClient from '@/axios'; // axiosのインポート
 import { useRouter } from 'vue-router'; // ルーターを使用
 
 // ルーターのインスタンスを取得
-const router = useRouter(); 
+const router = useRouter();
 
 // スライドデータを格納するための reactive オブジェクト
 const slides = reactive({
@@ -131,7 +131,7 @@ const navigateToPage = (caseId) => {
           <!-- 投稿の内容 (content) -->
           <p>{{ slide.content || '内容がありません' }}</p>
           <!-- 投稿の補助ポイント (sup_point) -->
-          <p>補助ポイント: {{ slide.point || '不明' }} </p>
+          <p>ポイント: {{ slide.point || '不明' }} </p>
         </div>
       </div>
     </div>
