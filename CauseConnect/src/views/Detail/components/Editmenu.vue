@@ -158,7 +158,6 @@ onMounted(() => {
 <style scoped>
 .edit-menu {
   font-family: "Zen Maru Gothic", sans-serif;
-  width: 100%;
   padding: 20px;
   background-color: #fff;
   border: 2px solid #f7a400;
@@ -205,6 +204,9 @@ onMounted(() => {
   font-size: 1.2em;
   cursor: pointer;
   background-color: #f7a400;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .toggle-button:hover {

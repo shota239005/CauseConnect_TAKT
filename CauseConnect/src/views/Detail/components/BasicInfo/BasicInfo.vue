@@ -141,7 +141,6 @@ onMounted(() => {
 
 <style scoped>
 .basic-info {
-  margin-left: -25px;
   padding: 15px;
   border: 2px solid #f7a400;
   border-radius: 8px;
@@ -209,16 +208,20 @@ strong {
 }
 
 .fixed-size {
-  width: 400px;
-  /* 幅を300pxに固定 */
-  height: 300px;
-  /* 高さを200pxに固定 */
-  object-fit: contain;
-  /* 画像全体を表示（トリミングしない） */
-  border-radius: 8px;
-  /* 角を丸くする（任意） */
-  background-color: #f4f4f4;
-  /* 余白部分の背景色（任意） */
+  width: 500px; /* 幅を400pxに固定 */
+  height: 300px; /* 高さを300pxに固定 */
+  overflow: hidden; /* はみ出した部分を非表示にする */
+  border-radius: 8px; /* 角を丸くする（任意） */
+  display: flex; /* 内部要素のサイズ調整用 */
+  justify-content: center;
+  align-items: center;
+
+}
+
+.fixed-size img {
+  width: 100%; /* コンテナの幅いっぱいに広げる */
+  height: 100%; /* コンテナの高さいっぱいに広げる */
+  object-fit: cover; /* 画像を要素のサイズまで拡大し、トリミングする */
 }
 </style>
 

@@ -131,9 +131,9 @@ const currentProgress = 2;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 .upper-section {
@@ -144,12 +144,14 @@ const currentProgress = 2;
 .left-section,
 .right-section {
   flex: 1;
+  margin-top: 20px;
 }
 
 .progress-section {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 20px;
 }
 
 .search-container {

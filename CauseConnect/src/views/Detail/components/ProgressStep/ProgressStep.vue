@@ -59,10 +59,10 @@ onMounted(() => {
     <div v-if="showProgress1" class="progress-section">
       <h2 class="accordion-header">ステップ１：実行報告内容</h2>
       <div class="accordion-content">
-        <Hokoku 
-          :case-id="requestData.case_id" 
-          :user-id="props.userId" 
-          :request="requestData" 
+        <Hokoku
+          :case-id="requestData.case_id"
+          :user-id="props.userId"
+          :request="requestData"
         />
       </div>
     </div>
@@ -71,10 +71,10 @@ onMounted(() => {
     <div v-if="showProgress2" class="progress-section">
       <h2 class="accordion-header">ステップ２：報告内容の承認</h2>
       <div class="accordion-content">
-        <Shonin 
-          :case-id="requestData.case_id" 
-          :user-id="props.userId" 
-          :request="requestData" 
+        <Shonin
+          :case-id="requestData.case_id"
+          :user-id="props.userId"
+          :request="requestData"
         />
       </div>
     </div>
@@ -83,9 +83,9 @@ onMounted(() => {
     <div v-if="showProgress3" class="progress-section">
       <h2 class="accordion-header">ステップ３：依頼参加者の評価</h2>
       <div class="accordion-content">
-        <Review 
-          :case-id="requestData.case_id" 
-          :user-id="props.userId" 
+        <Review
+          :case-id="requestData.case_id"
+          :user-id="props.userId"
           :request="requestData"
         />
       </div>
@@ -96,7 +96,7 @@ onMounted(() => {
 <style scoped>
 .participants-info {
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 8px;
   background-color: #fff;
 }
