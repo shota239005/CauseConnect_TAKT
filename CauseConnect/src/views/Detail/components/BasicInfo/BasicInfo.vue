@@ -190,6 +190,7 @@ strong {
   margin-bottom: 31px;
   padding: 10px;
   background-color: #ffca5f;
+  border-radius: 8px;
 }
 
 .button-container p {

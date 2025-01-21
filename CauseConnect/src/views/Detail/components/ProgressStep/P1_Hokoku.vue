@@ -149,7 +149,7 @@ input[type="file"] {
 }
 
 textarea {
-  width: 100%;
+  width: 99%;
   padding: 10px;
   font-size: 14px;
   border: 2px solid #f7a400;
