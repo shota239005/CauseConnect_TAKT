@@ -15,10 +15,10 @@ onMounted(() => {
 
 // ✅ 参加者のレビュー情報
 const participants = ref([
-  { id: 1, name: 'さっちゃん', review: 0 },
-  { id: 2, name: 'がまかつ', review: 0 },
-  { id: 3, name: 'ガープ', review: 0 },
-  { id: 4, name: 'ヒナ', review: 0 },
+  { id: 1, name: 'ミドル', review: 0 },
+  { id: 2, name: 'よし', review: 0 },
+  { id: 3, name: 'さつき', review: 0 },
+  { id: 4, name: 'みの', review: 0 },
 ]);
 
 const isConfirmed = ref(false);
@@ -131,18 +131,12 @@ const confirmReviews = async () => {
 .btn1 {
   width: 200px;
   font-size: 30px;
-  color: #fff;
-  background-color: #28a745;
-  border: none;
-  padding: 10px 20px;
+  padding: 20px 20px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  color: #333;
 }
 
-.btn1:hover {
-  background-color: #218838;
-}
 
 .btn1:disabled {
   background-color: #ccc;

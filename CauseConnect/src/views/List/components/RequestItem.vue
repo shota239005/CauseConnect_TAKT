@@ -40,7 +40,7 @@ onMounted(async () => {
   }
 
   // Laravel の baseURL を取得して完全な URL を構築
-  const baseURL = 'http://172.16.3.136:8000';
+  const baseURL = (apiClient.defaults.baseURL || "").replace(/\/api$/, "");
   imageUrl.value = request.picture ? `${baseURL}${request.picture}` : null;
 });
 
@@ -49,7 +49,7 @@ onMounted(async () => {
 <template>
   <div class="request-item">
     <!-- お気に入りアイコンを右上に配置 -->
-    <FavoriteIcon class="favorite-icon" />
+    <FavoriteIcon :request="request" class="favorite-icon" />
 
     <!-- 左側に画像の仮枠を表示 -->
     <div class="request-image">

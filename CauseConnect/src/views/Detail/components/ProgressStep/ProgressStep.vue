@@ -86,7 +86,7 @@ onMounted(() => {
 <style scoped>
 .participants-info {
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 8px;
   background-color: #fff;
 }
