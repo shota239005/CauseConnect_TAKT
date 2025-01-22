@@ -107,7 +107,7 @@ export default {
         <button class="btn1">Home</button>
       </router-link>
 
-      <router-link to="/344343">
+      <router-link to="/list">
         <button class="btn1">依頼一覧</button>
       </router-link>
 
