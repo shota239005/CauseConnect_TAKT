@@ -178,9 +178,9 @@ onMounted(() => {
 }
 
 .fixed-size {
-  width: 500px;
-  height: 300px;
-  overflow: hidden; /* はみ出した部分を非表示 */
+  width: 100%; /* スマホでは幅いっぱいに */
+  max-width: 500px; /* PCでは最大500px */
+  height: auto; /* 高さを自動調整 */  overflow: hidden; /* はみ出した部分を非表示 */
   border-radius: 8px; /* 角を丸くする */
   display: flex;
   justify-content: center;
@@ -189,7 +189,35 @@ onMounted(() => {
 
 .fixed-size img {
   width: 100%;
-  height: 100%;
-  object-fit: cover; /* 画像を枠内に収めてトリミング */
+  height: auto;
+  object-fit: contain; /* 画像が枠内に収まるように */
 }
+
+/* スマホ向け（600px以下） */
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    background-color: #fff;
+  }
+
+  #app {
+    max-width: 100%; /* スマホでは幅いっぱいにする */
+    padding: 10px; /* 画面の端に余白を追加 */
+  }
+
+  .faq-item {
+    padding: 15px 20px; /* 左右の余白を狭くする */
+  }
+
+  .faq-title {
+    font-size: 1.5rem; /* タイトルを少し小さめに */
+  }
+
+  .modal-content {
+    width: 95%; /* 画面幅に合わせる */
+    padding: 15px; /* 余白を少し減らす */
+
+  }
+}
+
 </style>

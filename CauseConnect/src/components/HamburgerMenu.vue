@@ -9,6 +9,14 @@ export default {
     toggleMenu() {
       this.isOpen = !this.isOpen;
     },
+        // ログアウト処理
+        logout() {
+      localStorage.removeItem('token'); // トークンを削除
+      this.isLoggedIn = false;
+      this.user = null;
+      alert('ログアウトしました');
+      window.location.href = '/'; // ログインページへリダイレクトしつつリロード
+    },
   },
 };
 </script>
@@ -40,6 +48,8 @@ export default {
         <router-link to="/info">
           <li><a href="#contact">当サイト/新規登録</a></li>
         </router-link>
+        <li><a @click="logout">ログアウト</a></li>
+
       </ul>
     </nav>
   </div>
