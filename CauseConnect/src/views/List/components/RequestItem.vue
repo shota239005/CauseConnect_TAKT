@@ -40,7 +40,7 @@ onMounted(async () => {
   }
 
   // Laravel の baseURL を取得して完全な URL を構築
-  const baseURL = 'http://172.16.3.136:8000';
+  const baseURL = (apiClient.defaults.baseURL || "").replace(/\/api$/, "");
   imageUrl.value = request.picture ? `${baseURL}${request.picture}` : null;
 });
 
