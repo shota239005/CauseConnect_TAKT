@@ -1,9 +1,20 @@
 <script>
 import IraiContributorPopup from './IraiContributorPopup.vue';
 import MG from '@/components/MG.vue'; // MGコンポーネントをインポート
+import apiClient from '@/axios';
 
 export default {
   name: "RequesterMenu",
+  props: {
+    caseId: {
+      type: [Number, String],
+      required: true,
+    },
+    userId: {
+      type: [Number, String],
+      required: true,
+    },
+  },
   components: {
     IraiContributorPopup,
     MG,
@@ -24,15 +35,33 @@ export default {
     closeMG() {
       this.isMGVisible = false; // MGポップアップを閉じる
     },
-    deleteRequest() {
+    async deleteRequest() {
       // 確認アラートを表示
       if (window.confirm('依頼を削除してよろしいでしょうか？')) {
-        // 削除メッセージを表示
-        window.alert('依頼を削除しました。ホーム画面へ移動します。');
-        // ホーム画面へ移動
-        this.$router.push('/');
+        try {
+          console.log("削除リクエスト caseId:", this.caseId);
+          const response = await apiClient.delete(`/case/${this.caseId}`);
+
+          if (response.status === 200) {
+            window.alert('依頼が削除されました。ホーム画面へ移動します。');
+            this.$router.push('/'); // ホーム画面へ遷移
+          } else {
+            window.alert('依頼の削除に失敗しました。');
+          }
+        } catch (error) {
+          console.error('削除中にエラーが発生しました:', error);
+          if (error.response && error.response.status === 404) {
+            window.alert('削除対象の依頼が見つかりませんでした。');
+          } else {
+            window.alert('削除中にエラーが発生しました。');
+          }
+        }
       }
     },
+  },
+  mounted() {
+    console.log("[RequesterMenu] caseId:", this.caseId);
+    console.log("[RequesterMenu] userId:", this.userId);
   },
 };
 </script>
