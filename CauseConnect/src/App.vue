@@ -1,6 +1,7 @@
 <script setup>
 import Navi from './components/Nav.vue'; // ナビゲーションバーコンポーネントをインポート
 import CopyLight from '@/components/CopyLight.vue';
+
 </script>
 
 <template>
@@ -50,6 +51,7 @@ html, body {
   .modal-content {
     width: 95%; /* 画面幅に合わせる */
     padding: 15px; /* 余白を少し減らす */
+
   }
 }
 

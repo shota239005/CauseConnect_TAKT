@@ -93,7 +93,7 @@ h1 {
 }
 
 .email {
-  padding: 20px 100px;
+  padding: 20px 200px;
 }
 
 .form-group {
@@ -107,7 +107,7 @@ label {
 }
 
 input {
-  width: 35%;
+  width: 40%;
   padding: 8px;
   border: 2px solid #f7a400;
   border-radius: 4px;

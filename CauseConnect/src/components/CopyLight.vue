@@ -2,6 +2,12 @@
 </script>
 <template>
   <div class="footer">
+    <div class="sns-icons">
+      <a href="https://x.com" target="_blank" class="sns-icon"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://instagram.com" target="_blank" class="sns-icon"><i class="fab fa-instagram"></i></a>
+      <a href="https://facebook.com" target="_blank" class="sns-icon"><i class="fab fa-facebook"></i></a>
+      <a href="https://mixi.jp" target="_blank" class="sns-icon"><i class="fas fa-user-friends"></i></a> <!-- mixi用のアイコン -->
+    </div>
     <div class="footer-links">
       <span>会社概要</span> |
       <span>利用規約</span> |
@@ -23,6 +29,24 @@
   background-color:#333;
   color: #f7a400;
   text-align: center;
+}
+
+.sns-icons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.sns-icon {
+  font-size: 24px;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.sns-icon:hover {
+  transform: scale(1.2);
+  color: #ffcc00;
 }
 
 /* スマホ向け（600px以下） */
