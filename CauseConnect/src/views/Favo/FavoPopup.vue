@@ -1,106 +1,197 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import RequestItem from "./FavoMenu.vue"; // RequestItem コンポーネントをインポート
-import apiClient from '@/axios'; // Axiosインスタンス
+import { onMounted, ref } from "vue";
+import apiClient from "@/axios"; // APIクライアントをインポート
 
-// お気に入りのリクエストを保持する変数
-const favoriteRequests = ref([]);
-const isLoading = ref(true);
-const errorMessage = ref("");
+const userInfo = ref(null); // ユーザー情報
+const popupDataResult = ref(null); // サーバーのレスポンスデータ
+const enrichedRequests = ref([]); // 各リクエストデータに都道府県名を追加
+const prefectures = ref([]); // 都道府県データを保存する変数
 
-// APIからお気に入りの依頼を取得
-const fetchFavoriteRequests = async () => {
+
+const fetchApi = async (url, options = {}) => {
   try {
-    const response = await apiClient.get("/favorites"); // APIエンドポイントを適宜変更
-    favoriteRequests.value = response.data;
-    isLoading.value = false;
+    const response = await apiClient(url, options);
+    return response.data;
   } catch (error) {
-    console.error("お気に入りの取得に失敗しました:", error);
-    errorMessage.value = "お気に入りの取得に失敗しました。後ほど再試行してください。";
-    isLoading.value = false;
+    console.error(`APIリクエスト失敗: ${url}`, error);
+    throw error; // 必要ならエラーを再スロー
+  }
+};
+ 
+// ✅ ユーザー情報を取得する関数
+const fetchUserInfo = async () => {
+  try {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('[Favopup] トークンが見つかりません');
+      return;
+    }
+
+    const response = await apiClient.get('/user/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    userInfo.value = response.data;
+    // console.log('[Favopup] 取得したユーザー情報:', userInfo.value);
+
+    // サーバーに送信
+    await popupData(userInfo.value.user_id);
+
+  } catch (error) {
+    console.error('[Favopup] ユーザー情報の取得に失敗:', error);
   }
 };
 
-// コンポーネントがマウントされたときにお気に入りのリストを取得
-onMounted(() => {
-  fetchFavoriteRequests();
+// 都道府県名のキャッシュを管理し、名前を取得
+const fetchPrefectureName = async (prefId) => {
+  if (prefectures.value.length === 0) {
+    try {
+      prefectures.value = await fetchApi("/prefectures");
+    } catch {
+      return "不明な都道府県";
+    }
+  }
+  const prefecture = prefectures.value.find((pref) => pref.pref_id === prefId);
+  return prefecture ? prefecture.pref : "不明な都道府県";
+};
+
+
+// サーバーからデータを取得して都道府県名を追加
+const popupData = async () => {
+  try {
+    popupDataResult.value = await fetchApi("/favopopup", {
+      method: "POST",
+      data: { user_id: userInfo.value.user_id },
+    });
+    console.log("サーバーからのデータ:", popupDataResult.value);
+
+    await enrichRequestData();
+  } catch (error) {
+    console.error("サーバーへの送信エラー:", error);
+  }
+};
+
+
+// リクエストデータに都道府県名と画像URLを追加する関数
+const enrichRequestData = async () => {
+  const baseURL = "http://172.16.3.136:8000";
+
+  if (prefectures.value.length === 0) {
+    await fetchPrefectureName(); // 都道府県データをキャッシュ
+  }
+
+  enrichedRequests.value = popupDataResult.value.map((request) => {
+    const enrichedRequest = { ...request }; // データを複製
+    const prefecture = prefectures.value.find((pref) => pref.pref_id === request.address.pref_id);
+    enrichedRequest.address.pref_name = prefecture ? prefecture.pref : "不明な都道府県";
+    enrichedRequest.pictureUrl = request.picture
+      ? `${baseURL}${request.picture}`
+      : "default-avatar.png";
+    return enrichedRequest;
+  });
+
+  console.log("最終リクエストデータ:", JSON.stringify(enrichedRequests.value, null, 2));
+};
+
+
+// ✅ コンポーネントがマウントされた時にデータ取得
+onMounted(async () => {
+  await fetchUserInfo(); // ✅ ユーザー情報の取得
 });
 </script>
 
+
 <template>
-  <div class="favorite-list">
-    <div class="title">
-      <h1>お気に入り一覧</h1>
-    </div>
+  <div v-if="enrichedRequests.length > 0" class="request-items">
+    <div v-for="(item, index) in enrichedRequests" :key="index" class="request-item">
+      <!-- 左側に画像を表示 -->
+      <div class="request-image">
+        <img :src="item.pictureUrl" alt="slide image" class="request-image" />
+      </div>
 
-    <!-- ローディング中の表示 -->
-    <div v-if="isLoading" class="loading">
-      データを読み込んでいます...
-    </div>
+      <!-- 右側に依頼情報を表示 -->
+      <div class="request-info">
+        <h3>{{ item.case_name }}</h3>
+        <p><strong>日付:</strong> {{ item.case_date }}</p>
+        <p><strong>都道府県:</strong> {{ item.address.pref_name }}</p>
+        <p><strong>場所:</strong> {{ item.address?.address1 }} {{ item.address?.address2 }}</p>
+        <p><strong>活動内容:</strong> {{ item.content }}</p>
 
-    <!-- エラーメッセージ -->
-    <div v-if="errorMessage" class="error">
-      {{ errorMessage }}
-    </div>
-
-    <!-- お気に入りリスト -->
-    <div v-if="!isLoading && favoriteRequests.length === 0" class="no-requests">
-      現在、表示できるお気に入りはありません。
-    </div>
-
-    <div v-else class="requests">
-      <div v-for="request in favoriteRequests" :key="request.id" class="request-item">
-        <RequestItem :request="request" />
+        <!-- 詳細ページへのリンク -->
+        <router-link :to="`/details/${item.case_id}`" class="details-link">詳細を見る</router-link>
       </div>
     </div>
   </div>
+  <p v-else>データがありません。。。</p>
 </template>
 
 <style scoped>
-.favorite-list {
-  text-align: center;
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.title h1 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.loading {
-  font-size: 18px;
-  color: #666;
-}
-
-.error {
-  font-size: 18px;
-  color: red;
-}
-
-.requests {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
 .request-item {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  gap: 20px;
+  /* 画像と情報の間にスペースを追加 */
   padding: 15px;
-  border: 2px solid #f0f0f0;
-  border-radius: 8px;
-  background-color: #fff;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  position: relative;
+  /* お気に入りアイコンを配置するため */
 }
 
-.request-item:hover {
-  transform: translateX(-10px) scale(1.05); /* 左に移動して拡大 */
-  background-color: #ffeacf;
-  border: 3px solid #ff8c00;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影をつけて強調 */
+.favorite-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* 画像部分のスタイル（仮枠） */
+.request-image {
+  width: 200px;
+  /* 画像の幅 */
+  height: 150px;
+  /* 画像の高さ */
+  background-color: #ccc;
+  /* グレーの背景 */
+  border-radius: 5px;
+  /* 角を丸く */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-placeholder {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 依頼情報部分のスタイル */
+.request-info {
+  flex-grow: 1;
+  /* 残りのスペースを占める */
+}
+
+.request-info h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  color: #333;
+}
+
+.request-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.details-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.details-link:hover {
+  text-decoration: underline;
 }
 </style>
