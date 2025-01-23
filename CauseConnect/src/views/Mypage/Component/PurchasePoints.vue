@@ -33,6 +33,12 @@ const purchasePoints = async () => {
         message.value = error.response?.data?.message || 'ポイント購入中にエラーが発生しました。';
     }
 };
+
+// 決済ポップアップを閉じる処理 + ページをリロード
+const closePaymentPopupAndReload = () => {
+    isPaymentPopupVisible.value = false; // ポップアップを閉じる
+    window.location.reload(); // ページをリロード
+};
 </script>
 
 <template>
@@ -59,7 +65,7 @@ const purchasePoints = async () => {
         </div>
 
         <!-- 決済ポップアップ -->
-        <div v-if="isPaymentPopupVisible" class="popup-overlay" @click="togglePaymentPopup">
+        <div v-if="isPaymentPopupVisible" class="popup-overlay" @click="closePaymentPopupAndReload">
             <div class="popup-container2" @click.stop>
                 <h2>ポイント購入方法</h2>
                 <p>以下の画像で購入方法を確認してください：</p>
@@ -67,10 +73,9 @@ const purchasePoints = async () => {
                 <!-- 画像表示 -->
                 <img src="@/assets/img/point-buy.png" alt="購入方法の説明" class="demo-image" />
 
-                <!-- <div class="button-group">
-                    <button @click="() => { isPopupVisible.value = false; window.location.href = '/mypage'; }"
-                        class="confirm-button">閉じる</button>
-                </div> -->
+                <div class="button-group">
+                    <button @click="closePaymentPopupAndReload" class="confirm-button">閉じる</button>
+                </div>
             </div>
         </div>
     </div>
