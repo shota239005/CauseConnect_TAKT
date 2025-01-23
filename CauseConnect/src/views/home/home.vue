@@ -30,7 +30,7 @@ const searchRequests = () => {
     </div>
     <ImageSlide/>
     <Japan/>
-    <ImageSlideTow/>
+    <!--<ImageSlideTow/> -->
     <Info/>
   </div>
 </template>
