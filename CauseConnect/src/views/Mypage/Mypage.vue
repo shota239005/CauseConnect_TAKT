@@ -96,6 +96,9 @@ const updateUserData = async () => {
     message.value = 'ユーザー情報を更新しました。';
     alert('ユーザー情報が正常に更新されました！');
     console.log('更新成功:', response.data);
+    // ページをリダイレクト（ページ全体をリロードして遷移）
+    window.location.href = '/'; // ホームページ（または任意のURL）にリダイレクト
+
   } catch (error) {
     console.error('ユーザーデータの更新に失敗しました:', error);
     message.value = 'ユーザーデータの更新に失敗しました。';
@@ -154,7 +157,7 @@ onMounted(() => {
         <PointHistory />
         <!-- ポイント購入ポップアップボタン -->
         <PurchasePoints @pointsPurchased="fetchUserData" />
-        <PointExchange/>
+        <PointExchange />
       </div>
     </div>
 
@@ -245,14 +248,15 @@ onMounted(() => {
   border-radius: 8px;
 }
 
-.birthday{
+.birthday {
   width: 30%;
 }
 
-.sex{
+.sex {
   width: 35%;
 }
-.town{
+
+.town {
   width: 30%;
 }
 
@@ -270,12 +274,12 @@ h1 {
 
 
 
-.btn1{
+.btn1 {
   padding: 20px 100px;
   margin-right: 30px;
 }
 
-.btnNo{
+.btnNo {
   color: #fff;
   background-color: #ff6060;
   box-shadow: 5px 5px 0 #db3f3f;
@@ -283,16 +287,18 @@ h1 {
 }
 
 .btnNo:hover {
-    color: #fff;
-    background-color: #db3f3f;
-    box-shadow: 0 0 0;
-    transform: translate(5px, 5px);
+  color: #fff;
+  background-color: #db3f3f;
+  box-shadow: 0 0 0;
+  transform: translate(5px, 5px);
 }
 
 
 form {
-  display: flex; /* 横並びにする */
-  gap: 200px; /* 左右コンテナ間の余白を調整 */
+  display: flex;
+  /* 横並びにする */
+  gap: 200px;
+  /* 左右コンテナ間の余白を調整 */
 }
 
 .form-group {
@@ -327,7 +333,7 @@ textarea {
   height: 100%;
 }
 
-.points-card{
+.points-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -351,7 +357,8 @@ textarea {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.points-icon, .points-info {
+.points-icon,
+.points-info {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -361,7 +368,8 @@ textarea {
 
 .points-info {
   display: flex;
-  flex-direction: column; /* 縦並びに変更 */
+  flex-direction: column;
+  /* 縦並びに変更 */
   align-items: center;
   font-size: 20px;
   font-weight: bold;
@@ -369,7 +377,8 @@ textarea {
 }
 
 .points-info p {
-  font-size: 44px; /* ポイント数の数字を大きく */
+  font-size: 44px;
+  /* ポイント数の数字を大きく */
   font-weight: bold;
   margin: 0;
 }
@@ -379,15 +388,16 @@ textarea {
   gap: 15px;
 }
 
-label{
+label {
   font-size: 32px;
   font-weight: 500;
 }
 
 .left-container,
 .right-container {
-  width: 40%; /* 両要素を横並びで収める */
-  box-sizing: border-box; /* パディングを含めた幅計算 */
+  width: 40%;
+  /* 両要素を横並びで収める */
+  box-sizing: border-box;
+  /* パディングを含めた幅計算 */
 }
-
 </style>
