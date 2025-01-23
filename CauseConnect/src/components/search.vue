@@ -200,4 +200,21 @@ onMounted(() => {
 .search-item button:hover {
   background-color: #ff8c00;
 }
+
+@media screen and (max-width: 600px) {
+  .search-row {
+    gap: 10px;
+  }
+
+  .search-item {
+    width: 100%;
+    align-items: stretch; /* 横幅いっぱいに広げる */
+  }
+
+  .search-item select,
+  .search-item button {
+    width: 100%; /* スマホでは横幅いっぱい */
+    font-size: 12px; /* 少し小さく */
+  }
+}
 </style>

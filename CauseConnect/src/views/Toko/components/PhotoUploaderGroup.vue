@@ -90,13 +90,13 @@ export default {
 }
 
 .select-photo-btn {
-  padding: 10px 15px;
+  padding: 20px 60px;
   background-color: #ff8c00;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 24px;
   margin-bottom: 40px;
 }
 
@@ -115,4 +115,32 @@ export default {
 .hidden-input {
   display: none;
 }
+
+/* スマホ向け（600px以下） */
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    background-color: #fff;
+  }
+
+  #app {
+    max-width: 100%; /* スマホでは幅いっぱいにする */
+    padding: 10px; /* 画面の端に余白を追加 */
+  }
+
+  .faq-item {
+    padding: 15px 20px; /* 左右の余白を狭くする */
+  }
+
+  .faq-title {
+    font-size: 1.5rem; /* タイトルを少し小さめに */
+  }
+
+  .modal-content {
+    width: 95%; /* 画面幅に合わせる */
+    padding: 15px; /* 余白を少し減らす */
+
+  }
+}
+
 </style>

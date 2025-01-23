@@ -4,7 +4,7 @@ import apiClient from '@/axios'; // axiosのインポート
 import { useRouter } from 'vue-router'; // ルーターを使用
 
 // ルーターのインスタンスを取得
-const router = useRouter(); 
+const router = useRouter();
 
 // スライドデータを格納するための reactive オブジェクト
 const slides = reactive({
@@ -44,7 +44,7 @@ const fetchSlides = async () => {
       );
 
        // case_id 昇順で並び替え
-       slides.items.sort((a, b) => a.case_id - b.case_id);
+       slides.items.sort((a, b) => b.case_id - a.case_id);
 
       console.log('[DEBUG] スライドデータ２下:', slides.items);
     } else {
@@ -122,7 +122,7 @@ const navigateToPage = (caseId) => {
         :key="index"
         class="slide"
         @click="navigateToPage(slide.case_id)">
-        
+
         <div class="slide-content">
           <!-- 投稿の画像 -->
           <img :src="slide.picture || 'src/assets/img/HomeImg.jpg'" alt="slide image" class="slide-image" />

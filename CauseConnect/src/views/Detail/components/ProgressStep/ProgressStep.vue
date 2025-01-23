@@ -5,10 +5,9 @@ import Hokoku from './P1_Hokoku.vue';
 import Shonin from './P2_shonin.vue';
 import Review from './P3_Review.vue';
 
-// ✅ 親から受け取るprops（userId追加）
 const props = defineProps({
   request: {
-    type: [Object, Array],  // 配列対応
+    type: [Object, Array],
     required: true,
   },
   userId: {
@@ -17,77 +16,68 @@ const props = defineProps({
   },
 });
 
-// ✅ requestオブジェクトが配列かオブジェクトかを判定
 const requestData = Array.isArray(props.request) ? props.request[0] : props.request;
 
-// ✅ 表示状態の管理
+// ✅ 各ステップの状態管理
 const showProgress1 = ref(false);
 const showProgress2 = ref(false);
 const showProgress3 = ref(false);
+const enableStep1 = ref(false);
+const enableStep2 = ref(false);
+const enableStep3 = ref(false);
 
-// ✅ state_idによる表示制御
 const setStepVisibility = () => {
   const stateId = requestData.state_id;
 
-  if (stateId === 1) {
+  if (stateId >= 1) {
     showProgress1.value = true;
-  } else if (stateId === 2) {
-    showProgress1.value = true;
+    enableStep1.value = true;
+  }
+  if (stateId >= 2) {
     showProgress2.value = true;
-  } else if (stateId >= 3) {
-    showProgress1.value = true;
-    showProgress2.value = true;
+    enableStep2.value = true;
+  }
+  if (stateId >= 3) {
     showProgress3.value = true;
+    enableStep3.value = true;
   }
 };
 
-// ✅ データ受け取りの確認ログと初期開閉状態の設定
 onMounted(() => {
-  // console.log("[ProgressStep] 受け取ったcaseId:", requestData.case_id);
-  // console.log("[ProgressStep] 受け取ったuserId:", props.userId);
-  // console.log("[ProgressStep] 受け取ったstate_id:", requestData.state_id);
-
-  setStepVisibility();  // ✅ state_idに応じた表示制御
+  setStepVisibility();
 });
 </script>
-
 <template>
   <div class="participants-info">
     <Chat />
 
     <!-- 1: 実行報告内容 -->
-    <div v-if="showProgress1" class="progress-section">
-      <h2 class="accordion-header">ステップ１：実行報告内容</h2>
-      <div class="accordion-content">
-        <Hokoku 
-          :case-id="requestData.case_id" 
-          :user-id="props.userId" 
-          :request="requestData" 
-        />
+    <div class="progress-section">
+      <h2 class="accordion-header" :class="{ disabled: !enableStep1 }">
+        ステップ１：実行報告内容
+      </h2>
+      <div class="accordion-content" v-show="enableStep1">
+        <Hokoku :case-id="requestData.case_id" :user-id="props.userId" :request="requestData" />
       </div>
     </div>
 
     <!-- 2: 報告内容の承認 -->
-    <div v-if="showProgress2" class="progress-section">
-      <h2 class="accordion-header">ステップ２：報告内容の承認</h2>
-      <div class="accordion-content">
-        <Shonin 
-          :case-id="requestData.case_id" 
-          :user-id="props.userId" 
-          :request="requestData" 
-        />
+    <div class="progress-section">
+      <h2 class="accordion-header" :class="{ disabled: !showProgress2 }">
+        ステップ２：報告内容の承認
+      </h2>
+      <div v-if="showProgress2" class="accordion-content">
+        <Shonin :case-id="requestData.case_id" :user-id="props.userId" :request="requestData" />
       </div>
     </div>
 
     <!-- 3: 依頼参加者の評価 -->
-    <div v-if="showProgress3" class="progress-section">
-      <h2 class="accordion-header">ステップ３：依頼参加者の評価</h2>
-      <div class="accordion-content">
-        <Review 
-          :case-id="requestData.case_id" 
-          :user-id="props.userId" 
-          :request="requestData"
-        />
+    <div class="progress-section">
+      <h2 class="accordion-header" :class="{ disabled: !enableStep3 }">
+        ステップ３：依頼参加者の評価
+      </h2>
+      <div class="accordion-content" v-show="enableStep3">
+        <Review :case-id="requestData.case_id" :user-id="props.userId" :request="requestData" />
       </div>
     </div>
   </div>
@@ -96,7 +86,7 @@ onMounted(() => {
 <style scoped>
 .participants-info {
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 2px solid #f7a400;
   border-radius: 8px;
   background-color: #fff;
 }
@@ -108,13 +98,19 @@ onMounted(() => {
 .accordion-header {
   font-size: 20px;
   font-weight: bold;
-  cursor: default;
   display: flex;
   justify-content: space-between;
   padding: 10px;
   background-color: #f7a400;
   color: #333;
   border-radius: 5px;
+  cursor: pointer;
+}
+
+.accordion-header.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
 }
 
 .accordion-content {

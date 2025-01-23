@@ -4,7 +4,7 @@ import apiClient from '@/axios'; // axiosのインポート
 import { useRouter } from 'vue-router'; // ルーターを使用
 
 // ルーターのインスタンスを取得
-const router = useRouter(); 
+const router = useRouter();
 
 // スライドデータを格納するための reactive オブジェクト
 const slides = reactive({
@@ -131,7 +131,7 @@ const navigateToPage = (caseId) => {
           <!-- 投稿の内容 (content) -->
           <p>{{ slide.content || '内容がありません' }}</p>
           <!-- 投稿の補助ポイント (sup_point) -->
-          <p>補助ポイント: {{ slide.point || '不明' }} </p>
+          <p>ポイント: {{ slide.point || '不明' }} </p>
         </div>
       </div>
     </div>
@@ -204,6 +204,32 @@ const navigateToPage = (caseId) => {
 
   100% {
     transform: translateX(-100%);
+  }
+}
+
+/* スマホ向け（600px以下） */
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    background-color: #fff;
+  }
+
+  #app {
+    max-width: 100%; /* スマホでは幅いっぱいにする */
+    padding: 10px; /* 画面の端に余白を追加 */
+  }
+
+  .faq-item {
+    padding: 15px 20px; /* 左右の余白を狭くする */
+  }
+
+  .faq-title {
+    font-size: 1.5rem; /* タイトルを少し小さめに */
+  }
+
+  .modal-content {
+    width: 95%; /* 画面幅に合わせる */
+    padding: 15px; /* 余白を少し減らす */
   }
 }
 </style>
