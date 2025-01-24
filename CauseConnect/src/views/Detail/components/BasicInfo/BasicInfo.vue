@@ -129,8 +129,8 @@ onMounted(() => {
       <label for="map-url">GoogleMap:</label>
       <iframe
         :src="requestData.google_map"
-        width="600"
-        height="400"
+        width="800ox"
+        height="400px"
         frameborder="0"
         style="border:0;"
         allowfullscreen=""
