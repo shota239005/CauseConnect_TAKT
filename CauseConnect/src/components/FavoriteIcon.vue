@@ -1,25 +1,3 @@
-<!-- <script setup>
-import { ref } from "vue"; -->
-
-// お気に入りの状態を管理するための状態
-<!-- const isFavorite = ref(false); -->
-
-// お気に入り状態を切り替える関数
-<!-- const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
-};
-</script> -->
-
-<!-- <template>
-  <div @click="toggleFavorite" class="favorite-icon"> -->
-    <!-- お気に入りアイコン -->
-    <!-- <span :class="isFavorite ? 'filled' : 'empty'"> -->
-      <!-- お気に入りがtrueなら塗りつぶされた星（★）、falseなら空の星（☆） -->
-      <!-- {{ isFavorite ? '★' : '☆' }}
-    </span>
-  </div>
-</template> -->
-
 <script setup>
 import { ref, onMounted } from "vue";
 import apiClient from "@/axios";
@@ -50,9 +28,6 @@ const fetchUserInfo = async () => {
     });
 
     userInfo.value = response.data;
-    // console.log(userInfo.value.user_id);
-
-    // console.log('[FavoriteIcon] 取得したユーザー情報:', userInfo.value);
 
   } catch (error) {
     console.error('[FavoriteIcon] ユーザー情報の取得に失敗:', error);
@@ -62,41 +37,56 @@ const fetchUserInfo = async () => {
 // お気に入りの状態を管理するための状態
 const isFavorite = ref(false);
 
-// お気に入りの初期状態を設定
-onMounted(() => {
-  fetchUserInfo();         // ✅ ユーザー情報の取得
-  isFavorite.value = props.request?.is_favorite === 1 || false; // サーバーから受け取った値を初期化
-});
+// ✅ サーバーにお気に入り状態を問い合わせる関数
+const fetchFavoriteStatus = async () => {
+  try {
+    if (!userInfo.value) {
+      console.error('[FavoriteIcon] ユーザー情報が取得できていません');
+      return;
+    }
+
+    const response = await apiClient.post('/favorites/check', {
+      case_id: props.request.case_id,
+      user_id: userInfo.value.user_id,
+    });
+
+    isFavorite.value = response.data.is_favorite; // サーバーのレスポンスから状態を設定
+    console.log('[FavoriteIcon] 初期状態:', isFavorite.value);
+
+  } catch (error) {
+    console.error('[FavoriteIcon] お気に入り状態の取得に失敗:', error);
+  }
+};
 
 // お気に入り状態を切り替え、データをサーバーに送信する関数
 const toggleFavorite = async () => {
   isFavorite.value = !isFavorite.value; // お気に入りの状態を切り替える
 
-  // console.log(props.request.case_id);
-  console.log(userInfo.value?.id); // ユーザー情報から取得した user_id
-
   if (!userInfo.value) {
-    console.error('ユーザー情報が取得できていません');
+    console.error('[FavoriteIcon] ユーザー情報が取得できていません');
     return;
   }
+
   // サーバーへデータを送信
   const favoriteData = {
     case_id: props.request.case_id, // リクエストから取得
-    user_id: userInfo.value.user_id, // トークンから取得した user_id
+    user_id: userInfo.value.user_id, // ユーザー情報から取得
     is_favorite: isFavorite.value ? 1 : 0, // true → 1, false → 0
   };
 
   try {
-    // POSTリクエストを送信
     const response = await apiClient.post("/favorites", favoriteData);
-    
-    // レスポンスデータをコンソールに表示
-    console.log("サーバーに送信成功:", response.data);
+    console.log("[FavoriteIcon] サーバーに送信成功:", response.data);
   } catch (error) {
-    // エラーがあればコンソールに表示
-    console.error("サーバーへの送信エラー:", error);
+    console.error("[FavoriteIcon] サーバーへの送信エラー:", error);
   }
 };
+
+// ✅ 初期化処理
+onMounted(async () => {
+  await fetchUserInfo(); // ✅ ユーザー情報の取得
+  await fetchFavoriteStatus(); // ✅ お気に入り状態の取得
+});
 </script>
 
 <template>
@@ -108,7 +98,6 @@ const toggleFavorite = async () => {
     </span>
   </div>
 </template>
-
 
 <style scoped>
 .favorite-icon {

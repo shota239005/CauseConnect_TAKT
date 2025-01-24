@@ -1,12 +1,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import apiClient from "@/axios"; // APIクライアントをインポート
 
 const userInfo = ref(null); // ユーザー情報
 const popupDataResult = ref(null); // サーバーのレスポンスデータ
 const enrichedRequests = ref([]); // 各リクエストデータに都道府県名を追加
 const prefectures = ref([]); // 都道府県データを保存する変数
-
+const router = useRouter(); // ルーターインスタンス
 
 const fetchApi = async (url, options = {}) => {
   try {
@@ -17,7 +18,7 @@ const fetchApi = async (url, options = {}) => {
     throw error; // 必要ならエラーを再スロー
   }
 };
- 
+
 // ✅ ユーザー情報を取得する関数
 const fetchUserInfo = async () => {
   try {
@@ -56,7 +57,6 @@ const fetchPrefectureName = async (prefId) => {
   return prefecture ? prefecture.pref : "不明な都道府県";
 };
 
-
 // サーバーからデータを取得して都道府県名を追加
 const popupData = async () => {
   try {
@@ -71,7 +71,6 @@ const popupData = async () => {
     console.error("サーバーへの送信エラー:", error);
   }
 };
-
 
 // リクエストデータに都道府県名と画像URLを追加する関数
 const enrichRequestData = async () => {
@@ -94,13 +93,18 @@ const enrichRequestData = async () => {
   console.log("最終リクエストデータ:", JSON.stringify(enrichedRequests.value, null, 2));
 };
 
+// ✅ ページをリロードする関数
+const navigateAndReload = (caseId) => {
+  router.push(`/details/${caseId}`).then(() => {
+    window.location.reload();
+  });
+};
 
 // ✅ コンポーネントがマウントされた時にデータ取得
 onMounted(async () => {
   await fetchUserInfo(); // ✅ ユーザー情報の取得
 });
 </script>
-
 
 <template>
   <div v-if="enrichedRequests.length > 0" class="request-items">
@@ -119,11 +123,13 @@ onMounted(async () => {
         <p><strong>活動内容:</strong> {{ item.content }}</p>
 
         <!-- 詳細ページへのリンク -->
-        <router-link :to="`/details/${item.case_id}`" class="details-link">詳細を見る</router-link>
+        <button @click="navigateAndReload(item.case_id)" class="details-link">
+          詳細を見る
+        </button>
       </div>
     </div>
   </div>
-  <p v-else>データがありません。。。</p>
+  <p v-else>ロード中</p>
 </template>
 
 <style scoped>
@@ -189,6 +195,10 @@ onMounted(async () => {
   margin-top: 10px;
   color: #007bff;
   text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .details-link:hover {

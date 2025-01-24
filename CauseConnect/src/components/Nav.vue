@@ -135,6 +135,8 @@ export default {
       </div>
     </nav>
 
+    <i class="fas fa-bell"></i>
+
     <!-- 依頼するボタン -->
     <div class="request-button">
       <button class="btn1" @click="goToToko">依頼する</button>
@@ -160,6 +162,9 @@ export default {
 
 <style scoped>
 /* ナビゲーションバー全体のスタイル */
+.fas.fa-bell {
+  font-size: 120%; /* サイズを120%に拡大 */
+}
 .nav {
   display: flex;
   align-items: center;
@@ -217,13 +222,15 @@ div button:hover {
 }
 
 /* モーダルのスタイル */
-.favo-modal, .login-modal {
+.favo-modal,
+.login-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* 背景を暗くする */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 背景を暗くする */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -238,9 +245,12 @@ div button:hover {
   flex-direction: column;
   align-items: center;
   width: 90%;
-  max-width: 500px; /* モーダルの最大幅を500pxに制限 */
-  max-height: 700px; /* 高さを画面の90%以内に調整 */
-  overflow-y: auto; /* コンテンツが多い場合スクロール */
+  max-width: 500px;
+  /* モーダルの最大幅を500pxに制限 */
+  max-height: 700px;
+  /* 高さを画面の90%以内に調整 */
+  overflow-y: auto;
+  /* コンテンツが多い場合スクロール */
 }
 
 /* 閉じるボタンのスタイル（右上に配置） */
@@ -262,12 +272,14 @@ div button:hover {
 }
 
 .auth-buttons button {
-  margin-left: 10px; /* もしくは適切な値に調整 */
+  margin-left: 10px;
+  /* もしくは適切な値に調整 */
 }
 
 
 /* スマホサイズでの表示調整 */
 @media (max-width: 844px) {
+
   .nav-links,
   .logo,
   .real-time-clock {
