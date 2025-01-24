@@ -49,7 +49,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="participants-info">
-    <Chat />
+    <Chat :case-id="requestData.case_id" :user-id="props.userId" />
 
     <!-- 1: 実行報告内容 -->
     <div class="progress-section">

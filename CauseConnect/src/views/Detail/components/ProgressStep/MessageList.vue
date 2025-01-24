@@ -1,8 +1,12 @@
 <script setup>
 import { defineProps } from "vue";
 
+// 親コンポーネントから `messages` を受け取る
 defineProps({
-  messages: Array
+  messages: {
+    type: Array,
+    required: true,
+  },
 });
 </script>
 
@@ -13,11 +17,14 @@ defineProps({
       v-for="(message, index) in messages"
       :key="index"
       class="message-item"
-      :class="{ 'tanaka': message.user === 'Tanaka', 'you': message.user === 'You' }"
+      :class="{ 'own-message': message.user_id === $props.userId, 'other-message': message.user_id !== $props.userId }"
     >
-      <div class="message-time">{{ message.time }}</div>
-      <div class="message-text">
-        <strong>{{ message.user }}:</strong> {{ message.text }}
+      <div class="message-header">
+        <span class="message-user">{{ message.user_name || '匿名ユーザー' }}</span>
+        <span class="message-time">{{ message.time || '時間未定' }}</span>
+      </div>
+      <div class="message-body">
+        {{ message.message }}
       </div>
     </div>
   </div>
@@ -28,36 +35,47 @@ defineProps({
   max-height: 300px;
   overflow-y: auto;
   margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
 .message-item {
   padding: 10px;
-  border-bottom: 2px solid #f7a400;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
-.message-item:last-child {
-  border-bottom: none;
-}
-
-/* Tanaka のスタイル */
-.tanaka {
+.own-message {
   background-color: #e0f7fa;
   color: #00796b;
+  text-align: right;
 }
 
-/* You のスタイル */
-.you {
+.other-message {
   background-color: #ffebee;
   color: #b71c1c;
+  text-align: left;
+}
+
+.message-header {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.message-user {
+  font-weight: bold;
 }
 
 .message-time {
-  font-size: 0.9em;
   color: #888;
-  margin-bottom: 5px;
 }
 
-.message-text {
+.message-body {
   font-size: 1em;
+  white-space: pre-wrap;
 }
 </style>

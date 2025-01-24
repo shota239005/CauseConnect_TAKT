@@ -1,31 +1,60 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import apiClient from "@/axios"; // Axiosインスタンス
 import MessageList from "./MessageList.vue";
 import MessageInput from "./MessageInput.vue";
 
-// メッセージリスト
-const messages = ref([
-  { user: "Tanaka", text: "実行者さんが参加しました"},
-  { user: "You", text: "依頼者さんが参加しました"},
-]);
+// ✅ 親コンポーネントから `caseId` と `userId` を受け取る
+const props = defineProps({
+  caseId: {
+    type: Number,
+    required: true,
+  },
+  userId: {
+    type: Number,
+    required: true,
+  },
+});
 
-// メッセージの追加
-const addMessage = (message) => {
-  message.time = formatDate(new Date()); // 送信時間と日付を追加
-  messages.value.push(message);
+const messages = ref([]); // チャットメッセージリスト
+
+// チャット履歴を取得
+const fetchMessages = async () => {
+  try {
+    const response = await apiClient.get(`/chat/${props.caseId}`); // caseId を使用して取得
+    messages.value = response.data.messages || []; // デフォルトで空配列を設定
+    console.log("チャット履歴を取得しました:", messages.value);
+  } catch (error) {
+    console.error("チャット履歴の取得に失敗:", error);
+  }
 };
 
-// 日付を「YYYY/MM/DD hh:mm:ss」の形式でフォーマット
-const formatDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+// メッセージの送信
+const addMessage = async (message) => {
+  try {
+    const response = await apiClient.post("/chat", {
+      case_id: props.caseId, // caseId を使用
+      user_id: props.userId, // userId を使用
+      message: message.text,
+    });
 
-  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
-};</script>
+    // メッセージを追加し、リストを更新
+    messages.value.push(response.data.message);
+    console.log("メッセージを送信しました:", response.data.message);
+
+    // メッセージリストを再取得
+    await fetchMessages();
+  } catch (error) {
+    console.error("メッセージの送信に失敗:", error);
+  }
+};
+
+// コンポーネントがマウントされたらチャット履歴を取得
+onMounted(() => {
+  fetchMessages();
+});
+</script>
+
 <template>
   <div class="chat-container">
     <h1>チャット</h1>
