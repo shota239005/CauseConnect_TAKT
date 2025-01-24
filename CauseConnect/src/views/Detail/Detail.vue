@@ -116,9 +116,11 @@ const currentProgress = 2;
       <div class="progress-section">
         <!-- ✅ ProgressStep にも userId と caseId を渡す -->
         <ProgressStep
+          v-if="userInfo && userInfo.user_id && requestDetails"
           :request="requestDetails"
           :current-progress="currentProgress"
           :userId="userInfo.user_id"
+          :userInfo="userInfo"
           :caseId="requestDetails?.case_id"
         />
       </div>

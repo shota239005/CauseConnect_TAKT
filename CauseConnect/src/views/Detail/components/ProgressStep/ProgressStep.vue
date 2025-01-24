@@ -14,7 +14,12 @@ const props = defineProps({
     type: [Number, String],
     required: true,
   },
+  userInfo: { // 新たに受け取るプロパティ
+    type: Object,
+    required: true,
+  },
 });
+
 
 const requestData = Array.isArray(props.request) ? props.request[0] : props.request;
 
@@ -44,12 +49,14 @@ const setStepVisibility = () => {
 };
 
 onMounted(() => {
-  setStepVisibility();
+  console.log("[ProgressStep] userInfo:", props.userInfo); // ログ出力
+  console.log("[ProgressStep] nickname:", props.userInfo.nickname); // ニックネームを確認
 });
 </script>
 <template>
   <div class="participants-info">
-    <Chat :case-id="requestData.case_id" :user-id="props.userId" />
+    <Chat :case-id="requestData.case_id" :user-id="props.userId" :nickname="props.userInfo.nickname"
+      :request="requestData" />
 
     <!-- 1: 実行報告内容 -->
     <div class="progress-section">

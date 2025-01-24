@@ -14,6 +14,18 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  nickname: { // 新たに受け取るプロパティ
+    type: String,
+    required: true,
+  },
+  request: {
+    type: Object,
+    required: true,
+  },
+});
+
+onMounted(() => {
+  console.log("[Chat] props.nickname:", props.nickname); // ニックネームを確認
 });
 
 const messages = ref([]); // チャットメッセージリスト
@@ -21,8 +33,13 @@ const messages = ref([]); // チャットメッセージリスト
 // チャット履歴を取得
 const fetchMessages = async () => {
   try {
-    const response = await apiClient.get(`/chat/${props.caseId}`); // caseId を使用して取得
-    messages.value = response.data.messages || []; // デフォルトで空配列を設定
+    const response = await apiClient.get(`/chat/${props.caseId}`);
+    messages.value = response.data.messages.map(msg => ({
+      created: msg.created || new Date().toISOString(), // 日時を補完
+      case_id: msg.case_id,
+      user_id: msg.user_id,
+      message: msg.message
+    }));
     console.log("チャット履歴を取得しました:", messages.value);
   } catch (error) {
     console.error("チャット履歴の取得に失敗:", error);
@@ -33,17 +50,22 @@ const fetchMessages = async () => {
 const addMessage = async (message) => {
   try {
     const response = await apiClient.post("/chat", {
-      case_id: props.caseId, // caseId を使用
-      user_id: props.userId, // userId を使用
+      case_id: props.caseId,
+      user_id: props.userId,
       message: message.text,
     });
 
-    // メッセージを追加し、リストを更新
-    messages.value.push(response.data.message);
-    console.log("メッセージを送信しました:", response.data.message);
+    const newMessage = {
+      created: new Date().toISOString(), // クライアント側で送信日時を補完
+      case_id: props.caseId,
+      user_id: props.userId,
+      message: message.text,
+    };
 
-    // メッセージリストを再取得
-    await fetchMessages();
+    messages.value.push(newMessage); // ローカルリストに追加
+    console.log("メッセージを送信しました:", newMessage);
+
+    await fetchMessages(); // 最新のメッセージリストを取得
   } catch (error) {
     console.error("メッセージの送信に失敗:", error);
   }
@@ -52,7 +74,10 @@ const addMessage = async (message) => {
 // コンポーネントがマウントされたらチャット履歴を取得
 onMounted(() => {
   fetchMessages();
+  console.log("[chat] caseId:", props.caseId);
+  console.log("[chat] userId:", props.userId);
 });
+
 </script>
 
 <template>
@@ -60,10 +85,10 @@ onMounted(() => {
     <h1>チャット</h1>
 
     <!-- メッセージリスト -->
-    <MessageList :messages="messages" />
+    <MessageList :messages="messages" :nickname="props.nickname" />
 
     <!-- メッセージ送信フォーム -->
-    <MessageInput @sendMessage="addMessage" />
+    <MessageInput @sendMessage="addMessage" :nickname="props.nickname" />
   </div>
 </template>
 

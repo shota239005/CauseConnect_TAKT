@@ -17,7 +17,7 @@ const props = defineProps({
     required: true,
   },
   request: {
-    type: Object,
+    type: [Object, Array],
     required: true,
   },
 });
