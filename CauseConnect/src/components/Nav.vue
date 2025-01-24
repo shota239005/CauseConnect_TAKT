@@ -135,7 +135,7 @@ export default {
       </div>
     </nav>
 
-    <i class="fas fa-bell"></i>
+    <i class="fas fa-bell" style="font-size: 24px;"></i>
 
     <!-- 依頼するボタン -->
     <div class="request-button">

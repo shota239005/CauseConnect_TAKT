@@ -97,7 +97,7 @@ onMounted(() => {
             <div class="fixed-size" v-if="imageUrls[index]">
               <img :src="imageUrls[index]" :alt="`写真タイプ${photo.picture_type}`" />
             </div>
-            <p v-if="photo.picture_type === 3"><strong>参加者コメント:</strong> {{ reportData.comment1 }}</p>
+            <p v-if="photo.picture_type === 3"><strong>実行者集合コメント:</strong> {{ reportData.comment1 }}</p>
             <p v-if="photo.picture_type === 4"><strong>依頼場所コメント:</strong> {{ reportData.comment2 }}</p>
             <p v-if="photo.picture_type === 5"><strong>実行前コメント:</strong> {{ reportData.comment3 }}</p>
             <p v-if="photo.picture_type === 6"><strong>実行後コメント:</strong> {{ reportData.comment4 }}</p>
