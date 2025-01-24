@@ -18,7 +18,7 @@ onMounted(() => {
 
 // 初期データ
 const uploaders = [
-  { pictureType: 3, label: "参加者写真" },
+  { pictureType: 3, label: "参加者の写真をアップロード" },
   { pictureType: 4, label: "依頼場所写真" },
   { pictureType: 5, label: "実行前写真" },
   { pictureType: 6, label: "実行後写真" },
@@ -89,18 +89,27 @@ const handleSubmit = async () => {
 
 <template>
   <div>
-    <PhotoUploaderGroup :uploaders="uploaders" @photosUpdated="handlePhotosUpdated" />
 
     <div>
-      <label>参加者コメント</label>
+      <PhotoUploaderGroup :uploaders="[{ pictureType: 3, label: '実行者集合写真' }]" @photosUpdated="handlePhotosUpdated" />
+      <label>実行者集合コメント</label>
       <textarea v-model="comments.comment1"></textarea>
+    </div>
 
+    <div>
+      <PhotoUploaderGroup :uploaders="[{ pictureType: 4, label: '依頼場所写真' }]" @photosUpdated="handlePhotosUpdated" />
       <label>依頼場所コメント</label>
       <textarea v-model="comments.comment2"></textarea>
+    </div>
 
+    <div>
+      <PhotoUploaderGroup :uploaders="[{ pictureType: 5, label: '実行前写真' }]" @photosUpdated="handlePhotosUpdated" />
       <label>実行前コメント</label>
       <textarea v-model="comments.comment3"></textarea>
+    </div>
 
+    <div>
+      <PhotoUploaderGroup :uploaders="[{ pictureType: 6, label: '実行後写真' }]" @photosUpdated="handlePhotosUpdated" />
       <label>実行後コメント</label>
       <textarea v-model="comments.comment4"></textarea>
     </div>
@@ -108,7 +117,6 @@ const handleSubmit = async () => {
     <button class="btn1" @click="handleSubmit">報告する</button>
   </div>
 </template>
-
 
 <style scoped>
 .progress-step-container {
@@ -133,6 +141,10 @@ h3 {
   color: #333;
 }
 
+label{
+  font-size: 32px;
+}
+
 input[type="file"] {
   display: block;
   margin-bottom: 10px;
@@ -151,7 +163,7 @@ input[type="file"] {
 textarea {
   width: 99%;
   padding: 10px;
-  font-size: 14px;
+  font-size: 20px;
   border: 2px solid #f7a400;
   border-radius: 4px;
   resize: vertical;
