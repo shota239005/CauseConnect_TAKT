@@ -9,7 +9,7 @@ import axios from 'axios';
 
 // APIのベースURLを設定
 const apiClient = axios.create({
-   baseURL: 'http://172.16.3.135:8000/api',  // 環境変数を利用
+   baseURL: 'http://172.16.3.136:8000/api',  // 環境変数を利用
   //baseURL: 'http://127.0.0.1:8000/api',  // 自宅aa
 
 
