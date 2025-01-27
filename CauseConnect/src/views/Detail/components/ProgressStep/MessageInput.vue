@@ -10,7 +10,7 @@ const emit = defineEmits();
 // メッセージ送信処理
 const sendMessage = () => {
   if (message.value.trim() !== "") {
-    emit("sendMessage", { user: "You", text: message.value });
+    emit("sendMessage", { text: message.value });
     message.value = ""; // メッセージ入力欄をクリア
   }
 };

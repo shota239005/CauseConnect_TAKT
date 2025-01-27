@@ -2,10 +2,19 @@
 import { defineProps } from "vue";
 
 // 親コンポーネントから受け取る props を定義
-defineProps({
-  messages: Array, // メッセージリスト
-  userId: Number, // 現在のユーザーの ID
-  userNickname: String, // 現在のユーザーのニックネーム
+const props = defineProps({
+  messages: {
+    type: Array, // メッセージリスト
+    required: true, // 必須
+  },
+  userId: {
+    type: Number, // 現在のユーザーの ID
+    required: true, // 必須
+  },
+  userNickname: {
+    type: String, // 現在のユーザーのニックネーム
+    required: true, // 必須
+  },
 });
 </script>
 

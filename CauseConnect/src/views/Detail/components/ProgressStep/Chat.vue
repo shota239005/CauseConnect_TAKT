@@ -4,7 +4,6 @@ import apiClient from "@/axios"; // Axiosインスタンス
 import MessageList from "./MessageList.vue";
 import MessageInput from "./MessageInput.vue";
 
-// ✅ 親コンポーネントから `caseId` と `userId` を受け取る
 const props = defineProps({
   caseId: {
     type: Number,
@@ -14,35 +13,22 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  nickname: { // 新たに受け取るプロパティ
+  nickname: { // nickname プロパティを追加
     type: String,
     required: true,
   },
-  request: {
-    type: Object,
-    required: true,
-  },
 });
 
-onMounted(() => {
-  console.log("[Chat] props.nickname:", props.nickname); // ニックネームを確認
-});
-
-const messages = ref([]); // チャットメッセージリスト
+const messages = ref([]);
 
 // チャット履歴を取得
 const fetchMessages = async () => {
   try {
     const response = await apiClient.get(`/chat/${props.caseId}`);
-    messages.value = response.data.messages.map(msg => ({
-      created: msg.created || new Date().toISOString(), // 日時を補完
-      case_id: msg.case_id,
-      user_id: msg.user_id,
-      message: msg.message
-    }));
-    console.log("チャット履歴を取得しました:", messages.value);
+    messages.value = response.data.messages || [];
+    console.log("[Chat] 取得したメッセージ:", messages.value);
   } catch (error) {
-    console.error("チャット履歴の取得に失敗:", error);
+    console.error("[Chat] チャット履歴の取得に失敗:", error);
   }
 };
 
@@ -54,30 +40,16 @@ const addMessage = async (message) => {
       user_id: props.userId,
       message: message.text,
     });
-
-    const newMessage = {
-      created: new Date().toISOString(), // クライアント側で送信日時を補完
-      case_id: props.caseId,
-      user_id: props.userId,
-      message: message.text,
-    };
-
-    messages.value.push(newMessage); // ローカルリストに追加
-    console.log("メッセージを送信しました:", newMessage);
-
-    await fetchMessages(); // 最新のメッセージリストを取得
+    messages.value.push(response.data.message);
   } catch (error) {
-    console.error("メッセージの送信に失敗:", error);
+    console.error("[Chat] メッセージの送信に失敗:", error);
   }
 };
 
-// コンポーネントがマウントされたらチャット履歴を取得
+// 初期化
 onMounted(() => {
   fetchMessages();
-  console.log("[chat] caseId:", props.caseId);
-  console.log("[chat] userId:", props.userId);
 });
-
 </script>
 
 <template>
@@ -85,10 +57,10 @@ onMounted(() => {
     <h1>チャット</h1>
 
     <!-- メッセージリスト -->
-    <MessageList :messages="messages" :nickname="props.nickname" />
+    <MessageList :messages="messages" :user-id="props.userId" :user-nickname="props.nickname" />
 
     <!-- メッセージ送信フォーム -->
-    <MessageInput @sendMessage="addMessage" :nickname="props.nickname" />
+    <MessageInput @sendMessage="addMessage" />
   </div>
 </template>
 
@@ -104,18 +76,5 @@ onMounted(() => {
 
 h1 {
   text-align: center;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 </style>
