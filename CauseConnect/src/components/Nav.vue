@@ -97,10 +97,6 @@ export default {
 
     <GetAccount class="getAccount" />
 
-    <!-- リアルタイム時計
-    <RealTimeClock class="real-time-clock" />
-    -->
-
     <!-- ナビゲーションメニュー -->
     <nav class="nav-links">
       <router-link to="/">
@@ -111,7 +107,8 @@ export default {
         <button class="btn1">依頼一覧</button>
       </router-link>
 
-      <button class="btn1" @click="openFavoModal">お気に入り一覧</button>
+      <!-- ログイン状態がtrueのときのみ表示 -->
+      <button v-if="isLoggedIn" class="btn1" @click="openFavoModal">お気に入り一覧</button>
 
       <router-link to="/FAQ">
         <button class="btn1">FAQ</button>
@@ -127,13 +124,15 @@ export default {
         </div>
 
         <div v-else>
-          <button class="btn1" @click="openLoginModal">ログイン</button> <!-- ログインボタンをポップアップ化 -->
+          <button class="btn1" @click="openLoginModal">ログイン</button>
           <router-link to="/register">
             <button class="btn1">新規登録</button>
           </router-link>
         </div>
       </div>
     </nav>
+
+    <i class="fas fa-bell" style="font-size: 24px;"></i>
 
     <!-- 依頼するボタン -->
     <div class="request-button">
@@ -160,6 +159,9 @@ export default {
 
 <style scoped>
 /* ナビゲーションバー全体のスタイル */
+.fas.fa-bell {
+  font-size: 120%; /* サイズを120%に拡大 */
+}
 .nav {
   display: flex;
   align-items: center;
@@ -217,43 +219,47 @@ div button:hover {
 }
 
 /* モーダルのスタイル */
-.favo-modal, .login-modal {
+.favo-modal,
+.login-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* 背景を暗くする */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 背景を暗くする */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
 
+/* モーダルのコンテンツの余白を調整 */
 .modal-content {
+  padding: 50px 40px 40px; /* 上に余白を追加 */
   position: relative;
   background-color: #eee;
-  padding: 40px;
   border-radius: 8px;
   flex-direction: column;
   align-items: center;
   width: 90%;
-  max-width: 500px; /* モーダルの最大幅を500pxに制限 */
-  max-height: 700px; /* 高さを画面の90%以内に調整 */
-  overflow-y: auto; /* コンテンツが多い場合スクロール */
+  max-width: 500px;
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 /* 閉じるボタンのスタイル（右上に配置） */
 .close-btn {
   position: absolute;
   top: 5px;
-  right: 10px;
-  font-size: 60px;
+  right: 15px;
+  font-size: 34px;
   background-color: transparent;
   color: #333;
   border: none;
   padding: 0;
   cursor: pointer;
+  z-index: 1000; /* 最前面に配置 */
 }
 
 .close-btn:hover {
@@ -262,12 +268,14 @@ div button:hover {
 }
 
 .auth-buttons button {
-  margin-left: 10px; /* もしくは適切な値に調整 */
+  margin-left: 10px;
+  /* もしくは適切な値に調整 */
 }
 
 
 /* スマホサイズでの表示調整 */
 @media (max-width: 844px) {
+
   .nav-links,
   .logo,
   .real-time-clock {

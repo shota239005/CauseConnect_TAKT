@@ -93,21 +93,20 @@ onMounted(() => {
         >
           <!-- ✅ picture_type 3～6のみ表示 -->
           <template v-if="photo.picture_type >= 3 && photo.picture_type <= 6">
-            <p v-if="photo.picture_type === 3"><strong>参加者コメント:</strong> {{ reportData.comment1 }}</p>
-            <p v-if="photo.picture_type === 4"><strong>依頼場所コメント:</strong> {{ reportData.comment2 }}</p>
-            <p v-if="photo.picture_type === 5"><strong>実行前コメント:</strong> {{ reportData.comment3 }}</p>
-            <p v-if="photo.picture_type === 6"><strong>実行後コメント:</strong> {{ reportData.comment4 }}</p>
             <!-- ✅ 画像 -->
             <div class="fixed-size" v-if="imageUrls[index]">
               <img :src="imageUrls[index]" :alt="`写真タイプ${photo.picture_type}`" />
             </div>
+            <p v-if="photo.picture_type === 3"><strong>実行者集合コメント:</strong> {{ reportData.comment1 }}</p>
+            <p v-if="photo.picture_type === 4"><strong>依頼場所コメント:</strong> {{ reportData.comment2 }}</p>
+            <p v-if="photo.picture_type === 5"><strong>実行前コメント:</strong> {{ reportData.comment3 }}</p>
+            <p v-if="photo.picture_type === 6"><strong>実行後コメント:</strong> {{ reportData.comment4 }}</p>
           </template>
         </div>
       </div>
     </div>
     <p v-if="error" class="error-message">{{ error }}</p>
     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-    <p v-else class="loading">読み込み中...</p>
 
     <div class="approval-buttons container-right">
       <h2>※承認を押すと進捗状況が更新されます</h2>
@@ -118,6 +117,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+p{
+font-size: 24px;
+margin-bottom: 70px;
+}
+
+strong{
+  font-size: 34px;
+}
 .success-message {
   color: #28a745;
   font-size: 16px;

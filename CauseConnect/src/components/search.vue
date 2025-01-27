@@ -60,7 +60,9 @@ const searchPosts = async () => {
     const response = await apiClient.get("/search-posts", { params });
 
     // 検索結果を更新し、親コンポーネントに送信
-    searchResults.value = response.data;
+    searchResults.value = response.data.sort((a, b) => {
+      return new Date(b.case_date) - new Date(a.case_date);
+    });
     console.log("search:", searchResults.value);
 
     // 検索結果が配列か確認

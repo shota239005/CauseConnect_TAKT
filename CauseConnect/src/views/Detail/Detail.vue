@@ -88,6 +88,9 @@ const currentProgress = 2;
     <!-- ローディング中の表示 -->
     <p v-if="loading">データを読み込んでいます...</p>
 
+    <!-- データが取得できない場合のエラーメッセージ -->
+    <p v-else-if="!userInfo || !requestDetails">ログインをしてください。</p>
+
     <!-- データが取得できた場合の表示 -->
     <div v-else>
       <!-- 上部：基本情報＆参加者情報 -->
@@ -116,9 +119,11 @@ const currentProgress = 2;
       <div class="progress-section">
         <!-- ✅ ProgressStep にも userId と caseId を渡す -->
         <ProgressStep
+          v-if="userInfo && userInfo.user_id && requestDetails"
           :request="requestDetails"
           :current-progress="currentProgress"
           :userId="userInfo.user_id"
+          :userInfo="userInfo"
           :caseId="requestDetails?.case_id"
         />
       </div>

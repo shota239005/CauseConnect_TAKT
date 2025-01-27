@@ -3,7 +3,6 @@ import { defineEmits, defineProps, ref, onMounted } from 'vue';
 import apiClient from '@/axios';
 import Jikko from './Jikko.vue';
 import Syusshi from './Syusshi.vue';
-import Map from '@/components/Map.vue';
 
 // ✅ 親コンポーネントから受け取る userId と request
 const props = defineProps({
@@ -34,6 +33,7 @@ const closePopup = () => {
 
 // 依頼情報に対応する変数
 const requestData = props.request[0];
+console.log('地図url', requestData.google_map);
 
 // 画像データ用の変数（タイプ1とタイプ2）
 const imageUrlType1 = ref('');
@@ -124,7 +124,19 @@ onMounted(() => {
       </div>
     </div>
 
-    <Map />
+    <!-- Google Map 表示 -->
+    <div class="map-container" v-if="requestData.google_map">
+      <label for="map-url"></label>
+      <iframe
+        :src="requestData.google_map"
+        width="800ox"
+        height="400px"
+        frameborder="0"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+      ></iframe>
+    </div>
 
     <div class="button-container">
       <button class="syusshi" @click="openPopup('syusshi')">出資者で参加</button>

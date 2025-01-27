@@ -36,7 +36,7 @@ const fetchParticipants = async () => {
     executors.value = executorsResponse.data; // 依頼者を除外しない
     //依頼者を除外
     // executors.value = executorsResponse.data.filter(
-    //   (executor) => executor.user_id !== requester.value.user_id 
+    //   (executor) => executor.user_id !== requester.value.user_id
 
     // );
   } catch (error) {

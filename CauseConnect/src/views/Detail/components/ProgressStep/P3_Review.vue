@@ -10,15 +10,13 @@ const props = defineProps({
   },
 });
 onMounted(() => {
-  // console.log("[P1] 受け取ったcase_id:", props.caseId);
+  console.log("[P1] 受け取ったcase_id:", props.caseId);
 });
 
 // ✅ 参加者のレビュー情報
 const participants = ref([
-  { id: 1, name: 'ミドル', review: 0 },
-  { id: 2, name: 'よし', review: 0 },
-  { id: 3, name: 'さつき', review: 0 },
-  { id: 4, name: 'みの', review: 0 },
+  { id: 1, name: 'カシマさん', review: 0 },
+  { id: 2, name: 'アカミネさん', review: 0 },
 ]);
 
 const isConfirmed = ref(false);
@@ -67,7 +65,7 @@ const confirmReviews = async () => {
     <h2>依頼全体を通して参加者達の評価をお願いします</h2>
 
     <div v-for="participant in participants" :key="participant.id" class="participant">
-      <h4>{{ participant.name }}</h4>
+      <p>{{ participant.name }}</p>
       <div class="star-rating">
         <span
           v-for="star in 5"
@@ -112,10 +110,13 @@ const confirmReviews = async () => {
   display: flex;
   gap: 5px;
   cursor: pointer;
+  margin-top: -30px;
 }
-
+p{
+  font-size: 34px;
+}
 .star {
-  font-size: 24px;
+  font-size: 30px;
   color: #ccc;
   transition: color 0.3s;
 }

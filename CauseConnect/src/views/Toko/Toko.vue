@@ -6,24 +6,25 @@ import PhotoUploaderGroup from './components/PhotoUploaderGroup.vue'; // パス�
 
 // 初期状態の依頼データを格納するreactiveオブジェクト
 const request = reactive({
-  requestPoints: '100',
-  basicInfo: '河川敷の清掃を通じて地域の環境美化と地域コミュニティの交流を促進し、誰もが気持ちよく利用できる場所づくりを目指します。',
-  areaDetails:'IVY川沿いの歩道（〇〇橋〜〇〇橋区間）および周辺のベンチ・水飲み場周辺のゴミ拾い、雑草の除去を中心に行います。',
-  requestDetails:'軍手・ゴミ袋・トング（※可能な範囲で持参してください）動きやすい服装・運動靴・帽子・飲み物。',
-  requestName: 'IVY河川敷清掃',
+  requestPoints: '1000',
+  basicInfo: 'ソフトパーク周辺の清掃を通じて地域の環境美化と地域コミュニティの交流を促進し、誰もが気持ちよく利用できる場所づくりを目指します。',
+  areaDetails: 'ソフトパーク周辺の歩道および周辺の道路のゴミ拾い、雑草の除去を中心に行います。',
+  requestDetails: '軍手・ゴミ袋・トング（※可能な範囲で持参してください）動きやすい服装・運動靴・帽子・飲み物。',
+  requestName: 'ソフトパーク周辺の清掃',
   requestCondition: 'ゴミを「可燃ゴミ」「不燃ゴミ」「リサイクルゴミ」に分別し、指定の集積所へ運搬すること。',
   minPeople: 2,
   maxPeople: 5,
-  activityDate: '2025-01-20',
+  activityDate: '2025-01-30',
   startTime: 13,
   endTime: 17,
   prefecture: '44',
-  address1: '大分市IVY町',
-  address2: 'IVY河川敷',
+  address1: '大分市東春日町',
+  address2: '17-20',
   participation: false,
   equipmentNeeded: '有',
   caseId: null,
-  googleMap: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp',});
+  googleMap: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9486182757246!2d131.59784425370097!3d33.24164948673649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1d64b900001%3A0x6ffd8a77fc37929f!2z5aSn5YiG55yM44K944OV44OI44OR44O844Kv!5e0!3m2!1sja!2sjp!4v1737609561379!5m2!1sja!2sjp',
+});
 
 // アップロードされた写真を格納
 const uploadedPhotos = reactive({});
@@ -38,19 +39,18 @@ const photoUploaders = ref([
 // 都道府県リストを格納するref変数
 const prefectures = ref([]);
 const activityAreas = ref([]); // 活動エリアのデータ
-const selectedAreas = ref(['3']); // 選択された活動エリア
+const selectedAreas = ref(['1']); // 選択された活動エリア
 const activityThemes = ref([]);  // 活動テーマデータを格納
 const selectedThemes = ref([1]);  // 選択されたテーマIDを格納
 const recommendedAges = ref([1]); // 推奨年齢データを格納
 const selectedAges = ref([1]); // 選択された推奨年齢IDを格納
 const features = ref([0]); // 特徴データを格納する変数
 const selectedFeatures = ref([1]); // 選択された特徴IDを格納
-const mapUrl = ref(
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp'
-);
+const mapUrl = ref('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9486182757246!2d131.59784425370097!3d33.24164948673649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1d64b900001%3A0x6ffd8a77fc37929f!2z5aSn5YiG55yM44K944OV44OI44OR44O844Kv!5e0!3m2!1sja!2sjp!4v1737609561379!5m2!1sja!2sjp');
+
 // `mapUrl` の変更を監視して `request.googleMap` を更新
-watch(mapUrl, (newValue) => {
-  console.log("mapUrlが変更されました:", newValue); // デバッグログ
+watch(mapUrl, (newValue, oldValue) => {
+  console.log("mapUrlの変更を検知:", { oldValue, newValue });
   request.googleMap = newValue;
 });
 
@@ -143,17 +143,10 @@ const fetchFeatures = async () => {
   }
 };
 
-//Google Map URLを追加
-const props = defineProps({
-  url: String,
-});
-
 // 投稿ボタンのクリック時に呼び出す関数
 const handleSubmit = () => {
   alert("投稿しました。");
 };
-
-
 
 const submitRequest = async () => {
   try {
@@ -208,7 +201,9 @@ const submitRequest = async () => {
     formData.append("state_id", 1); // 仮の進捗状況ID
     request.googleMap = mapUrl.value;
     formData.append("google_map", request.googleMap || ""); // Map URLを追加    // デバッグ: mapUrl の型と値を確認
-    console.log("mapUrl の値:", mapUrl);
+    console.log("送信時のmapUrl:", mapUrl.value);
+    console.log("送信時のrequest.googleMap:", request.googleMap);
+
 
     // 写真データを追加
     if (uploadedPhotos.photo1) formData.append('photo1', uploadedPhotos.photo1);
@@ -250,7 +245,6 @@ const submitRequest = async () => {
   }
 };
 
-
 // コンポーネントがマウントされたときの処理
 onMounted(() => {
   fetchUserData();
@@ -260,13 +254,7 @@ onMounted(() => {
   fetchRecommendedAges();
   fetchFeatures();
 });
-
-
-
 </script>
-
-
-
 
 <template>
   <div class="toko">
@@ -447,8 +435,7 @@ onMounted(() => {
         <PhotoUploaderGroup :uploaders="[photoUploaders[1]]" @photosUpdated="handlePhotosUpdated" />
 
         <!-- MapURLコンポーネントを使用 -->
-        <MapURL v-model="request.googleMap" />
-
+        <MapURL v-model="mapUrl" />
 
         <!-- 送信ボタン -->
         <button type="submit" class="btn1" @click="handleSubmit">投稿する</button>
@@ -459,11 +446,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.toko{
+.toko {
   background-color: #f4f4f4;
 }
 
-#address2{
+#address2 {
   margin-left: 10px;
 
 }
@@ -476,9 +463,9 @@ onMounted(() => {
 }
 
 .page-title {
-text-align: center;
-font-size: 30px;
-font-weight: 100;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 100;
 }
 
 .form-group {
@@ -501,7 +488,7 @@ font-weight: 100;
   }
 }
 
-.form-group-todo{
+.form-group-todo {
   margin-right: 20px;
 }
 

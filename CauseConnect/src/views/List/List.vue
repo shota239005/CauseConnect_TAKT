@@ -52,7 +52,10 @@ const fetchDataByPrefId = async () => {
     const response = await apiClient.get("/search-posts", {
       params: { pref_id: prefId }, // `pref_id` をパラメータとして送信
     });
-    searchResults.value = response.data; // 結果を設定
+    console.log(response.date);
+    searchResults.value = response.data.sort((a, b) => {
+      return new Date(b.case_date) - new Date(a.case_date);
+    });
     console.log("`pref_id` に基づく検索結果:", searchResults.value);
   } catch (error) {
     console.error("`pref_id` によるデータ取得エラー:", error);

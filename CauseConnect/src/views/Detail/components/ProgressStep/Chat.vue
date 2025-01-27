@@ -1,39 +1,74 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import apiClient from "@/axios";
 import MessageList from "./MessageList.vue";
 import MessageInput from "./MessageInput.vue";
 
-// メッセージリスト
-const messages = ref([
-  { user: "Tanaka", text: "実行者さんが参加しました"},
-  { user: "You", text: "依頼者さんが参加しました"},
-]);
+const props = defineProps({
+  caseId: {
+    type: Number,
+    required: true,
+  },
+  userId: {
+    type: Number,
+    required: true,
+  },
+  nickname: {
+    type: String,
+    required: true,
+  },
+});
 
-// メッセージの追加
-const addMessage = (message) => {
-  message.time = formatDate(new Date()); // 送信時間と日付を追加
-  messages.value.push(message);
+const messages = ref([]);
+
+// チャット履歴を取得
+const fetchMessages = async () => {
+  try {
+    const response = await apiClient.get(`/chat/${props.caseId}`);
+    messages.value = response.data.messages || [];
+    
+    console.log("[Chat] 取得したメッセージ:", messages.value);
+
+    // 各メッセージのニックネームをログに出力
+    messages.value.forEach((message, index) => {
+      console.log(`[Chat] メッセージ ${index + 1}:`, {
+        user_id: message.user_id,
+        nickname: message.nickname || "ニックネームなし",
+        message: message.message,
+        created: message.created,
+      });
+    });
+
+  } catch (error) {
+    console.error("[Chat] チャット履歴の取得に失敗:", error);
+  }
 };
 
-// 日付を「YYYY/MM/DD hh:mm:ss」の形式でフォーマット
-const formatDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+// メッセージ送信
+const addMessage = async (message) => {
+  try {
+    const response = await apiClient.post("/chat", {
+      case_id: props.caseId,
+      user_id: props.userId,
+      message: message.text,
+    });
+    messages.value.push(response.data.message); // 送信されたメッセージを追加
+    await fetchMessages(); // 再取得して他のユーザーの変更を反映
+  } catch (error) {
+    console.error("[Chat] メッセージの送信に失敗:", error);
+  }
+};
 
-  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
-};</script>
+// 初期化
+onMounted(() => {
+  fetchMessages();
+});
+</script>
+
 <template>
   <div class="chat-container">
     <h1>チャット</h1>
-
-    <!-- メッセージリスト -->
-    <MessageList :messages="messages" />
-
-    <!-- メッセージ送信フォーム -->
+    <MessageList :messages="messages" :user-id="props.userId"  :user-nickname="props.nickname" />
     <MessageInput @sendMessage="addMessage" />
   </div>
 </template>
@@ -46,22 +81,5 @@ const formatDate = (date) => {
   background-color: #f0f0f0;
   border: 2px solid #f7a400;
   border-radius: 8px;
-}
-
-h1 {
-  text-align: center;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 </style>

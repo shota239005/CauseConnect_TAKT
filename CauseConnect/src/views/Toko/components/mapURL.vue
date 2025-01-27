@@ -3,7 +3,7 @@ export default {
   props: {
     modelValue: {
       type: String,
-      default: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.9402313198366!2d131.59498278885496!3d33.2418692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3546a1b56e090a53%3A0xf6ea0ca5831fdae!2zSVZZ5aSn5YiG6auY5bqm44Kz44Oz44OU44Ol44O844K_5bCC6ZaA5a2m5qCh!5e0!3m2!1sja!2sjp!4v1732509380190!5m2!1sja!2sjp',
+      default: '',
     },
   },
   emits: ['update:modelValue'],
@@ -44,7 +44,6 @@ export default {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 #map-url {

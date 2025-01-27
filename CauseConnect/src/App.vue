@@ -1,6 +1,7 @@
 <script setup>
 import Navi from './components/Nav.vue'; // ナビゲーションバーコンポーネントをインポート
 import CopyLight from '@/components/CopyLight.vue';
+
 </script>
 
 <template>

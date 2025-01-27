@@ -1,85 +1,38 @@
-<script setup>
-import FavoriteIcon from "@/components/FavoriteIcon.vue"; // FavoriteIcon をインポート
-import { defineProps, onMounted, reactive, ref } from "vue";
-import apiClient from "@/axios"; // APIクライアントをインポート
+<script>
+import ContributorPopup from "./FavoPopup.vue";
 
-// `requests` プロパティを受け取る
-const props = defineProps({
-  requests: {
-    type: Array,
-    required: true,
+export default {
+  name: "ContributorMenu",
+  components: {
+    ContributorPopup,
   },
-});
-
-// 都道府県名を取得する関数
-const fetchPrefectureName = async (prefId) => {
-  try {
-    const response = await apiClient.get("/prefectures");
-    const prefectures = response.data;
-
-    const prefecture = prefectures.find((pref) => pref.pref_id === prefId);
-    return prefecture ? prefecture.pref : "不明な都道府県";
-  } catch (error) {
-    console.error("都道府県データの取得に失敗しました:", error);
-    return "不明な都道府県";
-  }
+  data() {
+    return {
+      isPopupVisible: false, // ポップアップの表示状態
+    };
+  },
+  methods: {
+    togglePopup() {
+      this.isPopupVisible = !this.isPopupVisible; // ポップアップの表示/非表示を切り替え
+    },
+  },
 };
-
-// 各リクエストデータに都道府県名を追加
-const enrichedRequests = ref([]);
-
-onMounted(async () => {
-  enrichedRequests.value = await Promise.all(
-    props.requests.map(async (request) => {
-      const enrichedRequest = reactive({ ...request });
-      enrichedRequest.pref_name = await fetchPrefectureName(request.pref_id);
-
-      const baseURL = "http://172.16.3.136:8000";
-      enrichedRequest.pictureUrl = request.picture
-        ? `${baseURL}${request.picture}`
-        : "default-avatar.png";
-
-      return enrichedRequest;
-    })
-  );
-});
 </script>
 
 <template>
-  <div class="favo-menu">
-    <h1 class="title">お気に入り一覧</h1>
+  <div class="menu-category">
+    <h4>出資者</h4>
+    <ul>
+      <li>
+        ・<button @click="togglePopup" class="popup-trigger">出資ポイントを追加</button>
+      </li>
+    </ul>
 
-    <!-- お気に入りがない場合のメッセージ -->
-    <div v-if="enrichedRequests.length === 0" class="no-favorites">
-      現在、お気に入り登録された依頼はありません。
-    </div>
-
-    <!-- お気に入りリストの表示 -->
-    <div v-else class="favorites-list">
-      <div v-for="request in enrichedRequests" :key="request.case_id" class="request-item">
-        <!-- お気に入りアイコン -->
-        <FavoriteIcon :request="request" class="favorite-icon" />
-
-        <!-- 画像表示 -->
-        <div class="request-image">
-          <img :src="request.pictureUrl" alt="お気に入り画像" />
-        </div>
-
-        <!-- 詳細情報 -->
-        <div class="request-info">
-          <h3>{{ request.case_name }}</h3>
-          <p><strong>日付:</strong> {{ request.case_date }}</p>
-          <p><strong>都道府県:</strong> {{ request.pref_name }}</p>
-          <p><strong>場所:</strong> {{ request.address1 }} {{ request.address2 }}</p>
-          <p><strong>活動内容:</strong> {{ request.content }}</p>
-
-          <!-- 詳細ページへのリンク -->
-          <router-link :to="`/details/${request.case_id}`" class="details-link">
-            詳細を見る
-          </router-link>
-        </div>
-      </div>
-    </div>
+    <!-- ポップアップ -->
+    <ContributorPopup
+      :isVisible="isPopupVisible"
+      @close="togglePopup"
+    />
   </div>
 </template>
 
