@@ -20,7 +20,7 @@ const props = defineProps({
   },
 });
 
-
+// リクエストデータの取得
 const requestData = Array.isArray(props.request) ? props.request[0] : props.request;
 
 // ✅ 各ステップの状態管理
@@ -31,6 +31,7 @@ const enableStep1 = ref(false);
 const enableStep2 = ref(false);
 const enableStep3 = ref(false);
 
+// ステップの可視性を設定
 const setStepVisibility = () => {
   const stateId = requestData.state_id;
 
@@ -48,11 +49,14 @@ const setStepVisibility = () => {
   }
 };
 
+// コンポーネントのマウント時に実行
 onMounted(() => {
-  console.log("[ProgressStep] userInfo:", props.userInfo); // ログ出力
+  console.log("[ProgressStep] userInfo:", props.userInfo); // ユーザー情報のログ
   console.log("[ProgressStep] nickname:", props.userInfo.nickname); // ニックネームを確認
+  setStepVisibility(); // ステップの状態を設定
 });
 </script>
+
 <template>
   <div class="participants-info">
     <Chat :case-id="requestData.case_id" :user-id="props.userId" :nickname="props.userInfo.nickname"
