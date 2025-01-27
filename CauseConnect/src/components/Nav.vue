@@ -97,10 +97,6 @@ export default {
 
     <GetAccount class="getAccount" />
 
-    <!-- リアルタイム時計
-    <RealTimeClock class="real-time-clock" />
-    -->
-
     <!-- ナビゲーションメニュー -->
     <nav class="nav-links">
       <router-link to="/">
@@ -111,7 +107,8 @@ export default {
         <button class="btn1">依頼一覧</button>
       </router-link>
 
-      <button class="btn1" @click="openFavoModal">お気に入り一覧</button>
+      <!-- ログイン状態がtrueのときのみ表示 -->
+      <button v-if="isLoggedIn" class="btn1" @click="openFavoModal">お気に入り一覧</button>
 
       <router-link to="/FAQ">
         <button class="btn1">FAQ</button>
@@ -127,7 +124,7 @@ export default {
         </div>
 
         <div v-else>
-          <button class="btn1" @click="openLoginModal">ログイン</button> <!-- ログインボタンをポップアップ化 -->
+          <button class="btn1" @click="openLoginModal">ログイン</button>
           <router-link to="/register">
             <button class="btn1">新規登録</button>
           </router-link>
