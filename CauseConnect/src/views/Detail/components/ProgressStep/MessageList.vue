@@ -2,7 +2,7 @@
 import { defineProps } from "vue";
 
 // 親コンポーネントから受け取る props を定義
-const props = defineProps({
+defineProps({
   messages: {
     type: Array, // メッセージリスト
     required: true, // 必須
@@ -29,6 +29,7 @@ const props = defineProps({
     >
       <div class="message-header">
         <span class="message-user">
+          <!-- 自分の発言の場合は userNickname、それ以外は message.nickname -->
           {{ message.user_id === userId ? userNickname : message.nickname || 'ゲスト' }}
         </span>
         <span class="message-time">{{ message.created }}</span>
