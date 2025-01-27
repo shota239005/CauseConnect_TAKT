@@ -81,6 +81,7 @@ export default {
   flex-direction: column;
   gap: 10px;
   font-size: 34px;
+  font-weight: bold;
 }
 
 .uploader-controls {
