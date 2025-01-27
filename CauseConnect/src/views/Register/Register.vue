@@ -226,6 +226,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 .mypage-container {
   font-family: 'Zen Maru Gothic', serif;
   max-width: auto;
@@ -251,36 +252,39 @@ form {
   box-sizing: border-box; /* パディングを含めた幅計算 */
 }
 
-
-
 h1 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 40px;
 }
-
 
 .form-group {
   margin-bottom: 15px;
+  font-size: 40px;
 }
 
 .form-group-b {
-width: 30%;
+  font-size: 40px;
+  width: 30%;
   margin-bottom: 15px;
 }
 
 .form-group-sex {
-width: 35%;
+  width: 35%;
   margin-bottom: 15px;
+  font-size: 40px;
 }
 
 .form-group-todo {
-width: 30%;
+  width: 30%;
   margin-bottom: 15px;
+  font-size: 40px;
 }
 
 .form-group-post {
 width: 25%;
   margin-bottom: 15px;
+  font-size: 35px;
 }
 
 label {
@@ -294,7 +298,8 @@ select,
 textarea {
   font-family: 'Zen Maru Gothic', serif;
   width: 100%; /* 各フォーム要素が親要素にフィット */
-  padding: 8px;
+  font-size: 32px;
+  padding: 10px;
   border: 1px solid #f7a400;
   border-radius: 4px;
 }

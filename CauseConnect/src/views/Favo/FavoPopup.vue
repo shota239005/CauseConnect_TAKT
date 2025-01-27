@@ -129,7 +129,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <p v-else>ロード中</p>
+  <p v-else>お気に入りは未登録です。</p>
 </template>
 
 <style scoped>

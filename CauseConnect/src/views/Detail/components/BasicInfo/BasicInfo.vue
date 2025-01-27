@@ -126,7 +126,7 @@ onMounted(() => {
 
     <!-- Google Map 表示 -->
     <div class="map-container" v-if="requestData.google_map">
-      <label for="map-url">GoogleMap:</label>
+      <label for="map-url"></label>
       <iframe
         :src="requestData.google_map"
         width="800ox"
