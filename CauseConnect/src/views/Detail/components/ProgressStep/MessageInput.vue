@@ -1,16 +1,24 @@
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 
 // メッセージ入力
 const message = ref("");
 
 // イベントを定義
-const emit = defineEmits();
+const emit = defineEmits({
+  sendMessage: (payload) => {
+    if (typeof payload.text === 'string') {
+      return true; // ペイロードのバリデーションに成功
+    }
+    console.error('Invalid payload for sendMessage'); // 無効なペイロードを通知
+    return false;
+  },
+});
 
 // メッセージ送信処理
 const sendMessage = () => {
   if (message.value.trim() !== "") {
-    emit("sendMessage", { text: message.value });
+    emit("sendMessage", { text: message.value }); // イベントを送信
     message.value = ""; // メッセージ入力欄をクリア
   }
 };
