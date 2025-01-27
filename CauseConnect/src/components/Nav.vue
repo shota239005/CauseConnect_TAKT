@@ -234,33 +234,32 @@ div button:hover {
   z-index: 999;
 }
 
+/* モーダルのコンテンツの余白を調整 */
 .modal-content {
+  padding: 50px 40px 40px; /* 上に余白を追加 */
   position: relative;
   background-color: #eee;
-  padding: 40px;
   border-radius: 8px;
   flex-direction: column;
   align-items: center;
   width: 90%;
   max-width: 500px;
-  /* モーダルの最大幅を500pxに制限 */
   max-height: 700px;
-  /* 高さを画面の90%以内に調整 */
   overflow-y: auto;
-  /* コンテンツが多い場合スクロール */
 }
 
 /* 閉じるボタンのスタイル（右上に配置） */
 .close-btn {
   position: absolute;
   top: 5px;
-  right: 10px;
-  font-size: 60px;
+  right: 15px;
+  font-size: 34px;
   background-color: transparent;
   color: #333;
   border: none;
   padding: 0;
   cursor: pointer;
+  z-index: 1000; /* 最前面に配置 */
 }
 
 .close-btn:hover {
