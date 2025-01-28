@@ -37,7 +37,8 @@ const resetUser = () => {
   // `Object.assign`を使って、ユーザーデータを初期状態にリセット
   Object.assign(user, {
     password: '1111', // パスワード
-    nickname: 'テスト用ニックネーム', // ニックネーム
+    confirmPassword: '1111',
+    nickname: 'ツツミ', // ニックネーム
     name: 'テスト用名前', // 名前
     kana: 'テスト用カナ', // カナ
     birth: '2000-01-01', // 生年月日（YYYY-MM-DD形式）

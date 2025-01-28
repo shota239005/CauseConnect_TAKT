@@ -18,7 +18,7 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 // 入力されたポイントを格納する変数（初期値100）
-const points = ref('100');
+const points = ref('5000');
 
 // 現在の保有ポイント（合計値を表示）
 const currentPoints = ref(0);
